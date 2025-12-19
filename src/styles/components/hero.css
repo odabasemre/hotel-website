@@ -43,7 +43,7 @@
     text-align: center;
     color: var(--color-white);
     padding: 0 var(--spacing-xl);
-    margin-top: var(--spacing-4xl);
+    margin-bottom: var(--spacing-3xl);
     animation: fadeIn 1s ease;
 }
 
@@ -90,7 +90,7 @@
 /* Booking Form */
 .booking-section {
     position: absolute;
-    top: 100px;
+    bottom: 40px;
     left: 0;
     right: 0;
     padding: var(--spacing-md) 0;
