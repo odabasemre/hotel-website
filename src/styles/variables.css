@@ -1,0 +1,111 @@
+/* CSS Variables - Design Tokens */
+:root {
+  /* Primary Colors - Modern Green Theme for Black Sea */
+  --color-primary: #1B5E20;
+  /* Koyu orman yeşili */
+  --color-primary-light: #2E7D32;
+  /* Orta yeşil */
+  --color-primary-dark: #0D3D13;
+  /* Çok koyu yeşil */
+  --color-accent: #66BB6A;
+  /* Açık canlı yeşil */
+  --color-accent-light: #81C784;
+  /* Daha açık yeşil */
+  --color-secondary: #00695C;
+  /* Deniz yeşili/teal */
+  --color-secondary-light: #00897B;
+  /* Açık teal */
+
+  /* Neutral Colors */
+  --color-white: #FFFFFF;
+  --color-black: #000000;
+  --color-bg: #FFFFFF;
+  --color-bg-alt: #F8F6F3;
+  --color-bg-dark: #1A1A1A;
+  --color-text: #333333;
+  --color-text-light: #666666;
+  --color-text-muted: #999999;
+  --color-border: #E0E0E0;
+
+  /* Overlay Colors */
+  --color-overlay: rgba(26, 26, 26, 0.6);
+  --color-overlay-light: rgba(255, 255, 255, 0.9);
+
+  /* Typography */
+  --font-primary: 'Playfair Display', Georgia, serif;
+  --font-secondary: 'Raleway', 'Segoe UI', sans-serif;
+
+  /* Font Sizes */
+  --fs-xs: 0.75rem;
+  --fs-sm: 0.875rem;
+  --fs-base: 1rem;
+  --fs-md: 1.125rem;
+  --fs-lg: 1.25rem;
+  --fs-xl: 1.5rem;
+  --fs-2xl: 2rem;
+  --fs-3xl: 2.5rem;
+  --fs-4xl: 3rem;
+  --fs-5xl: 4rem;
+
+  /* Font Weights */
+  --fw-light: 300;
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --fw-bold: 700;
+
+  /* Spacing */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+  --spacing-2xl: 3rem;
+  --spacing-3xl: 4rem;
+  --spacing-4xl: 6rem;
+
+  /* Border Radius */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 20px;
+  --radius-full: 50%;
+
+  /* Shadows */
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+  --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.15);
+
+  /* Transitions */
+  --transition-fast: 0.15s ease;
+  --transition-base: 0.3s ease;
+  --transition-slow: 0.5s ease;
+  --transition-smooth: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Z-Index */
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-fixed: 300;
+  --z-modal-backdrop: 400;
+  --z-modal: 500;
+  --z-tooltip: 600;
+
+  /* Container */
+  --container-max: 1200px;
+  --container-padding: 1.5rem;
+
+  /* Header Height */
+  --header-height-top: 40px;
+  --header-height-main: 80px;
+  --header-height-total: 120px;
+}
+
+/* Dark Mode Variables (optional) */
+[data-theme="dark"] {
+  --color-bg: #1A1A1A;
+  --color-bg-alt: #2A2A2A;
+  --color-text: #F0F0F0;
+  --color-text-light: #CCCCCC;
+  --color-border: #3A3A3A;
+}

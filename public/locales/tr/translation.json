@@ -1,0 +1,112 @@
+{
+    "nav": {
+        "home": "Ana Sayfa",
+        "rooms": "Odalar",
+        "about": "Hakkımızda",
+        "gallery": "Galeri",
+        "contact": "İletişim",
+        "bookNow": "Rezervasyon"
+    },
+    "topBar": {
+        "phone": "Bizi Arayın",
+        "email": "E-posta"
+    },
+    "hero": {
+        "title": "Tek Adımda Dinlenme Yolculuğu",
+        "subtitle": "Doğanın kalbinde lüks ve konfor deneyimi",
+        "cta": "Keşfedin"
+    },
+    "booking": {
+        "checkIn": "Giriş Tarihi",
+        "checkOut": "Çıkış Tarihi",
+        "checkInPlaceholder": "Giriş",
+        "checkOutPlaceholder": "Çıkış",
+        "adults": "Yetişkin",
+        "children": "Çocuk",
+        "search": "Ara",
+        "selectAdults": "Yetişkin Seçin",
+        "selectChildren": "Çocuk Seçin"
+    },
+    "services": {
+        "title": "Lüks & Konfor",
+        "subtitle": "Hizmetlerimiz ve Olanaklarımız",
+        "description": "Sofistike odalarımızda en iyi lüks otellerin konsepti ve hizmetini sunuyoruz. Muhteşem manzaralı döşenmiş terasın keyfini çıkarma imkanı ile.",
+        "spa": {
+            "title": "Spa & Wellness",
+            "description": "Premium spa uygulamalarımızla rahatlayın ve yenilenin"
+        },
+        "restaurant": {
+            "title": "Fine Dining",
+            "description": "Dünya standartlarında şeflerimizden eşsiz lezzetler deneyimleyin"
+        },
+        "pool": {
+            "title": "Yüzme Havuzu",
+            "description": "Panoramik manzaralı muhteşem sonsuzluk havuzumuzun keyfini çıkarın"
+        },
+        "wifi": {
+            "title": "Ücretsiz WiFi",
+            "description": "Otel genelinde yüksek hızlı internet ile bağlantıda kalın"
+        },
+        "parking": {
+            "title": "Ücretsiz Otopark",
+            "description": "Tüm misafirlerimiz için ücretsiz güvenli otopark"
+        },
+        "concierge": {
+            "title": "7/24 Concierge",
+            "description": "Özel ekibimiz size yardımcı olmak için her zaman hazır"
+        }
+    },
+    "room": {
+        "title": "Özel Odamız",
+        "subtitle": "Konfor Zarafetle Buluşuyor",
+        "description": "Modern olanaklara ve muhteşem manzaraya sahip, güzelce tasarlanmış odamızda eşsiz konforu deneyimleyin. Her oda, size unutulmaz bir konaklama sunmak için özenle hazırlanmıştır.",
+        "features": {
+            "size": "45 m² Oda Alanı",
+            "bed": "King Size Yatak",
+            "view": "Dağ Manzarası",
+            "bathroom": "Lüks Banyo",
+            "minibar": "Mini Bar",
+            "ac": "Klima"
+        },
+        "price": "Gecelik $199'dan başlayan",
+        "bookRoom": "Bu Odayı Rezerve Et"
+    },
+    "about": {
+        "title": "Otelimiz Hakkında",
+        "subtitle": "Lüksün Mirası",
+        "description": "Nefes kesici doğal güzelliklerin kalbinde yer alan butik otelimiz, sıradanlıktan benzersiz bir kaçış sunuyor. Onlarca yıllık misafirperverlik mükemmeliyeti ile her misafirimiz için unutulmaz deneyimler yaratmaktan gurur duyuyoruz.",
+        "experience": "Yıllık Deneyim",
+        "guests": "Mutlu Misafir",
+        "awards": "Kazanılan Ödül",
+        "staff": "Profesyonel Personel"
+    },
+    "gallery": {
+        "title": "Fotoğraf Galerisi",
+        "subtitle": "Otelimizi Keşfedin"
+    },
+    "testimonials": {
+        "title": "Misafir Yorumları",
+        "subtitle": "Misafirlerimiz Ne Diyor"
+    },
+    "contact": {
+        "title": "İletişim",
+        "subtitle": "Bize Ulaşın",
+        "name": "Adınız",
+        "email": "E-posta Adresiniz",
+        "phone": "Telefon Numaranız",
+        "message": "Mesajınız",
+        "send": "Mesaj Gönder",
+        "address": "Adres",
+        "followUs": "Bizi Takip Edin"
+    },
+    "footer": {
+        "description": "Butik otelimizde lüks ve konforu deneyimleyin. Olağanüstü hizmet ve unutulmaz deneyimler sunuyoruz.",
+        "quickLinks": "Hızlı Linkler",
+        "contactInfo": "İletişim Bilgileri",
+        "newsletter": "Bülten",
+        "newsletterText": "Özel teklifler için bültenimize abone olun",
+        "emailPlaceholder": "E-posta adresinizi girin",
+        "subscribe": "Abone Ol",
+        "copyright": "© 2024 Grand Palace Hotel. Tüm hakları saklıdır."
+    }
+}

@@ -1,0 +1,101 @@
+/* Testimonials Section Styles */
+.testimonials-section {
+    padding: var(--spacing-4xl) 0;
+    background-color: var(--color-primary);
+    color: var(--color-white);
+}
+
+.testimonials-section .section-subtitle {
+    color: var(--color-accent);
+}
+
+.testimonials-section .section-title {
+    color: var(--color-white);
+}
+
+.testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-xl);
+}
+
+.testimonial-card {
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: var(--spacing-xl);
+    border-radius: var(--radius-lg);
+    transition: transform var(--transition-base);
+}
+
+.testimonial-card:hover {
+    transform: translateY(-5px);
+}
+
+.testimonial-quote {
+    font-size: var(--fs-2xl);
+    color: var(--color-accent);
+    margin-bottom: var(--spacing-md);
+}
+
+.testimonial-text {
+    font-size: var(--fs-base);
+    font-style: italic;
+    line-height: 1.8;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: var(--spacing-lg);
+}
+
+.testimonial-author {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.testimonial-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: var(--radius-full);
+    object-fit: cover;
+    border: 2px solid var(--color-accent);
+}
+
+.testimonial-info h4 {
+    font-size: var(--fs-base);
+    font-weight: var(--fw-semibold);
+    color: var(--color-white);
+    margin-bottom: var(--spacing-xs);
+}
+
+.testimonial-info p {
+    font-size: var(--fs-sm);
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 0;
+}
+
+.testimonial-rating {
+    display: flex;
+    gap: 2px;
+    margin-top: var(--spacing-sm);
+}
+
+.testimonial-rating svg {
+    width: 16px;
+    height: 16px;
+    color: var(--color-accent);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .testimonials-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .testimonials-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .testimonial-card {
+        padding: var(--spacing-lg);
+    }
+}

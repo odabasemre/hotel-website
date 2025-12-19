@@ -1,0 +1,112 @@
+{
+    "nav": {
+        "home": "Home",
+        "rooms": "Rooms",
+        "about": "About",
+        "gallery": "Gallery",
+        "contact": "Contact Us",
+        "bookNow": "Book Now"
+    },
+    "topBar": {
+        "phone": "Call Us",
+        "email": "Email"
+    },
+    "hero": {
+        "title": "Rest Journey in Single Step",
+        "subtitle": "Experience luxury and comfort in the heart of nature",
+        "cta": "Discover More"
+    },
+    "booking": {
+        "checkIn": "Check In Date",
+        "checkOut": "Check Out Date",
+        "checkInPlaceholder": "Check in",
+        "checkOutPlaceholder": "Check out",
+        "adults": "Adults",
+        "children": "Children",
+        "search": "Search",
+        "selectAdults": "Select Adults",
+        "selectChildren": "Select Children"
+    },
+    "services": {
+        "title": "Luxury & Comfort",
+        "subtitle": "Our Services and Wonders",
+        "description": "The concept and service of the best luxury hotels in our sophisticated rooms, with the possibility of enjoying a furnished terrace with stunning views.",
+        "spa": {
+            "title": "Spa & Wellness",
+            "description": "Relax and rejuvenate with our premium spa treatments"
+        },
+        "restaurant": {
+            "title": "Fine Dining",
+            "description": "Experience exquisite culinary delights from world-class chefs"
+        },
+        "pool": {
+            "title": "Swimming Pool",
+            "description": "Enjoy our stunning infinity pool with panoramic views"
+        },
+        "wifi": {
+            "title": "Free WiFi",
+            "description": "Stay connected with high-speed internet throughout the hotel"
+        },
+        "parking": {
+            "title": "Free Parking",
+            "description": "Complimentary secure parking for all our guests"
+        },
+        "concierge": {
+            "title": "24/7 Concierge",
+            "description": "Our dedicated team is always ready to assist you"
+        }
+    },
+    "room": {
+        "title": "Our Exclusive Room",
+        "subtitle": "Comfort Meets Elegance",
+        "description": "Experience unparalleled comfort in our beautifully designed room, featuring modern amenities and stunning views. Each room is thoughtfully crafted to provide you with a memorable stay.",
+        "features": {
+            "size": "45 m² Room Size",
+            "bed": "King Size Bed",
+            "view": "Mountain View",
+            "bathroom": "Luxury Bathroom",
+            "minibar": "Mini Bar",
+            "ac": "Air Conditioning"
+        },
+        "price": "From $199 / night",
+        "bookRoom": "Book This Room"
+    },
+    "about": {
+        "title": "About Our Hotel",
+        "subtitle": "A Legacy of Luxury",
+        "description": "Nestled in the heart of breathtaking natural beauty, our boutique hotel offers an unparalleled escape from the ordinary. With decades of hospitality excellence, we pride ourselves on creating memorable experiences for every guest.",
+        "experience": "Years of Experience",
+        "guests": "Happy Guests",
+        "awards": "Awards Won",
+        "staff": "Professional Staff"
+    },
+    "gallery": {
+        "title": "Photo Gallery",
+        "subtitle": "Explore Our Hotel"
+    },
+    "testimonials": {
+        "title": "Guest Reviews",
+        "subtitle": "What Our Guests Say"
+    },
+    "contact": {
+        "title": "Contact Us",
+        "subtitle": "Get in Touch",
+        "name": "Your Name",
+        "email": "Your Email",
+        "phone": "Your Phone",
+        "message": "Your Message",
+        "send": "Send Message",
+        "address": "Address",
+        "followUs": "Follow Us"
+    },
+    "footer": {
+        "description": "Experience luxury and comfort at our boutique hotel. We offer exceptional service and unforgettable experiences.",
+        "quickLinks": "Quick Links",
+        "contactInfo": "Contact Info",
+        "newsletter": "Newsletter",
+        "newsletterText": "Subscribe to our newsletter for special offers",
+        "emailPlaceholder": "Enter your email",
+        "subscribe": "Subscribe",
+        "copyright": "© 2024 Grand Palace Hotel. All rights reserved."
+    }
+}

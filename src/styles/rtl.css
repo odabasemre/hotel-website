@@ -1,0 +1,96 @@
+/* RTL (Right-to-Left) Styles for Arabic */
+
+[dir="rtl"] {
+    text-align: right;
+}
+
+/* Flip horizontal paddings and margins */
+[dir="rtl"] .header-nav {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .top-bar-left,
+[dir="rtl"] .top-bar-right {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .nav-links {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .booking-form {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .service-card,
+[dir="rtl"] .feature-item {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .footer-grid {
+    direction: rtl;
+}
+
+[dir="rtl"] .contact-info-item {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .social-links {
+    flex-direction: row-reverse;
+}
+
+/* Flip icons */
+[dir="rtl"] .icon-arrow-right {
+    transform: scaleX(-1);
+}
+
+/* Adjust spacing for RTL */
+[dir="rtl"] .icon+span,
+[dir="rtl"] span+.icon {
+    margin-left: 0;
+    margin-right: var(--spacing-sm);
+}
+
+/* Mobile menu RTL */
+[dir="rtl"] .mobile-menu {
+    right: auto;
+    left: 0;
+    transform: translateX(-100%);
+}
+
+[dir="rtl"] .mobile-menu.open {
+    transform: translateX(0);
+}
+
+/* Form inputs RTL */
+[dir="rtl"] input,
+[dir="rtl"] textarea,
+[dir="rtl"] select {
+    text-align: right;
+}
+
+[dir="rtl"] .input-icon-left {
+    left: auto;
+    right: var(--spacing-md);
+}
+
+[dir="rtl"] .input-with-icon-left {
+    padding-left: var(--spacing-md);
+    padding-right: calc(var(--spacing-md) + 24px);
+}
+
+/* Gallery grid RTL - maintain visual consistency */
+[dir="rtl"] .gallery-grid {
+    direction: ltr;
+}
+
+/* Stats section */
+[dir="rtl"] .stats-grid {
+    direction: rtl;
+}
+
+/* Language switcher */
+[dir="rtl"] .language-dropdown {
+    left: 0;
+    right: auto;
+}
