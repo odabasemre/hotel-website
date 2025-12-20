@@ -94,7 +94,7 @@ function Header() {
                 <div className="container header-container">
                     {/* Logo */}
                     <Link to="/" className="logo">
-                        <span className="logo-text">Grand Palace Hotel</span>
+                        AYDER KUZEY HOUSES
                     </Link>
 
                     {/* Navigation Links */}

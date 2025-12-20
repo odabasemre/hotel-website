@@ -1,5 +1,7 @@
 import { useTranslation } from 'react-i18next'
 
+import useGoogleReviews from '../../hooks/useGoogleReviews'
+
 // Star icon for ratings
 const StarIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
@@ -16,33 +18,28 @@ const QuoteIcon = () => (
 
 function Testimonials() {
     const { t } = useTranslation()
+    const { reviews, loading } = useGoogleReviews()
 
-    const testimonials = [
-        {
-            id: 1,
-            text: "An absolutely wonderful experience! The staff was incredibly attentive, and the room exceeded all our expectations. We will definitely be returning.",
-            author: "Sarah Johnson",
-            location: "New York, USA",
-            rating: 5,
-            avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80"
-        },
-        {
-            id: 2,
-            text: "The perfect getaway destination. Breathtaking views, luxurious amenities, and the most comfortable bed I've ever slept in. Highly recommended!",
-            author: "Michael Chen",
-            location: "London, UK",
-            rating: 5,
-            avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80"
-        },
-        {
-            id: 3,
-            text: "From the moment we arrived, we felt like royalty. The attention to detail is impeccable, and the spa treatments were divine. A truly memorable stay.",
-            author: "Emma Wilson",
-            location: "Paris, France",
-            rating: 5,
-            avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80"
-        }
-    ]
+    // If loading, we could show a spinner, but since we have fallback data in the hook/config
+    // we can just wait or show a skeleton. For now, let's just render what we have.
+    // If reviews is empty (very first load before API returns), we might want to wait.
+    if (loading && reviews.length === 0) {
+        return (
+            <section className="testimonials-section">
+                <div className="container">
+                    <div className="section-header">
+                        <p className="section-subtitle">{t('testimonials.subtitle')}</p>
+                        <h2 className="section-title">{t('testimonials.title')}</h2>
+                    </div>
+                    <div className="testimonials-wrapper">
+                        <div style={{ textAlign: 'center', padding: '20px', color: 'white' }}>
+                            Loading reviews...
+                        </div>
+                    </div>
+                </div>
+            </section>
+        )
+    }
 
     return (
         <section className="testimonials-section">
@@ -52,31 +49,45 @@ function Testimonials() {
                     <h2 className="section-title">{t('testimonials.title')}</h2>
                 </div>
 
-                <div className="testimonials-grid">
-                    {testimonials.map((testimonial) => (
-                        <div className="testimonial-card" key={testimonial.id}>
-                            <div className="testimonial-quote">
-                                <QuoteIcon />
-                            </div>
-                            <p className="testimonial-text">{testimonial.text}</p>
-                            <div className="testimonial-author">
-                                <img
-                                    src={testimonial.avatar}
-                                    alt={testimonial.author}
-                                    className="testimonial-avatar"
-                                />
-                                <div className="testimonial-info">
-                                    <h4>{testimonial.author}</h4>
-                                    <p>{testimonial.location}</p>
+                <div className="testimonials-wrapper">
+                    <div className="testimonials-scroll">
+                        {/* First set of reviews */}
+                        {reviews.map((review) => (
+                            <div className="testimonial-card" key={`first-${review.id}`}>
+                                <div className="testimonial-quote">
+                                    <QuoteIcon />
+                                </div>
+                                <p className="testimonial-text">{review.text}</p>
+                                <div className="testimonial-author">
+                                    <h4>{review.author}</h4>
+                                    <p>{review.location}</p>
                                     <div className="testimonial-rating">
-                                        {[...Array(testimonial.rating)].map((_, i) => (
+                                        {[...Array(review.rating)].map((_, i) => (
                                             <StarIcon key={i} />
                                         ))}
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    ))}
+                        ))}
+                        {/* Duplicate set for seamless infinite scroll */}
+                        {reviews.map((review) => (
+                            <div className="testimonial-card" key={`second-${review.id}`}>
+                                <div className="testimonial-quote">
+                                    <QuoteIcon />
+                                </div>
+                                <p className="testimonial-text">{review.text}</p>
+                                <div className="testimonial-author">
+                                    <h4>{review.author}</h4>
+                                    <p>{review.location}</p>
+                                    <div className="testimonial-rating">
+                                        {[...Array(review.rating)].map((_, i) => (
+                                            <StarIcon key={i} />
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
                 </div>
             </div>
         </section>

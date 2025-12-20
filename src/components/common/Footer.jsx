@@ -74,7 +74,7 @@ function Footer() {
                     {/* Brand */}
                     <div className="footer-brand">
                         <div className="footer-logo">
-                            <span className="footer-logo-text">Grand Palace Hotel</span>
+                            <span className="footer-logo-text">Ayder Kuzey Houses</span>
                         </div>
                         <p className="footer-description">
                             {t('footer.description')}
@@ -126,7 +126,7 @@ function Footer() {
                                 <PhoneIcon />
                             </div>
                             <p className="footer-contact-text">
-                                +90 (212) 555 12 34
+                                +90 555 123 45 67
                             </p>
                         </div>
                         <div className="footer-contact-item">
@@ -134,7 +134,7 @@ function Footer() {
                                 <MailIcon />
                             </div>
                             <p className="footer-contact-text">
-                                info@grandpalace.com
+                                info@ayderkuzeyhouses.com
                             </p>
                         </div>
                     </div>
