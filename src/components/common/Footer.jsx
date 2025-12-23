@@ -57,7 +57,7 @@ function Footer() {
                     {/* Brand */}
                     <div className="footer-brand">
                         <div className="footer-logo">
-                            <span className="footer-logo-text">Ayder Kuzey Houses</span>
+                            <span className="footer-logo-text">ayder kuzey</span>
                         </div>
                         <p className="footer-description">
                             {t('footer.description')}

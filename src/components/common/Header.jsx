@@ -105,7 +105,7 @@ function Header() {
                 <div className="container header-container">
                     {/* Logo */}
                     <Link to="/" className="logo">
-                        AYDER KUZEY HOUSES
+                        ayder kuzey
                     </Link>
 
                     {/* Navigation Links */}
