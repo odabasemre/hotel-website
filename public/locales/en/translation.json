@@ -28,7 +28,20 @@
         "children": "Children",
         "search": "Search",
         "selectAdults": "Select Adults",
-        "selectChildren": "Select Children"
+        "selectChildren": "Select Children",
+        "title": "Create Reservation",
+        "subtitle": "Select your dates for Riverside Bungalow",
+        "name": "Full Name",
+        "namePlaceholder": "Your Full Name",
+        "phone": "Phone",
+        "phonePlaceholder": "+90 ...",
+        "email": "Email",
+        "emailPlaceholder": "example@email.com",
+        "guests": "Number of Guests",
+        "note": "Your Note (Optional)",
+        "submit": "Send Reservation Request (WhatsApp)",
+        "disclaimer": "* This process only creates a reservation request. We will contact you for final confirmation.",
+        "selectDatesError": "Please select check-in and check-out dates."
     },
     "services": {
         "title": "Luxury & Comfort",
@@ -63,25 +76,83 @@
         "title": "Our Exclusive Room",
         "subtitle": "Comfort Meets Elegance",
         "description": "Experience unparalleled comfort in our beautifully designed room, featuring modern amenities and stunning views. Each room is thoughtfully crafted to provide you with a memorable stay.",
-        "features": {
-            "size": "45 m² Room Size",
-            "bed": "King Size Bed",
-            "view": "Mountain View",
-            "bathroom": "Luxury Bathroom",
-            "minibar": "Mini Bar",
-            "ac": "Air Conditioning"
-        },
         "price": "From $199 / night",
         "bookRoom": "Book This Room"
     },
+    "rooms": {
+        "title": "Our Rooms",
+        "subtitle": "Comfort and Peace",
+        "roomName": "Riverside Bungalow",
+        "shortDescription": "Located by the riverside in the unique nature of Ayder, our bungalow offers guests a peaceful accommodation experience. Collect unforgettable memories in this special place where modern amenities meet traditional touch.",
+        "fullDescription": "Our bungalow, located right by the river, allows you to wake up listening to the sounds of nature. Ideal for families and groups of friends with 45 m² of space and accommodation capacity for up to 7 people. All amenities including modern kitchen, private bathroom, heating system and high-speed WiFi are available. You can cross to the other side of the river via the wooden bridge and enjoy your breakfast on your private balcony.",
+        "guests": "Guests",
+        "area": "Area",
+        "bedrooms": "Bedrooms",
+        "bathrooms": "Bathrooms",
+        "viewDetails": "View Details",
+        "backToRooms": "Back to Rooms",
+        "amenities": "Amenities",
+        "bookNow": "Book Now",
+        "bookingNote": "Contact us via WhatsApp to make a reservation.",
+        "contactWhatsApp": "Contact via WhatsApp",
+        "orCall": "or call",
+        "checkAvailability": "Check Availability",
+        "infoTitle": "Exclusive Accommodation Experience",
+        "infoDescription": "A peaceful vacation awaits you in the heart of nature in our carefully designed bungalow.",
+        "features": {
+            "riverView": "River View",
+            "privateBalcony": "Private Balcony",
+            "kitchen": "Fully Equipped Kitchen",
+            "heating": "Central Heating",
+            "wifi": "High-Speed WiFi",
+            "tv": "Smart TV",
+            "hairDryer": "Hair Dryer",
+            "towels": "Towels & Linens",
+            "parking": "Free Parking"
+        }
+    },
     "about": {
-        "title": "About Our Hotel",
-        "subtitle": "A Legacy of Luxury",
-        "description": "Nestled in the heart of breathtaking natural beauty, our boutique hotel offers an unparalleled escape from the ordinary. With decades of hospitality excellence, we pride ourselves on creating memorable experiences for every guest.",
+        "title": "Get to Know Us",
+        "subtitle": "Ayder Kuzey Houses Houses",
+        "storyTitle": "Our Story",
+        "description": "Located by the riverside in the unique nature of Ayder, our boutique accommodation offers guests a peaceful escape. We create an environment where you can gather unforgettable memories by combining traditional Black Sea architecture with modern comfort.",
+        "mission": "Our mission is to make every guest feel at home away from home, to experience the peace that nature offers in its purest form, and to share the unique hospitality of the Black Sea region.",
         "experience": "Years of Experience",
-        "guests": "Happy Guests",
-        "awards": "Awards Won",
-        "staff": "Professional Staff"
+        "features": {
+            "nature": "One with Nature",
+            "natureDesc": "We offer a peaceful accommodation experience in the heart of nature with our riverside location.",
+            "hospitality": "Warm Hospitality",
+            "hospitalityDesc": "As a family business, we see every guest as part of our family.",
+            "comfort": "Modern Comfort",
+            "comfortDesc": "While preserving traditional character, we offer all the amenities of modern living.",
+            "family": "Family Friendly",
+            "familyDesc": "We provide an ideal environment for families, ensuring you can vacation safely with your children."
+        },
+        "teamTitle": "Meet Our Team",
+        "teamSubtitle": "Here for You",
+        "teamDescription": "Our experienced and friendly team is here to make your stay unforgettable. We strive to provide you with the best service by thinking of every detail.",
+        "team": {
+            "member1": {
+                "name": "Team Member 1",
+                "role": "Founder"
+            },
+            "member2": {
+                "name": "Team Member 2",
+                "role": "Manager"
+            },
+            "member3": {
+                "name": "Team Member 3",
+                "role": "Guest Relations"
+            },
+            "member4": {
+                "name": "Team Member 4",
+                "role": "Operations"
+            }
+        },
+        "addPhoto": "Add Photo",
+        "ctaTitle": "Welcome to the Address of Peace",
+        "ctaDescription": "Contact us for an unforgettable holiday experience.",
+        "ctaButton": "Contact Us"
     },
     "gallery": {
         "title": "Photo Gallery",
@@ -110,6 +181,6 @@
         "newsletterText": "Subscribe to our newsletter for special offers",
         "emailPlaceholder": "Enter your email",
         "subscribe": "Subscribe",
-        "copyright": "© 2024 ayder kuzey. All rights reserved."
+        "copyright": "© 2024 Ayder Kuzey Houses. All rights reserved."
     }
 }

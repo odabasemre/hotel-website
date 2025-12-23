@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import useGoogleReviews from '../../hooks/useGoogleReviews'
@@ -20,53 +21,40 @@ function Testimonials() {
     const { t } = useTranslation()
     const { reviews, loading } = useGoogleReviews()
 
-    // If loading, we could show a spinner, but since we have fallback data in the hook/config
-    // we can just wait or show a skeleton. For now, let's just render what we have.
-    // If reviews is empty (very first load before API returns), we might want to wait.
-    // Show loading state only if we don't have any reviews yet (initial load)
-    // For language transitions, we keep the old reviews until new ones load
-    if (loading && reviews.length === 0) {
-        return (
-            <section className="testimonials-section">
-                <div className="container">
-                    <div className="section-header">
-                        <p className="section-subtitle">{t('testimonials.subtitle')}</p>
-                        <h2 className="section-title">{t('testimonials.title')}</h2>
-                    </div>
-                </div>
-            </section>
-        )
-    }
+    if (loading && reviews.length === 0) return null
+
+    // Duplicate reviews multiple times to ensure seamless loop even on wide screens
+    // 6x duplication ensures we have plenty of content
+    const displayReviews = [...reviews, ...reviews, ...reviews, ...reviews, ...reviews, ...reviews]
 
     return (
-        <section className="testimonials-section">
-            <div className="container">
+        <section className="testimonials-section" id="testimonials">
+            <div className="container-fluid">
                 <div className="section-header">
                     <p className="section-subtitle">{t('testimonials.subtitle')}</p>
                     <h2 className="section-title">{t('testimonials.title')}</h2>
                 </div>
 
-                <div className="testimonials-wrapper">
-                    <div className="testimonials-scroll">
-                        {/* 4 sets of reviews to ensure perfect infinite scroll on any screen width */}
-                        {[...Array(4)].map((_, setIndex) => (
-                            reviews.map((review) => (
-                                <div className="testimonial-card" key={`set-${setIndex}-${review.id}`}>
-                                    <div className="testimonial-quote">
+                <div className="testimonials-slider">
+                    <div className="testimonial-track">
+                        {displayReviews.map((review, index) => (
+                            <div className="testimonial-card" key={`${review.id}-${index}`}>
+                                <div className="testimonial-header">
+                                    <div className="testimonial-quote-icon">
                                         <QuoteIcon />
                                     </div>
-                                    <p className="testimonial-text">{review.text}</p>
-                                    <div className="testimonial-author">
-                                        <h4>{review.author}</h4>
-                                        <p>{review.location}</p>
-                                        <div className="testimonial-rating">
-                                            {[...Array(review.rating)].map((_, i) => (
-                                                <StarIcon key={i} />
-                                            ))}
-                                        </div>
+                                    <div className="testimonial-rating">
+                                        {[...Array(review.rating || 5)].map((_, i) => (
+                                            <StarIcon key={i} />
+                                        ))}
                                     </div>
                                 </div>
-                            ))
+                                <p className="testimonial-text">"{review.text}"</p>
+                                <div className="testimonial-author-info">
+                                    <h4 className="author-name">{review.author}</h4>
+                                    {review.location && <span className="author-location">{review.location}</span>}
+                                </div>
+                            </div>
                         ))}
                     </div>
                 </div>

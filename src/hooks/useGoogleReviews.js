@@ -2,18 +2,55 @@ import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import reviewsConfig from '../config/reviewsConfig';
 
+// Helper function to capitalize first letter of each word
+const capitalizeWords = (str) => {
+    if (!str) return str;
+    return str.split(' ').map(word =>
+        word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+    ).join(' ');
+};
+
 const useGoogleReviews = () => {
     const { i18n } = useTranslation();
     const [reviews, setReviews] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    // Get fallback reviews for current language
+    // Get fallback reviews for current language, consolidating all available reviews
     const getFallbackForLanguage = (lang) => {
         const baseLang = lang.split('-')[0];
         const fallbackObj = reviewsConfig.fallbackReviews || {};
-        const list = fallbackObj[baseLang] || fallbackObj['tr'] || [];
-        return list;
+
+        // 1. Get all unique review IDs from all languages
+        const allIds = new Set();
+        Object.values(fallbackObj).forEach(langReviews => {
+            langReviews.forEach(review => allIds.add(review.id));
+        });
+
+        // 2. Map each ID to the best available translation
+        const consolidatedReviews = Array.from(allIds).map(id => {
+            // Try to find the review in the current language
+            let review = fallbackObj[baseLang]?.find(r => r.id === id);
+
+            // Fallback to English
+            if (!review) review = fallbackObj['en']?.find(r => r.id === id);
+
+            // Fallback to Turkish
+            if (!review) review = fallbackObj['tr']?.find(r => r.id === id);
+
+            // Fallback to any available
+            if (!review) {
+                for (const l in fallbackObj) {
+                    review = fallbackObj[l]?.find(r => r.id === id);
+                    if (review) break;
+                }
+            }
+
+            return review;
+        }).filter(Boolean); // Remove nulls/undefined
+
+        // Sort by ID to maintain consistent order
+        return consolidatedReviews.sort((a, b) => a.id - b.id);
     };
 
     useEffect(() => {
@@ -128,8 +165,8 @@ const processReviews = (googleReviews) => {
         .map(review => ({
             id: review.time, // using timestamp as ID
             text: review.text,
-            author: review.author_name,
-            location: review.relative_time_description, // showing time as location/subtitle since location isn't in review object
+            author: capitalizeWords(review.author_name),
+            location: 'Türkiye', // Using fixed location instead of relative time
             rating: review.rating,
             profile_photo_url: review.profile_photo_url // keeping just in case, though we don't display it
         }));

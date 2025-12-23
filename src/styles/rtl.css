@@ -96,12 +96,7 @@
 }
 
 /* Testimonials RTL Fix */
-[dir="rtl"] .testimonials-scroll {
-    direction: ltr;
-    /* Silently treat the track as LTR to maintain consistent animation direction */
-    animation: scroll-right 60s linear infinite;
-    /* Slightly slower for better readability */
-}
+/* .testimonials-slider handles overflow */
 
 [dir="rtl"] .testimonial-card {
     direction: rtl;

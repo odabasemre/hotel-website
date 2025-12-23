@@ -45,8 +45,8 @@ function Footer() {
         { to: '/', label: t('nav.home') },
         { to: '/#rooms', label: t('nav.rooms') },
         { to: '/#about', label: t('nav.about') },
-        { to: '/#gallery', label: t('nav.gallery') },
-        { to: '/#contact', label: t('nav.contact') },
+        { to: '/gallery', label: t('nav.gallery') },
+        { to: '/contact', label: t('nav.contact') },
     ]
 
 
@@ -57,7 +57,7 @@ function Footer() {
                     {/* Brand */}
                     <div className="footer-brand">
                         <div className="footer-logo">
-                            <span className="footer-logo-text">ayder kuzey</span>
+                            <span className="footer-logo-text">Ayder Kuzey Houses</span>
                         </div>
                         <p className="footer-description">
                             {t('footer.description')}

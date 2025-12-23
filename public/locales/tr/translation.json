@@ -15,9 +15,21 @@
         "email": "E-posta"
     },
     "hero": {
-        "title": "Tek Adımda Dinlenme Yolculuğu",
-        "subtitle": "Doğanın kalbinde lüks ve konfor deneyimi",
+        "title": "Ayder'in Yeni Nesil Huzuru!",
+        "subtitle": "Doğanın Kalbinde, Beklentilerin Ötesinde!",
         "cta": "Keşfedin"
+    },
+    "payment": {
+        "title": "Güvenli Ödeme",
+        "subtitle": "Rezervasyonunuzu tamamlamak için lütfen ödeme yapın",
+        "cardHolder": "Kart Üzerindeki İsim",
+        "cardNumber": "Kart Numarası",
+        "expiryDate": "Son Kullanma Tarihi",
+        "cvv": "CVV / CVC",
+        "payNow": "Ödemeyi Tamamla ve Rezervasyonu Bitir",
+        "secureTransaction": "Bu işlem 256-bit SSL sertifikası ile korunmaktadır.",
+        "reservationSummary": "Rezervasyon Özeti",
+        "guestDetails": "Misafir Bilgileri"
     },
     "booking": {
         "checkIn": "Giriş Tarihi",
@@ -28,7 +40,29 @@
         "children": "Çocuk",
         "search": "Ara",
         "selectAdults": "Yetişkin Seçin",
-        "selectChildren": "Çocuk Seçin"
+        "selectChildren": "Çocuk Seçin",
+        "title": "Rezervasyon Oluştur",
+        "subtitle": "Nehir Manzaralı Bungalov için tarihlerinizi seçin",
+        "name": "Ad Soyad",
+        "namePlaceholder": "Adınız Soyadınız",
+        "phone": "Telefon",
+        "phonePlaceholder": "05XX XXX XX XX",
+        "email": "E-posta",
+        "emailPlaceholder": "ornek@email.com",
+        "guests": "Kişi Sayısı",
+        "note": "Notunuz (Opsiyonel)",
+        "submit": "Rezervasyon İsteği Gönder (WhatsApp)",
+        "submitPayment": "Ödeme Adımına Geç",
+        "disclaimer": "* Ödemeniz 256-bit SSL sertifikası ile korunmaktadır.",
+        "selectDatesError": "Lütfen giriş ve çıkış tarihlerini seçin.",
+        "dateBusy": "Seçilen tarih maalesef dolu.",
+        "rangeBusy": "Seçilen tarih aralığında dolu günler var.",
+        "pricePerNight": "Gecelik Fiyat"
+    },
+    "calendar": {
+        "busy": "Dolu",
+        "selected": "Seçili",
+        "available": "Müsait"
     },
     "services": {
         "title": "Lüks & Konfor",
@@ -63,25 +97,85 @@
         "title": "Özel Odamız",
         "subtitle": "Konfor Zarafetle Buluşuyor",
         "description": "Modern olanaklara ve muhteşem manzaraya sahip, güzelce tasarlanmış odamızda eşsiz konforu deneyimleyin. Her oda, size unutulmaz bir konaklama sunmak için özenle hazırlanmıştır.",
-        "features": {
-            "size": "45 m² Oda Alanı",
-            "bed": "King Size Yatak",
-            "view": "Dağ Manzarası",
-            "bathroom": "Lüks Banyo",
-            "minibar": "Mini Bar",
-            "ac": "Klima"
-        },
         "price": "Gecelik $199'dan başlayan",
         "bookRoom": "Bu Odayı Rezerve Et"
     },
+    "rooms": {
+        "title": "Odalarımız",
+        "subtitle": "Konfor ve Huzur",
+        "roomName": "Nehir Manzaralı Bungalov",
+        "shortDescription": "Ayder'in eşsiz doğasında, nehir kenarında konumlanan bungalovumuz, misafirlerimize huzur dolu bir konaklama deneyimi sunuyor. Modern olanaklar ve geleneksel dokunun buluştuğu bu özel mekânda unutulmaz anılar biriktirin.",
+        "fullDescription": "Nehrin hemen kenarında konumlanan bungalovumuz, doğanın seslerini dinleyerek uyanmanızı sağlıyor. 45 m² kullanım alanı ve 7 kişiye kadar konaklama kapasitesi ile aileler ve arkadaş grupları için ideal. Modern mutfak, özel banyo, ısıtma sistemi ve hızlı WiFi dahil tüm olanaklar mevcut. Ahşap köprü ile nehrin diğer yakasına geçebilir, özel balkonunuzda kahvaltınızın keyfini çıkarabilirsiniz.",
+        "guests": "Misafir",
+        "area": "Alan",
+        "bedrooms": "Yatak Odası",
+        "bathrooms": "Banyo",
+        "viewDetails": "Detayları Gör",
+        "backToRooms": "Odalara Dön",
+        "amenities": "Olanaklar",
+        "bookNow": "Rezervasyon",
+        "bookingNote": "Rezervasyon işlemlerinizi takvim üzerinden tarih seçerek güvenle tamamlayabilirsiniz.",
+        "bookingInfoText": "Giriş ve çıkış tarihlerinizi belirleyerek anında müsaitlik kontrolü yapabilir ve rezervasyonunuzu tamamlayabilirsiniz.",
+        "priceFrom": "Gecelik",
+        "contactWhatsApp": "WhatsApp ile İletişim",
+        "orCall": "veya arayın",
+        "checkAvailability": "Müsaitlik Durumunu Kontrol Et",
+        "infoTitle": "Özel Konaklama Deneyimi",
+        "infoDescription": "Her detayı özenle tasarlanmış bungalovumuzda, doğanın kalbinde huzurlu bir tatil sizi bekliyor.",
+        "features": {
+            "riverView": "Nehir Manzarası",
+            "privateBalcony": "Özel Balkon",
+            "kitchen": "Tam Donanımlı Mutfak",
+            "heating": "Merkezi Isıtma",
+            "wifi": "Yüksek Hızlı WiFi",
+            "tv": "Akıllı TV",
+            "hairDryer": "Saç Kurutma Makinesi",
+            "towels": "Havlu ve Çarşaf",
+            "parking": "Ücretsiz Otopark"
+        }
+    },
     "about": {
-        "title": "Otelimiz Hakkında",
-        "subtitle": "Lüksün Mirası",
-        "description": "Nefes kesici doğal güzelliklerin kalbinde yer alan butik otelimiz, sıradanlıktan benzersiz bir kaçış sunuyor. Onlarca yıllık misafirperverlik mükemmeliyeti ile her misafirimiz için unutulmaz deneyimler yaratmaktan gurur duyuyoruz.",
+        "title": "Bizi Tanıyın",
+        "subtitle": "Ayder Kuzey Houses Houses",
+        "storyTitle": "Hikayemiz",
+        "description": "Ayder'in eşsiz doğasında, nehir kenarında konumlanan butik konaklama tesisimiz, misafirlerimize huzur dolu bir kaçış sunuyor. Geleneksel Karadeniz mimarisini modern konforla buluşturarak, unutulmaz anılar biriktireceğiniz bir ortam yaratıyoruz.",
+        "mission": "Misyonumuz, her misafirimize evlerinden uzakta bir yuva hissi yaşatmak, doğanın sunduğu huzuru en saf haliyle deneyimletmek ve Karadeniz'in eşsiz misafirperverliğini yaşatmaktır.",
         "experience": "Yıllık Deneyim",
-        "guests": "Mutlu Misafir",
-        "awards": "Kazanılan Ödül",
-        "staff": "Profesyonel Personel"
+        "features": {
+            "nature": "Doğayla İç İçe",
+            "natureDesc": "Nehir manzaralı konumumuz ile doğanın kalbinde huzurlu bir konaklama deneyimi sunuyoruz.",
+            "hospitality": "Samimi Misafirperverlik",
+            "hospitalityDesc": "Aile işletmesi olarak, her misafirimizi ailemizin bir parçası olarak görüyoruz.",
+            "comfort": "Modern Konfor",
+            "comfortDesc": "Geleneksel dokuyu korurken, modern yaşamın tüm olanaklarını sunuyoruz.",
+            "family": "Aile Dostu",
+            "familyDesc": "Aileler için ideal bir ortam sunarak, çocuklarınızla birlikte güvenle tatil yapmanızı sağlıyoruz."
+        },
+        "teamTitle": "Ekibimizle Tanışın",
+        "teamSubtitle": "Sizin İçin Buradayız",
+        "teamDescription": "Deneyimli ve samimi ekibimiz, konaklamanızı unutulmaz kılmak için burada. Her detayı düşünerek size en iyi hizmeti sunmaya çalışıyoruz.",
+        "team": {
+            "member1": {
+                "name": "Ekip Üyesi 1",
+                "role": "Kurucu"
+            },
+            "member2": {
+                "name": "Ekip Üyesi 2",
+                "role": "Yönetici"
+            },
+            "member3": {
+                "name": "Ekip Üyesi 3",
+                "role": "Misafir İlişkileri"
+            },
+            "member4": {
+                "name": "Ekip Üyesi 4",
+                "role": "Operasyon"
+            }
+        },
+        "addPhoto": "Fotoğraf Ekle",
+        "ctaTitle": "Huzurun Adresine Hoş Geldiniz",
+        "ctaDescription": "Unutulmaz bir tatil deneyimi için bize ulaşın.",
+        "ctaButton": "İletişime Geçin"
     },
     "gallery": {
         "title": "Fotoğraf Galerisi",
@@ -110,6 +204,6 @@
         "newsletterText": "Özel teklifler için bültenimize abone olun",
         "emailPlaceholder": "E-posta adresinizi girin",
         "subscribe": "Abone Ol",
-        "copyright": "© 2024 ayder kuzey. Tüm hakları saklıdır."
+        "copyright": "© 2024 Ayder Kuzey Houses. Tüm hakları saklıdır."
     }
 }

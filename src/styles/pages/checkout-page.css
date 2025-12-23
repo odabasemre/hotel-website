@@ -1,0 +1,208 @@
+/* Checkout Page Styles */
+.checkout-page {
+    min-height: 100vh;
+    background-color: var(--color-bg);
+    padding-top: 120px;
+    padding-bottom: var(--spacing-4xl);
+}
+
+.checkout-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: var(--spacing-3xl);
+    align-items: start;
+}
+
+/* Payment Form Section */
+.payment-section {
+    background: var(--color-white);
+    padding: var(--spacing-2xl);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--color-border);
+}
+
+.checkout-header {
+    margin-bottom: var(--spacing-xl);
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: var(--spacing-lg);
+}
+
+.checkout-title {
+    font-family: var(--font-primary);
+    font-size: var(--fs-2xl);
+    color: var(--color-primary);
+    margin-bottom: var(--spacing-xs);
+}
+
+.checkout-subtitle {
+    color: var(--color-text-light);
+    font-size: var(--fs-sm);
+}
+
+.payment-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xl);
+}
+
+.card-visual {
+    background: linear-gradient(135deg, #1a1a1a 0%, #333 100%);
+    border-radius: 16px;
+    padding: 25px;
+    color: white;
+    margin-bottom: 20px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    aspect-ratio: 1.586;
+    /* Credit card ratio */
+    max-width: 350px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.card-chip {
+    width: 50px;
+    height: 35px;
+    background: linear-gradient(135deg, #d4af37 0%, #f2d06b 100%);
+    border-radius: 6px;
+    margin-bottom: 20px;
+}
+
+.card-number-display {
+    font-size: 1.4rem;
+    letter-spacing: 2px;
+    font-family: monospace;
+    margin-bottom: 20px;
+}
+
+.card-details-display {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+}
+
+.date-display {
+    text-align: right;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-md);
+}
+
+.cvv-group {
+    position: relative;
+}
+
+.billing-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background-color: #f0fdf4;
+    color: #166534;
+    border-radius: var(--radius-sm);
+    font-size: var(--fs-xs);
+    font-weight: 500;
+    margin-top: 10px;
+}
+
+.pay-btn {
+    width: 100%;
+    padding: var(--spacing-md);
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+    color: white;
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: var(--fs-md);
+    font-weight: var(--fw-semibold);
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: var(--spacing-lg);
+}
+
+.pay-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(26, 54, 45, 0.3);
+}
+
+/* Summary Section */
+.summary-section {
+    background: #f8f9fa;
+    padding: var(--spacing-xl);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-border);
+    position: sticky;
+    top: 120px;
+}
+
+.summary-title {
+    font-family: var(--font-primary);
+    font-size: var(--fs-xl);
+    color: var(--color-primary);
+    margin-bottom: var(--spacing-lg);
+    padding-bottom: var(--spacing-md);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.summary-details {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: var(--fs-sm);
+    color: var(--color-text);
+}
+
+.summary-row.total {
+    margin-top: var(--spacing-md);
+    padding-top: var(--spacing-md);
+    border-top: 1px solid var(--color-border);
+    font-weight: var(--fw-bold);
+    font-size: var(--fs-lg);
+    color: var(--color-primary);
+}
+
+.summary-guests {
+    background: white;
+    padding: var(--spacing-md);
+    border-radius: var(--radius-md);
+    margin-top: var(--spacing-lg);
+    border: 1px solid var(--color-border);
+}
+
+.summary-guests h4 {
+    margin: 0 0 var(--spacing-sm);
+    font-size: var(--fs-sm);
+    color: var(--color-text-light);
+}
+
+.summary-guests p {
+    margin: 0;
+    font-weight: 500;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .checkout-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .summary-section {
+        order: -1;
+        /* Show summary first on mobile */
+        position: static;
+    }
+}

@@ -92,20 +92,23 @@ function Header() {
 
     const navLinks = [
         { to: '/', label: t('nav.home') },
-        { to: '/#rooms', label: t('nav.rooms') },
-        { to: '/#about', label: t('nav.about') },
-        { to: '/#gallery', label: t('nav.gallery') },
-        { to: '/#contact', label: t('nav.contact') },
+        { to: '/rooms', label: t('nav.rooms') },
+        { to: '/about', label: t('nav.about') },
+        { to: '/gallery', label: t('nav.gallery') },
+        { to: '/contact', label: t('nav.contact') },
     ]
+
+    // Header should be transparent ONLY on homepage when not scrolled
+    const isTransparent = location.pathname === '/' && !scrolled
 
     return (
         <header>
             {/* Main Header */}
-            <nav className={`main-header ${scrolled ? 'scrolled' : ''}`}>
+            <nav className={`main-header ${isTransparent ? '' : 'scrolled'}`}>
                 <div className="container header-container">
                     {/* Logo */}
                     <Link to="/" className="logo">
-                        ayder kuzey
+                        Ayder Kuzey Houses
                     </Link>
 
                     {/* Navigation Links */}
@@ -153,10 +156,7 @@ function Header() {
                             </div>
                         </div>
 
-                        {/* Book Now Button */}
-                        <a href="#booking" className="btn-book">
-                            {t('nav.bookNow')}
-                        </a>
+                        {/* Book Now Button Removed */}
 
                         {/* Mobile Menu Button */}
                         <button

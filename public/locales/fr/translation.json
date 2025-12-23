@@ -28,7 +28,20 @@
         "children": "Enfants",
         "search": "Rechercher",
         "selectAdults": "Sélectionner Adultes",
-        "selectChildren": "Sélectionner Enfants"
+        "selectChildren": "Sélectionner Enfants",
+        "title": "Créer une Réservation",
+        "subtitle": "Sélectionnez vos dates pour Bungalow au Bord de la Rivière",
+        "name": "Nom Complet",
+        "namePlaceholder": "Votre Nom Complet",
+        "phone": "Téléphone",
+        "phonePlaceholder": "+90 ...",
+        "email": "E-mail",
+        "emailPlaceholder": "exemple@email.com",
+        "guests": "Nombre d'Invités",
+        "note": "Votre Note (Optionnel)",
+        "submit": "Envoyer Demande (WhatsApp)",
+        "disclaimer": "* Ce processus crée uniquement une demande de réservation. Nous vous contacterons pour la confirmation finale.",
+        "selectDatesError": "Veuillez sélectionner les dates d'arrivée et de départ."
     },
     "services": {
         "title": "Luxe & Confort",
@@ -62,26 +75,84 @@
     "room": {
         "title": "Notre Chambre Exclusive",
         "subtitle": "Le Confort Rencontre l'Élégance",
-        "description": "Découvrez un confort inégalé dans notre chambre magnifiquement conçue, dotée d'équipements modernes et de vues imprenables. Chaque chambre est soigneusement conçue pour vous offrir un séjour mémorable.",
-        "features": {
-            "size": "45 m² Surface",
-            "bed": "Lit King Size",
-            "view": "Vue Montagne",
-            "bathroom": "Salle de Bain Luxe",
-            "minibar": "Mini Bar",
-            "ac": "Climatisation"
-        },
+        "description": "Découvrez un confort inégalé dans notre chambre magnifiquement conçue, dotée d'équipements modernes et de vues imprenables.",
         "price": "À partir de 199$ / nuit",
         "bookRoom": "Réserver Cette Chambre"
     },
+    "rooms": {
+        "title": "Nos Chambres",
+        "subtitle": "Confort et Sérénité",
+        "roomName": "Bungalow au Bord de la Rivière",
+        "shortDescription": "Situé au bord de la rivière dans la nature unique d'Ayder, notre bungalow offre aux clients une expérience d'hébergement paisible. Créez des souvenirs inoubliables dans cet endroit spécial où les équipements modernes rencontrent la touche traditionnelle.",
+        "fullDescription": "Notre bungalow, situé juste au bord de la rivière, vous permet de vous réveiller en écoutant les sons de la nature. Idéal pour les familles et les groupes d'amis avec 45 m² d'espace et une capacité d'hébergement jusqu'à 7 personnes. Tous les équipements incluant cuisine moderne, salle de bain privée, chauffage et WiFi haut débit sont disponibles.",
+        "guests": "Personnes",
+        "area": "Surface",
+        "bedrooms": "Chambres",
+        "bathrooms": "Salles de bain",
+        "viewDetails": "Voir les Détails",
+        "backToRooms": "Retour aux Chambres",
+        "amenities": "Équipements",
+        "bookNow": "Réserver",
+        "bookingNote": "Contactez-nous via WhatsApp pour faire une réservation.",
+        "contactWhatsApp": "Contact WhatsApp",
+        "orCall": "ou appelez",
+        "checkAvailability": "Vérifier la Disponibilité",
+        "infoTitle": "Expérience d'Hébergement Exclusive",
+        "infoDescription": "Des vacances paisibles vous attendent au cœur de la nature dans notre bungalow soigneusement conçu.",
+        "features": {
+            "riverView": "Vue sur la Rivière",
+            "privateBalcony": "Balcon Privé",
+            "kitchen": "Cuisine Équipée",
+            "heating": "Chauffage Central",
+            "wifi": "WiFi Haut Débit",
+            "tv": "Smart TV",
+            "hairDryer": "Sèche-cheveux",
+            "towels": "Serviettes & Draps",
+            "parking": "Parking Gratuit"
+        }
+    },
     "about": {
-        "title": "À Propos de Notre Hôtel",
-        "subtitle": "Un Héritage de Luxe",
-        "description": "Niché au cœur d'une beauté naturelle à couper le souffle, notre hôtel boutique offre une évasion incomparable de l'ordinaire. Avec des décennies d'excellence en hospitalité, nous sommes fiers de créer des expériences mémorables pour chaque client.",
+        "title": "Découvrez-nous",
+        "subtitle": "Ayder Kuzey Houses Houses",
+        "storyTitle": "Notre Histoire",
+        "description": "Situé au bord de la rivière dans la nature unique d'Ayder, notre hébergement boutique offre aux clients une évasion paisible. Nous créons un environnement où vous pouvez rassembler des souvenirs inoubliables en combinant l'architecture traditionnelle de la mer Noire avec le confort moderne.",
+        "mission": "Notre mission est de faire en sorte que chaque client se sente chez lui loin de chez lui, de vivre la paix que la nature offre dans sa forme la plus pure et de partager l'hospitalité unique de la région de la mer Noire.",
         "experience": "Années d'Expérience",
-        "guests": "Clients Satisfaits",
-        "awards": "Prix Remportés",
-        "staff": "Personnel Professionnel"
+        "features": {
+            "nature": "En Harmonie avec la Nature",
+            "natureDesc": "Nous offrons une expérience d'hébergement paisible au cœur de la nature avec notre emplacement au bord de la rivière.",
+            "hospitality": "Hospitalité Chaleureuse",
+            "hospitalityDesc": "En tant qu'entreprise familiale, nous considérons chaque client comme faisant partie de notre famille.",
+            "comfort": "Confort Moderne",
+            "comfortDesc": "Tout en préservant le caractère traditionnel, nous offrons toutes les commodités de la vie moderne.",
+            "family": "Adapté aux Familles",
+            "familyDesc": "Nous offrons un environnement idéal pour les familles, vous permettant de passer des vacances en toute sécurité avec vos enfants."
+        },
+        "teamTitle": "Rencontrez Notre Équipe",
+        "teamSubtitle": "À Votre Service",
+        "teamDescription": "Notre équipe expérimentée et sympathique est là pour rendre votre séjour inoubliable. Nous nous efforçons de vous offrir le meilleur service en pensant à chaque détail.",
+        "team": {
+            "member1": {
+                "name": "Membre 1",
+                "role": "Fondateur"
+            },
+            "member2": {
+                "name": "Membre 2",
+                "role": "Directeur"
+            },
+            "member3": {
+                "name": "Membre 3",
+                "role": "Relations Clients"
+            },
+            "member4": {
+                "name": "Membre 4",
+                "role": "Opérations"
+            }
+        },
+        "addPhoto": "Ajouter Photo",
+        "ctaTitle": "Bienvenue à l'Adresse de la Paix",
+        "ctaDescription": "Contactez-nous pour une expérience de vacances inoubliable.",
+        "ctaButton": "Contactez-nous"
     },
     "gallery": {
         "title": "Galerie Photo",
@@ -110,6 +181,6 @@
         "newsletterText": "Abonnez-vous à notre newsletter pour des offres spéciales",
         "emailPlaceholder": "Entrez votre e-mail",
         "subscribe": "S'abonner",
-        "copyright": "© 2024 ayder kuzey. Tous droits réservés."
+        "copyright": "© 2024 Ayder Kuzey Houses. Tous droits réservés."
     }
 }

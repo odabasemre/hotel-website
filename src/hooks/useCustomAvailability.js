@@ -1,0 +1,66 @@
+import { useState, useEffect } from 'react';
+import { adminSettings } from '../services/adminSettings';
+
+export const useCustomAvailability = () => {
+    const [busyDates, setBusyDates] = useState([]);
+    const [settings, setSettings] = useState(adminSettings.getSettings());
+
+    const refreshAvailability = () => {
+        const bookings = adminSettings.getBookings();
+        const currentSettings = adminSettings.getSettings();
+        setSettings(currentSettings);
+
+        const countsByDate = {};
+        const fullyBusyDates = [];
+
+        // 1. Rezervasyonları işle
+        bookings.forEach(booking => {
+            let start = new Date(booking.checkIn);
+            let end = new Date(booking.checkOut);
+            let temp = new Date(start);
+            while (temp < end) {
+                const key = temp.toISOString().split('T')[0];
+                countsByDate[key] = (countsByDate[key] || 0) + 1;
+                temp.setDate(temp.getDate() + 1);
+            }
+        });
+
+        // 2. Kontrol Aralığı: Bugünden itibaren 2026 sonuna kadar (Yaklaşık 700 gün)
+        const today = new Date();
+        for (let i = 0; i < 700; i++) {
+            const date = new Date(today);
+            date.setDate(today.getDate() + i);
+            const dateStr = date.toISOString().split('T')[0];
+
+            const dayData = adminSettings.getDayData(dateStr);
+            const reservedCount = countsByDate[dateStr] || 0;
+
+            // Eğer manuel olarak "Kapalı" (Stop Sale) yapıldıysa veya kontenjan dolduysa busy işaretle
+            if (dayData.closed || reservedCount >= dayData.inventory) {
+                fullyBusyDates.push(new Date(dateStr));
+            }
+        }
+
+        setBusyDates(fullyBusyDates);
+    };
+
+    useEffect(() => {
+        refreshAvailability();
+    }, []);
+
+    const isDateBusy = (date) => {
+        if (!date) return false;
+        const checkStr = date.toISOString().split('T')[0];
+        return busyDates.some(busyDate =>
+            busyDate.toISOString().split('T')[0] === checkStr
+        );
+    };
+
+    const getPriceForDate = (date) => {
+        if (!date) return settings.nightlyPrice || 5000;
+        const dateStr = date.toISOString().split('T')[0];
+        return adminSettings.getDayData(dateStr).price;
+    };
+
+    return { isDateBusy, getPriceForDate, settings, refreshAvailability };
+};
