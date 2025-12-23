@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useCustomAvailability } from '../hooks/useCustomAvailability'
+import { adminSettings } from '../services/adminSettings'
 import CustomPhoneInput from '../components/CustomPhoneInput'
 import '../styles/pages/room-detail-page.css'
 
@@ -32,10 +33,15 @@ function RoomDetailPage() {
     const [checkIn, setCheckIn] = useState(null)
     const [checkOut, setCheckOut] = useState(null)
     const [guests, setGuests] = useState(2)
-    const [formData, setFormData] = useState({ name: '', phone: '', email: '', note: '' })
+    const [formData, setFormData] = useState({ firstName: '', lastName: '', phone: '', email: '', note: '' })
     const [nameError, setNameError] = useState('')
     const [dateError, setDateError] = useState('')
     const [isPhoneValid, setIsPhoneValid] = useState(false)
+
+    // Promo Code State
+    const [promoCode, setPromoCode] = useState('')
+    const [appliedDiscount, setAppliedDiscount] = useState(null)
+    const [promoError, setPromoError] = useState('')
 
     const { isDateBusy, getPriceForDate, settings } = useCustomAvailability();
 
@@ -54,8 +60,8 @@ function RoomDetailPage() {
         window.scrollTo(0, 0);
     }, [location.state]);
 
-    // Toplam tutar hesabı
-    const calculateTotal = () => {
+    // Toplam tutar hesabı (İndirimsiz)
+    const calculateRawTotal = () => {
         if (!checkIn || !checkOut) return 0;
         let total = 0;
         let temp = new Date(checkIn);
@@ -64,6 +70,48 @@ function RoomDetailPage() {
             temp.setDate(temp.getDate() + 1);
         }
         return total;
+    }
+
+    // İndirimli toplam tutar
+    const calculateFinalTotal = () => {
+        const rawTotal = calculateRawTotal();
+        if (!appliedDiscount) return rawTotal;
+        return Math.max(0, rawTotal - appliedDiscount.amount);
+    }
+
+    // Promosyon Uygulama
+    const handleApplyPromo = () => {
+        setPromoError('');
+        setAppliedDiscount(null);
+
+        if (!promoCode.trim()) return;
+
+        const promo = adminSettings.validatePromotion(promoCode.toUpperCase().trim());
+
+        if (!promo) {
+            setPromoError(t('booking.invalidPromo') || 'Geçersiz kupon kodu');
+            return;
+        }
+
+        const rawTotal = calculateRawTotal();
+        if (rawTotal === 0) {
+            setPromoError('Lütfen önce tarih seçiniz');
+            return;
+        }
+
+        let discountAmount = 0;
+        if (promo.type === 'amount') {
+            discountAmount = promo.value;
+        } else if (promo.type === 'percent') {
+            discountAmount = (rawTotal * promo.value) / 100;
+        }
+
+        setAppliedDiscount({
+            code: promo.code,
+            amount: discountAmount,
+            type: promo.type,
+            value: promo.value
+        });
     }
 
     const nextMonth = () => {
@@ -82,12 +130,18 @@ function RoomDetailPage() {
         const today = new Date(); today.setHours(0, 0, 0, 0);
         if (selectedDate < today) return;
 
+        // Reset promo when dates change to re-calculate validation if needed (optional, keeping it simple)
+        // setAppliedDiscount(null); 
+
         if (!checkIn || (checkIn && checkOut)) {
             setCheckIn(selectedDate); setCheckOut(null);
+            setAppliedDiscount(null); // Reset promo on new selection
         } else if (selectedDate > checkIn) {
             setCheckOut(selectedDate);
+            setAppliedDiscount(null); // Reset promo on new selection
         } else {
             setCheckIn(selectedDate);
+            setAppliedDiscount(null); // Reset promo on new selection
         }
     }
 
@@ -101,17 +155,15 @@ function RoomDetailPage() {
     const days = [...Array(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate()).keys()].map(i => i + 1)
     const emptyDays = [...Array(new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).getDay()).keys()]
 
-    // Name input handler: Only letters, spaces, and dots
+    // Name/Surname input handler: Only letters
     const handleNameChange = (e) => {
-        const val = e.target.value;
-        // Check for invalid characters before filtering
-        if (/[^a-zA-ZğüşıöçĞÜŞİÖÇ\s.]/.test(val)) {
-            setNameError("İsimde özel karakter (? falan) olamaz.");
+        const { name, value } = e.target;
+        if (/[^a-zA-ZğüşıöçĞÜŞİÖÇ\s.]/.test(value)) {
+            setNameError("İsim/Soyisimde özel karakter olamaz.");
             return;
         }
-
-        setNameError(""); // Clear error if typing valid chars
-        setFormData(prev => ({ ...prev, name: val }));
+        setNameError("");
+        setFormData(prev => ({ ...prev, [name]: value }));
     }
 
     const handlePhoneChange = (val) => {
@@ -123,36 +175,35 @@ function RoomDetailPage() {
         setNameError("");
         setDateError("");
 
-        // Name validation checks
-        const name = formData.name.trim();
+        const fName = formData.firstName.trim();
+        const lName = formData.lastName.trim();
 
-        if (name.length < 6) {
-            setNameError("İsim daha uzun olmalı");
+        if (fName.length < 2 || lName.length < 2) {
+            setNameError("Ad ve Soyad en az 2 karakter olmalıdır.");
             return;
         }
 
-        if (name.includes(' ')) {
-            const parts = name.split(' ').filter(p => p.length > 0);
-            if (parts.length < 2) {
-                setNameError("Lütfen hem ad hem soyad giriniz.");
-                return;
-            }
-        } else {
-            setNameError("Lütfen ad ve soyad arasında boşluk bırakınız.");
-            return;
-        }
 
-        if (!isPhoneValid) {
-            // Error is already shown under the input, but we prevent submission
-            return;
-        }
+        if (!isPhoneValid) return;
 
         if (!checkIn || !checkOut) {
             setDateError(t('booking.selectDatesError'));
             return;
         }
 
-        navigate('/checkout', { state: { bookingData: { ...formData, checkIn: checkIn.toISOString(), checkOut: checkOut.toISOString(), guests } } })
+        navigate('/checkout', {
+            state: {
+                bookingData: {
+                    ...formData,
+                    name: `${formData.firstName} ${formData.lastName}`, // Combine for backward compatibility
+                    checkIn: checkIn.toISOString(),
+                    checkOut: checkOut.toISOString(),
+                    guests,
+                    discount: appliedDiscount,
+                    totalPrice: calculateFinalTotal()
+                }
+            }
+        })
     }
 
     return (
@@ -200,10 +251,59 @@ function RoomDetailPage() {
                                         <span>Giriş - Çıkış:</span>
                                         <strong>{checkIn ? checkIn.toLocaleDateString('tr') : ' Seçiniz'} - {checkOut ? checkOut.toLocaleDateString('tr') : ' Seçiniz'}</strong>
                                     </div>
+
+                                    {/* Promosyon Kodu Alanı */}
+                                    <div className="promo-code-section" style={{ margin: '15px 0', padding: '10px 0', borderTop: '1px dashed #eee', borderBottom: '1px dashed #eee' }}>
+                                        <div style={{ display: 'flex', gap: '10px' }}>
+                                            <input
+                                                type="text"
+                                                placeholder="İndirim Kodu / Promosyon"
+                                                value={promoCode}
+                                                onChange={(e) => setPromoCode(e.target.value)}
+                                                style={{
+                                                    flex: 1,
+                                                    padding: '8px 12px',
+                                                    border: promoError ? '1px solid #ff4d4d' : '1px solid #ddd',
+                                                    borderRadius: '6px',
+                                                    fontSize: '14px'
+                                                }}
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={handleApplyPromo}
+                                                style={{
+                                                    background: '#333',
+                                                    color: 'white',
+                                                    border: 'none',
+                                                    borderRadius: '6px',
+                                                    padding: '0 15px',
+                                                    cursor: 'pointer',
+                                                    fontSize: '13px',
+                                                    fontWeight: '600'
+                                                }}
+                                            >
+                                                Uygula
+                                            </button>
+                                        </div>
+                                        {promoError && <div style={{ color: '#ff4d4d', fontSize: '12px', marginTop: '5px' }}>{promoError}</div>}
+                                        {appliedDiscount && (
+                                            <div style={{ color: '#008234', fontSize: '13px', marginTop: '5px', display: 'flex', justifyContent: 'space-between' }}>
+                                                <span>✓ Kod uygulandı ({appliedDiscount.code})</span>
+                                                <span>-{appliedDiscount.amount.toLocaleString()} TL</span>
+                                            </div>
+                                        )}
+                                    </div>
+
                                     <div className="summary-row total">
                                         <span>Toplam Tutar:</span>
-                                        <strong>{calculateTotal().toLocaleString()} TL</strong>
+                                        <strong>{calculateFinalTotal().toLocaleString()} TL</strong>
                                     </div>
+                                    {appliedDiscount && calculateRawTotal() > 0 && (
+                                        <div style={{ textAlign: 'right', fontSize: '12px', color: '#999', textDecoration: 'line-through' }}>
+                                            {calculateRawTotal().toLocaleString()} TL
+                                        </div>
+                                    )}
+
                                     {dateError && (
                                         <div style={{ marginTop: '10px', padding: '10px', borderRadius: '8px', background: 'rgba(255, 77, 77, 0.1)', color: '#ff4d4d', fontSize: '0.9rem', textAlign: 'center' }}>
                                             {dateError}
@@ -212,20 +312,47 @@ function RoomDetailPage() {
                                 </div>
 
                                 <div className="form-group">
-                                    <label>{t('booking.name')}</label>
-                                    <input
-                                        type="text"
-                                        value={formData.name}
-                                        onChange={handleNameChange}
-                                        required
-                                        placeholder={t('booking.namePlaceholder')}
-                                        className={nameError ? 'input-error' : ''}
-                                    />
+                                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
+                                        <div>
+                                            <label style={{ marginBottom: '5px', display: 'block' }}>{t('booking.name') || 'Ad'}</label>
+                                            <input
+                                                type="text"
+                                                name="firstName"
+                                                value={formData.firstName}
+                                                onChange={handleNameChange}
+                                                required
+                                                placeholder="Adınız"
+                                                className={nameError ? 'input-error' : ''}
+                                            />
+                                        </div>
+                                        <div>
+                                            <label style={{ marginBottom: '5px', display: 'block' }}>Soyad</label>
+                                            <input
+                                                type="text"
+                                                name="lastName"
+                                                value={formData.lastName}
+                                                onChange={handleNameChange}
+                                                required
+                                                placeholder="Soyadınız"
+                                                className={nameError ? 'input-error' : ''}
+                                            />
+                                        </div>
+                                    </div>
                                     {nameError && (
                                         <small style={{ display: 'block', marginTop: '5px', fontSize: '0.85rem', color: '#ff4d4d', fontWeight: '500' }}>
                                             {nameError}
                                         </small>
                                     )}
+                                </div>
+                                <div className="form-group">
+                                    <label>E-mail</label>
+                                    <input
+                                        type="email"
+                                        value={formData.email}
+                                        onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+                                        required
+                                        placeholder="ornek@email.com"
+                                    />
                                 </div>
                                 <div className="form-group">
                                     <label>{t('booking.phone')}</label>
