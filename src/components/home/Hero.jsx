@@ -98,7 +98,7 @@ function Hero() {
                                 value={bookingData.adults}
                                 onChange={handleChange}
                             >
-                                {[1, 2, 3, 4].map(num => (
+                                {[1, 2, 3, 4, 5].map(num => (
                                     <option key={num} value={num}>{num}</option>
                                 ))}
                             </select>
@@ -113,7 +113,7 @@ function Hero() {
                                 value={bookingData.children}
                                 onChange={handleChange}
                             >
-                                {[0, 1, 2, 3].map(num => (
+                                {[0, 1, 2, 3, 4].map(num => (
                                     <option key={num} value={num}>{num}</option>
                                 ))}
                             </select>

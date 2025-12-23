@@ -23,6 +23,8 @@ function Testimonials() {
     // If loading, we could show a spinner, but since we have fallback data in the hook/config
     // we can just wait or show a skeleton. For now, let's just render what we have.
     // If reviews is empty (very first load before API returns), we might want to wait.
+    // Show loading state only if we don't have any reviews yet (initial load)
+    // For language transitions, we keep the old reviews until new ones load
     if (loading && reviews.length === 0) {
         return (
             <section className="testimonials-section">
@@ -30,11 +32,6 @@ function Testimonials() {
                     <div className="section-header">
                         <p className="section-subtitle">{t('testimonials.subtitle')}</p>
                         <h2 className="section-title">{t('testimonials.title')}</h2>
-                    </div>
-                    <div className="testimonials-wrapper">
-                        <div style={{ textAlign: 'center', padding: '20px', color: 'white' }}>
-                            Loading reviews...
-                        </div>
                     </div>
                 </div>
             </section>
@@ -51,41 +48,25 @@ function Testimonials() {
 
                 <div className="testimonials-wrapper">
                     <div className="testimonials-scroll">
-                        {/* First set of reviews */}
-                        {reviews.map((review) => (
-                            <div className="testimonial-card" key={`first-${review.id}`}>
-                                <div className="testimonial-quote">
-                                    <QuoteIcon />
-                                </div>
-                                <p className="testimonial-text">{review.text}</p>
-                                <div className="testimonial-author">
-                                    <h4>{review.author}</h4>
-                                    <p>{review.location}</p>
-                                    <div className="testimonial-rating">
-                                        {[...Array(review.rating)].map((_, i) => (
-                                            <StarIcon key={i} />
-                                        ))}
+                        {/* 4 sets of reviews to ensure perfect infinite scroll on any screen width */}
+                        {[...Array(4)].map((_, setIndex) => (
+                            reviews.map((review) => (
+                                <div className="testimonial-card" key={`set-${setIndex}-${review.id}`}>
+                                    <div className="testimonial-quote">
+                                        <QuoteIcon />
+                                    </div>
+                                    <p className="testimonial-text">{review.text}</p>
+                                    <div className="testimonial-author">
+                                        <h4>{review.author}</h4>
+                                        <p>{review.location}</p>
+                                        <div className="testimonial-rating">
+                                            {[...Array(review.rating)].map((_, i) => (
+                                                <StarIcon key={i} />
+                                            ))}
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        ))}
-                        {/* Duplicate set for seamless infinite scroll */}
-                        {reviews.map((review) => (
-                            <div className="testimonial-card" key={`second-${review.id}`}>
-                                <div className="testimonial-quote">
-                                    <QuoteIcon />
-                                </div>
-                                <p className="testimonial-text">{review.text}</p>
-                                <div className="testimonial-author">
-                                    <h4>{review.author}</h4>
-                                    <p>{review.location}</p>
-                                    <div className="testimonial-rating">
-                                        {[...Array(review.rating)].map((_, i) => (
-                                            <StarIcon key={i} />
-                                        ))}
-                                    </div>
-                                </div>
-                            </div>
+                            ))
                         ))}
                     </div>
                 </div>

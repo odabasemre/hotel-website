@@ -94,3 +94,21 @@
     left: 0;
     right: auto;
 }
+
+/* Testimonials RTL Fix */
+[dir="rtl"] .testimonials-scroll {
+    direction: ltr;
+    /* Silently treat the track as LTR to maintain consistent animation direction */
+    animation: scroll-right 60s linear infinite;
+    /* Slightly slower for better readability */
+}
+
+[dir="rtl"] .testimonial-card {
+    direction: rtl;
+    /* Ensure card content remains RTL */
+    text-align: right;
+}
+
+[dir="rtl"] .testimonial-author {
+    align-items: flex-start;
+}

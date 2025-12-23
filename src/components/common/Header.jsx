@@ -74,6 +74,17 @@ function Header() {
         return () => document.removeEventListener('mousedown', handleClickOutside)
     }, [])
 
+    const [scrolled, setScrolled] = useState(false)
+
+    // Handle scroll
+    useEffect(() => {
+        const handleScroll = () => {
+            setScrolled(window.scrollY > 50)
+        }
+        window.addEventListener('scroll', handleScroll)
+        return () => window.removeEventListener('scroll', handleScroll)
+    }, [])
+
     // Close mobile menu on route change
     useEffect(() => {
         setIsMobileMenuOpen(false)
@@ -90,7 +101,7 @@ function Header() {
     return (
         <header>
             {/* Main Header */}
-            <nav className="main-header">
+            <nav className={`main-header ${scrolled ? 'scrolled' : ''}`}>
                 <div className="container header-container">
                     {/* Logo */}
                     <Link to="/" className="logo">

@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
+import usePlaceDetails from '../../hooks/usePlaceDetails'
 
 // Icons
 const PhoneIcon = () => (
@@ -22,15 +23,9 @@ const MapPinIcon = () => (
     </svg>
 )
 
-const FacebookIcon = () => (
+const WhatsAppIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
-    </svg>
-)
-
-const TwitterIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z" />
+        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L0 24l6.335-1.662c1.72.937 3.659 1.431 5.628 1.432h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
     </svg>
 )
 
@@ -42,16 +37,9 @@ const InstagramIcon = () => (
     </svg>
 )
 
-const LinkedInIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
-        <rect x="2" y="9" width="4" height="12" />
-        <circle cx="4" cy="4" r="2" />
-    </svg>
-)
-
 function Footer() {
     const { t } = useTranslation()
+    const { address, phone, email, loading } = usePlaceDetails()
 
     const quickLinks = [
         { to: '/', label: t('nav.home') },
@@ -61,11 +49,6 @@ function Footer() {
         { to: '/#contact', label: t('nav.contact') },
     ]
 
-    const handleNewsletterSubmit = (e) => {
-        e.preventDefault()
-        // Newsletter subscription logic would go here
-        alert('Thank you for subscribing!')
-    }
 
     return (
         <footer className="footer">
@@ -80,17 +63,11 @@ function Footer() {
                             {t('footer.description')}
                         </p>
                         <div className="footer-social">
-                            <a href="#" className="footer-social-link" aria-label="Facebook">
-                                <FacebookIcon />
-                            </a>
-                            <a href="#" className="footer-social-link" aria-label="Twitter">
-                                <TwitterIcon />
-                            </a>
-                            <a href="#" className="footer-social-link" aria-label="Instagram">
+                            <a href="https://www.instagram.com/ayderkuzey/" className="footer-social-link" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
                                 <InstagramIcon />
                             </a>
-                            <a href="#" className="footer-social-link" aria-label="LinkedIn">
-                                <LinkedInIcon />
+                            <a href="https://wa.me/905304289355" className="footer-social-link" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
+                                <WhatsAppIcon />
                             </a>
                         </div>
                     </div>
@@ -117,8 +94,7 @@ function Footer() {
                                 <MapPinIcon />
                             </div>
                             <p className="footer-contact-text">
-                                123 Mountain View Road<br />
-                                Alpine Valley, 34000
+                                {loading ? t('common.loading') : address}
                             </p>
                         </div>
                         <div className="footer-contact-item">
@@ -126,7 +102,7 @@ function Footer() {
                                 <PhoneIcon />
                             </div>
                             <p className="footer-contact-text">
-                                +90 555 123 45 67
+                                {loading ? t('common.loading') : phone}
                             </p>
                         </div>
                         <div className="footer-contact-item">
@@ -134,29 +110,11 @@ function Footer() {
                                 <MailIcon />
                             </div>
                             <p className="footer-contact-text">
-                                info@ayderkuzeyhouses.com
+                                {email}
                             </p>
                         </div>
                     </div>
 
-                    {/* Newsletter */}
-                    <div className="footer-column">
-                        <h4 className="footer-title">{t('footer.newsletter')}</h4>
-                        <p className="footer-newsletter-text">
-                            {t('footer.newsletterText')}
-                        </p>
-                        <form className="newsletter-form" onSubmit={handleNewsletterSubmit}>
-                            <input
-                                type="email"
-                                className="newsletter-input"
-                                placeholder={t('footer.emailPlaceholder')}
-                                required
-                            />
-                            <button type="submit" className="newsletter-btn">
-                                {t('footer.subscribe')}
-                            </button>
-                        </form>
-                    </div>
                 </div>
 
                 {/* Footer Bottom */}

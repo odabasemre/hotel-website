@@ -6,16 +6,19 @@ import Gallery from '../components/home/Gallery'
 import Testimonials from '../components/home/Testimonials'
 import Contact from '../components/contact/Contact'
 
+import { useScrollReveal } from '../hooks/useScrollReveal'
+
 function Home() {
+    useScrollReveal()
     return (
         <>
             <Hero />
-            <Services />
-            <RoomShowcase />
-            <About />
-            <Gallery />
-            <Testimonials />
-            <Contact />
+            <div className="reveal"><Services /></div>
+            <div className="reveal"><RoomShowcase /></div>
+            <div className="reveal"><About /></div>
+            <div className="reveal"><Gallery /></div>
+            <div className="reveal"><Testimonials /></div>
+            <div className="reveal"><Contact /></div>
         </>
     )
 }

@@ -1,4 +1,7 @@
 {
+    "common": {
+        "loading": "Chargement..."
+    },
     "nav": {
         "home": "Accueil",
         "rooms": "Chambres",

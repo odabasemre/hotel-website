@@ -1,4 +1,7 @@
 {
+    "common": {
+        "loading": "Yükleniyor..."
+    },
     "nav": {
         "home": "Ana Sayfa",
         "rooms": "Odalar",
