@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useCustomAvailability } from '../hooks/useCustomAvailability'
+import CustomPhoneInput from '../components/CustomPhoneInput'
 import '../styles/pages/room-detail-page.css'
 
 // Icons
@@ -32,6 +33,9 @@ function RoomDetailPage() {
     const [checkOut, setCheckOut] = useState(null)
     const [guests, setGuests] = useState(2)
     const [formData, setFormData] = useState({ name: '', phone: '', email: '', note: '' })
+    const [nameError, setNameError] = useState('')
+    const [dateError, setDateError] = useState('')
+    const [isPhoneValid, setIsPhoneValid] = useState(false)
 
     const { isDateBusy, getPriceForDate, settings } = useCustomAvailability();
 
@@ -96,7 +100,60 @@ function RoomDetailPage() {
 
     const days = [...Array(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate()).keys()].map(i => i + 1)
     const emptyDays = [...Array(new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).getDay()).keys()]
-    const dayNames = ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz'] // TR Standart
+
+    // Name input handler: Only letters, spaces, and dots
+    const handleNameChange = (e) => {
+        const val = e.target.value;
+        // Check for invalid characters before filtering
+        if (/[^a-zA-ZğüşıöçĞÜŞİÖÇ\s.]/.test(val)) {
+            setNameError("İsimde özel karakter (? falan) olamaz.");
+            return;
+        }
+
+        setNameError(""); // Clear error if typing valid chars
+        setFormData(prev => ({ ...prev, name: val }));
+    }
+
+    const handlePhoneChange = (val) => {
+        setFormData(prev => ({ ...prev, phone: val }));
+    }
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        setNameError("");
+        setDateError("");
+
+        // Name validation checks
+        const name = formData.name.trim();
+
+        if (name.length < 6) {
+            setNameError("İsim daha uzun olmalı");
+            return;
+        }
+
+        if (name.includes(' ')) {
+            const parts = name.split(' ').filter(p => p.length > 0);
+            if (parts.length < 2) {
+                setNameError("Lütfen hem ad hem soyad giriniz.");
+                return;
+            }
+        } else {
+            setNameError("Lütfen ad ve soyad arasında boşluk bırakınız.");
+            return;
+        }
+
+        if (!isPhoneValid) {
+            // Error is already shown under the input, but we prevent submission
+            return;
+        }
+
+        if (!checkIn || !checkOut) {
+            setDateError(t('booking.selectDatesError'));
+            return;
+        }
+
+        navigate('/checkout', { state: { bookingData: { ...formData, checkIn: checkIn.toISOString(), checkOut: checkOut.toISOString(), guests } } })
+    }
 
     return (
         <div className="room-detail-page">
@@ -136,12 +193,7 @@ function RoomDetailPage() {
                         </div>
 
                         <div className="booking-form-section">
-                            <form onSubmit={(e) => {
-                                e.preventDefault();
-                                if (!checkIn || !checkOut) return alert(t('booking.selectDatesError'));
-                                navigate('/checkout', { state: { bookingData: { ...formData, checkIn: checkIn.toISOString(), checkOut: checkOut.toISOString(), guests } } })
-                            }} className="booking-form">
-
+                            <form onSubmit={handleSubmit} className="booking-form">
                                 <div className="reservation-summary-card">
                                     <h3>Rezervasyon Özeti</h3>
                                     <div className="summary-row">
@@ -152,15 +204,37 @@ function RoomDetailPage() {
                                         <span>Toplam Tutar:</span>
                                         <strong>{calculateTotal().toLocaleString()} TL</strong>
                                     </div>
+                                    {dateError && (
+                                        <div style={{ marginTop: '10px', padding: '10px', borderRadius: '8px', background: 'rgba(255, 77, 77, 0.1)', color: '#ff4d4d', fontSize: '0.9rem', textAlign: 'center' }}>
+                                            {dateError}
+                                        </div>
+                                    )}
                                 </div>
 
                                 <div className="form-group">
                                     <label>{t('booking.name')}</label>
-                                    <input type="text" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} required placeholder={t('booking.namePlaceholder')} />
+                                    <input
+                                        type="text"
+                                        value={formData.name}
+                                        onChange={handleNameChange}
+                                        required
+                                        placeholder={t('booking.namePlaceholder')}
+                                        className={nameError ? 'input-error' : ''}
+                                    />
+                                    {nameError && (
+                                        <small style={{ display: 'block', marginTop: '5px', fontSize: '0.85rem', color: '#ff4d4d', fontWeight: '500' }}>
+                                            {nameError}
+                                        </small>
+                                    )}
                                 </div>
                                 <div className="form-group">
                                     <label>{t('booking.phone')}</label>
-                                    <input type="tel" value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} required placeholder={t('booking.phonePlaceholder')} />
+                                    <CustomPhoneInput
+                                        value={formData.phone}
+                                        onChange={handlePhoneChange}
+                                        onValidation={setIsPhoneValid}
+                                        placeholder={t('booking.phonePlaceholder')}
+                                    />
                                 </div>
                                 <div className="form-group">
                                     <label>{t('booking.guests')}</label>
