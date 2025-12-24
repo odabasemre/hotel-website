@@ -82,7 +82,7 @@ function Services() {
                     <div className="services-text">
                         <h2>{t('services.title')}</h2>
                         <h3>{t('services.subtitle')}</h3>
-                        <p>{t('services.description')}</p>
+                        <p>{adminSettings.getPropertyData().description || t('services.description')}</p>
                     </div>
 
                     <div className="services-image">

@@ -13,6 +13,10 @@ const ChevronRight = () => <svg width="24" height="24" viewBox="0 0 24 24" fill=
 const AlertCircle = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#d4111e" strokeWidth="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
 const TrashIcon = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
 const EditIcon = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+const TrendingUpIcon = () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
+const UsersIcon = () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+const DollarIcon = () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+const ActivityIcon = () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
 
 function AdminPage() {
     const [isLoggedIn, setIsLoggedIn] = useState(false)
@@ -20,11 +24,15 @@ function AdminPage() {
     const [settings, setSettings] = useState(adminSettings.getSettings())
     const [bookings, setBookings] = useState(adminSettings.getBookings())
     const [promotions, setPromotions] = useState(adminSettings.getPromotions())
-    const [activeTab, setActiveTab] = useState('inventory')
+    const [pricing, setPricing] = useState(adminSettings.getPricing())
+    const [activeTab, setActiveTab] = useState('rooms')
+    const [selectedYear, setSelectedYear] = useState(new Date().getFullYear())
+    const [propertyData, setPropertyData] = useState(adminSettings.getPropertyData())
 
     // Calendar State
     const [startDate, setStartDate] = useState(new Date())
     const [daysToShow] = useState(31)
+    const [showGuestPricing, setShowGuestPricing] = useState(true)
 
     // Bulk Edit State
     const [bulkEdit, setBulkEdit] = useState({
@@ -50,6 +58,8 @@ function AdminPage() {
         setSettings(adminSettings.getSettings())
         setBookings(adminSettings.getBookings())
         setPromotions(adminSettings.getPromotions())
+        setPricing(adminSettings.getPricing())
+        setPropertyData(adminSettings.getPropertyData())
     }, [activeTab])
 
     const handleLogin = (e) => {
@@ -77,8 +87,25 @@ function AdminPage() {
         if (field === 'price' || field === 'inventory') finalValue = Number(value);
         if (field === 'closed') finalValue = value === 'true';
 
-        adminSettings.updateDayData(dateStr, { [field]: finalValue });
+        const updateObj = { [field]: finalValue };
+
+        // Requirement: If closed is true, inventory must be 0
+        if (field === 'closed' && finalValue === true) {
+            updateObj.inventory = 0;
+        }
+
+        // Requirement: Inventory can only be 0, 1, or 2
+        if (field === 'inventory') {
+            updateObj.inventory = Math.max(0, Math.min(2, finalValue));
+        }
+
+        adminSettings.updateDayData(dateStr, updateObj);
         setSettings(adminSettings.getSettings());
+    }
+
+    const handlePricingUpdate = (basePrice) => {
+        adminSettings.updateBasePriceForGuests(Number(basePrice));
+        setPricing(adminSettings.getPricing());
     }
 
     const applyBulkUpdate = (e) => {
@@ -170,7 +197,7 @@ function AdminPage() {
         return (
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', background: '#f0f2f5' }}>
                 <form onSubmit={handleLogin} style={{ background: 'white', padding: '40px', borderRadius: '8px', boxShadow: '0 2px 10px rgba(0,0,0,0.1)', width: '100%', maxWidth: '400px' }}>
-                    <h2 style={{ marginBottom: '20px', color: '#003580' }}>Admin Paneli</h2>
+                    <h2 style={{ marginBottom: '20px', color: '#2d4a3e' }}>Admin Paneli</h2>
                     <input
                         type="password"
                         placeholder="Şifre (admin123)"
@@ -190,26 +217,152 @@ function AdminPage() {
     return (
         <div className="admin-layout">
             <header className="admin-header">
-                <div className="header-top">
-                    <div className="header-logo">
-                        <h1>Admin Extranet</h1>
-                    </div>
-                    <div>
-                        <button className="btn-secondary" style={{ color: 'white', borderColor: 'rgba(255,255,255,0.5)' }} onClick={() => setIsLoggedIn(false)}>Çıkış Yap</button>
-                    </div>
-                </div>
                 <nav className="header-nav">
                     <ul>
-                        <li><button onClick={() => setActiveTab('rooms')}><HomeIcon /> Ana sayfa</button></li>
+                        <li><button className={activeTab === 'rooms' ? 'active' : ''} onClick={() => setActiveTab('rooms')}><HomeIcon /> Ana sayfa</button></li>
                         <li><button className={activeTab === 'inventory' ? 'active' : ''} onClick={() => setActiveTab('inventory')}><CalendarIcon /> Fiyatlar ve Kontenjan ▾</button></li>
+                        <li><button className={activeTab === 'pricing' ? 'active' : ''} onClick={() => setActiveTab('pricing')}><TagIcon /> Kişi Başına Fiyat</button></li>
                         <li><button className={activeTab === 'promotions' ? 'active' : ''} onClick={() => setActiveTab('promotions')}><TagIcon /> Promosyonlar</button></li>
                         <li><button className={activeTab === 'bookings' ? 'active' : ''} onClick={() => setActiveTab('bookings')}><ListIcon /> Rezervasyonlar</button></li>
-                        <li><button><SettingsIcon /> Tesis ▾</button></li>
+                        <li><button className={activeTab === 'settings' ? 'active' : ''} onClick={() => setActiveTab('settings')}><SettingsIcon /> Tesis ▾</button></li>
                     </ul>
+                    <div className="nav-actions">
+                        <button className="logout-btn" onClick={() => setIsLoggedIn(false)}>Çıkış Yap</button>
+                    </div>
                 </nav>
             </header>
 
             <main className="admin-main">
+                {activeTab === 'rooms' && (() => {
+                    const stats = adminSettings.getAnalytics(selectedYear);
+                    const totalDaysInYear = (selectedYear % 4 === 0 && (selectedYear % 100 !== 0 || selectedYear % 400 === 0)) ? 366 : 365;
+                    // Max occupancy potential: 2 rooms * days
+                    const occupancyRate = stats.totalNights > 0
+                        ? ((stats.totalNights / (2 * totalDaysInYear)) * 100).toFixed(1)
+                        : "0.0";
+
+                    const adr = stats.totalBookings > 0
+                        ? Math.round(stats.totalRevenue / stats.totalBookings).toLocaleString('tr-TR')
+                        : "0";
+
+                    const maxMonthlyRev = Math.max(...stats.monthlyData.map(d => d.revenue), 1000);
+
+                    return (
+                        <div className="dashboard-container">
+                            <header className="page-header">
+                                <div>
+                                    <h2 className="page-title">Yönetim Paneli Özeti</h2>
+                                    <p className="page-subtitle">Tesisinizin performansına dair genel bakış.</p>
+                                </div>
+                                <div className="year-selector">
+                                    <label style={{ fontSize: '13px', fontWeight: 'bold', marginRight: '10px' }}>Yıl Seçin:</label>
+                                    <select
+                                        value={selectedYear}
+                                        onChange={(e) => setSelectedYear(Number(e.target.value))}
+                                        style={{ padding: '8px 12px', borderRadius: '6px', border: '1px solid #ddd', fontWeight: 'bold' }}
+                                    >
+                                        {stats.availableYears.map(y => <option key={y} value={y}>{y}</option>)}
+                                    </select>
+                                </div>
+                            </header>
+
+                            <div className="stats-grid">
+                                <div className="stats-card">
+                                    <div className="stats-icon revenue"><DollarIcon /></div>
+                                    <div className="stats-info">
+                                        <span className="stats-label">Toplam Hasılat ({selectedYear})</span>
+                                        <h3 className="stats-value">{stats.totalRevenue.toLocaleString('tr-TR')} ₺</h3>
+                                        <span className="stats-trend positive"><TrendingUpIcon /> Gerçekleşen Veri</span>
+                                    </div>
+                                </div>
+                                <div className="stats-card">
+                                    <div className="stats-icon guests"><UsersIcon /></div>
+                                    <div className="stats-info">
+                                        <span className="stats-label">Toplam Rezervasyon</span>
+                                        <h3 className="stats-value">{stats.totalBookings} Kayıt</h3>
+                                        <span className="stats-trend positive"><TrendingUpIcon /> Net Satış</span>
+                                    </div>
+                                </div>
+                                <div className="stats-card">
+                                    <div className="stats-icon occupancy"><ActivityIcon /></div>
+                                    <div className="stats-info">
+                                        <span className="stats-label">Yıllık Doluluk Oranı</span>
+                                        <h3 className="stats-value">{occupancyRate} %</h3>
+                                        <span className="stats-trend neutral">Kapasite Kullanımı</span>
+                                    </div>
+                                </div>
+                                <div className="stats-card">
+                                    <div className="stats-icon adr"><TagIcon /></div>
+                                    <div className="stats-info">
+                                        <span className="stats-label">Ortalama Satış Fiyatı</span>
+                                        <h3 className="stats-value">{adr} ₺</h3>
+                                        <span className="stats-trend positive"><TrendingUpIcon /> ADR Skoru</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="dashboard-charts">
+                                <div className="chart-large">
+                                    <div className="chart-header">
+                                        <h3>{selectedYear} Aylık Hasılat Trendi</h3>
+                                        <div className="chart-legend">
+                                            <span className="legend-item"><span className="dot dot-revenue"></span> Aylık Kazanç</span>
+                                        </div>
+                                    </div>
+                                    <div className="visual-chart">
+                                        {stats.monthlyData.map((d, i) => {
+                                            const height = (d.revenue / maxMonthlyRev) * 100;
+                                            return (
+                                                <div key={i} className="bar-wrapper">
+                                                    <div className="bar" style={{ height: `${Math.max(height, 2)}%`, opacity: d.revenue > 0 ? 1 : 0.3 }}>
+                                                        <div className="bar-tooltip">{d.revenue.toLocaleString('tr-TR')} ₺</div>
+                                                    </div>
+                                                    <span className="bar-label">{['Oca', 'Şub', 'Mar', 'Nis', 'May', 'Haz', 'Tem', 'Ağu', 'Eyl', 'Eki', 'Kas', 'Ara'][i]}</span>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+
+                                <div className="chart-small">
+                                    <div className="chart-header">
+                                        <h3>Oda Bazlı Performans</h3>
+                                    </div>
+                                    <div className="dist-chart">
+                                        <div className="room-occupancy-pill">
+                                            <div className="pill-info">
+                                                <span>Oda 1</span>
+                                                <span>{stats.roomOccupancy[1]} Gece</span>
+                                            </div>
+                                            <div className="pill-bar-bg">
+                                                <div className="pill-bar-fill" style={{
+                                                    width: `${Math.min((stats.roomOccupancy[1] / totalDaysInYear) * 100, 100)}%`,
+                                                    background: '#2d4a3e'
+                                                }}></div>
+                                            </div>
+                                        </div>
+                                        <div className="room-occupancy-pill">
+                                            <div className="pill-info">
+                                                <span>Oda 2</span>
+                                                <span>{stats.roomOccupancy[2]} Gece</span>
+                                            </div>
+                                            <div className="pill-bar-bg">
+                                                <div className="pill-bar-fill" style={{
+                                                    width: `${Math.min((stats.roomOccupancy[2] / totalDaysInYear) * 100, 100)}%`,
+                                                    background: '#6c8a7b'
+                                                }}></div>
+                                            </div>
+                                        </div>
+                                        <div className="insight-box">
+                                            <InfoIcon />
+                                            <p>Bu veriler {selectedYear} yılına aittir. {selectedYear === new Date().getFullYear() ? "Yıl sonu projeksiyonu için mevcut trendleri takip edin." : "Geçmiş yıl verileri arşivlenmiş ve korunmuştur."}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    );
+                })()}
                 {activeTab === 'inventory' && (
                     <>
                         <div className="page-header">
@@ -238,7 +391,14 @@ function AdminPage() {
                                 />
                             </div>
                             <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                                <label style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><input type="checkbox" defaultChecked /> Konuk başına fiyat</label>
+                                <label style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                                    <input
+                                        type="checkbox"
+                                        checked={showGuestPricing}
+                                        onChange={(e) => setShowGuestPricing(e.target.checked)}
+                                    />
+                                    Konuk başına fiyat
+                                </label>
                                 <label style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><input type="checkbox" /> Kısıtlamalar</label>
                             </div>
                             <button className="btn-primary" style={{ marginLeft: 'auto' }} onClick={() => setBulkEdit({ ...bulkEdit, show: true })}>Toplu düzenleme</button>
@@ -248,29 +408,28 @@ function AdminPage() {
                         <div className="calendar-container">
                             <div className="calendar-scroll-wrapper">
                                 <table className="calendar-table">
+                                    <colgroup>
+                                        <col style={{ width: '280px' }} />
+                                        {timelineDays.map((_, i) => <col key={i} style={{ width: '60px' }} />)}
+                                    </colgroup>
                                     <thead>
-                                        {/* Row 1: Months */}
-                                        <tr className="th-month-row">
+                                        {/* Room Info Row */}
+                                        <tr className="th-room-info-row">
                                             <th className="sticky-col th-room-header">
                                                 İki Yatak Odalı Dağ Evi
                                                 <span style={{ fontSize: '12px', fontWeight: '400', color: '#666', display: 'block', marginTop: '4px' }}>(ID: 123456)</span>
-                                                <div style={{ marginTop: '5px', fontSize: '12px', color: '#d4111e', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                                    <AlertCircle /> Olası sorunlar (3)
+                                                <div style={{ marginTop: '5px', fontSize: '11px', color: '#d4111e', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                                    <AlertCircle style={{ width: 12 }} /> Olası sorunlar (3)
                                                 </div>
                                             </th>
-                                            {/* Logic to span months across columns */}
                                             {months.map((m, idx) => {
                                                 const count = timelineDays.filter(d => d.toLocaleDateString('tr', { month: 'long', year: 'numeric' }) === m).length;
-                                                return <th key={idx} colSpan={count}>{m} <ChevronRight style={{ width: 14, verticalAlign: 'middle' }} /></th>
+                                                return <th key={idx} colSpan={count} className="month-group-header">{m} <ChevronRight style={{ width: 14, verticalAlign: 'middle' }} /></th>
                                             })}
                                         </tr>
-                                        {/* Row 2: Days */}
+                                        {/* Days Row */}
                                         <tr className="th-date-row">
-                                            <th className="sticky-col" style={{ background: '#fff', borderBottom: '1px solid #e7e7e7' }}>
-                                                <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0 15px' }}>
-                                                    <span>Oda durumu</span>
-                                                </div>
-                                            </th>
+                                            <th className="sticky-col sub-label-header">Takvim Günleri</th>
                                             {timelineDays.map((day, i) => (
                                                 <th key={i} className={day.getDay() === 0 || day.getDay() === 6 ? 'weekend' : ''}>
                                                     <span className="th-day-name">{day.toLocaleDateString('tr', { weekday: 'short' })}</span>
@@ -288,7 +447,6 @@ function AdminPage() {
                                             </td>
                                             {timelineDays.map(day => {
                                                 const dStr = formatDate(day);
-                                                // Use CALCULATED data for display
                                                 const data = adminSettings.getCalculatedDayData(dStr);
                                                 return (
                                                     <td key={dStr} className={`data-cell ${data.closed ? 'status-closed' : 'status-open'}`}>
@@ -296,7 +454,12 @@ function AdminPage() {
                                                             className="cell-select"
                                                             value={data.closed ? "true" : "false"}
                                                             onChange={(e) => handleValueChange(dStr, 'closed', e.target.value)}
-                                                            style={{ color: data.closed ? '#d4111e' : '#008234' }}
+                                                            style={{
+                                                                color: data.isSoldOut ? '#fff' : (data.closed ? '#d4111e' : '#2d4a3e'),
+                                                                background: data.isSoldOut ? '#d4111e' : 'transparent',
+                                                                height: '100%',
+                                                                width: '100%'
+                                                            }}
                                                         >
                                                             <option value="false">Açık</option>
                                                             <option value="true">Kapalı</option>
@@ -315,17 +478,37 @@ function AdminPage() {
                                                 const dStr = formatDate(day);
                                                 const data = adminSettings.getCalculatedDayData(dStr);
                                                 return (
-                                                    <td key={dStr} className={`data-cell ${data.inventory === 0 ? 'cell-sold-out' : ''}`}>
-                                                        {data.inventory === 0 ? (
-                                                            'TÜKENDİ'
-                                                        ) : (
-                                                            <input
-                                                                type="number"
-                                                                className="cell-input"
-                                                                value={data.inventory}
-                                                                // Note: Editing inventory here changes the BASE capacity
-                                                                onChange={(e) => handleValueChange(dStr, 'inventory', e.target.value)}
-                                                            />
+                                                    <td key={dStr} className={`data-cell ${data.isSoldOut ? 'cell-sold-out' : ''}`} style={{ position: 'relative' }}>
+                                                        <select
+                                                            className="cell-select"
+                                                            value={data.rawInventory}
+                                                            onChange={(e) => handleValueChange(dStr, 'inventory', e.target.value)}
+                                                            style={{
+                                                                color: data.isSoldOut ? 'white' : 'inherit',
+                                                                fontWeight: 'bold',
+                                                                height: '100%',
+                                                                width: '100%',
+                                                                paddingTop: data.isSoldOut ? '10px' : '0'
+                                                            }}
+                                                        >
+                                                            <option value="0">0</option>
+                                                            <option value="1">1</option>
+                                                            <option value="2">2</option>
+                                                        </select>
+                                                        {data.isSoldOut && (
+                                                            <div style={{
+                                                                position: 'absolute',
+                                                                top: '4px',
+                                                                left: 0,
+                                                                right: 0,
+                                                                fontSize: '9px',
+                                                                fontWeight: 'bold',
+                                                                color: 'white',
+                                                                textTransform: 'uppercase',
+                                                                pointerEvents: 'none'
+                                                            }}>
+                                                                Tükendi
+                                                            </div>
                                                         )}
                                                     </td>
                                                 )
@@ -333,14 +516,14 @@ function AdminPage() {
                                         </tr>
 
                                         {/* Row 3: Price */}
-                                        <tr>
+                                        <tr className={showGuestPricing ? 'parent-row' : ''}>
                                             <td className="sticky-col row-label-cell">
-                                                <span className="row-label-text">Standart Fiyat</span>
+                                                <span className="row-label-text">{showGuestPricing ? 'Standart Fiyat (2x)' : 'Standart Fiyat'}</span>
                                                 <span style={{ fontSize: '11px', color: '#666', background: '#eee', padding: '2px 4px', borderRadius: '3px' }}>₺</span>
                                             </td>
                                             {timelineDays.map(day => {
                                                 const dStr = formatDate(day);
-                                                const data = adminSettings.getDayData(dStr); // Price can stay raw or calculated, usually same
+                                                const data = adminSettings.getDayData(dStr);
                                                 return (
                                                     <td key={dStr} className="data-cell">
                                                         <input
@@ -354,6 +537,42 @@ function AdminPage() {
                                             })}
                                         </tr>
 
+                                        {/* Dynamic Guest Pricing Rows (Adults) */}
+                                        {showGuestPricing && [3, 4, 5, 6].map(num => (
+                                            <tr key={`adult-${num}`} className="guest-price-row" style={{ background: '#fdfdfd' }}>
+                                                <td className="sticky-col row-label-cell" style={{ paddingLeft: '30px' }}>
+                                                    <span className="row-label-text" style={{ fontSize: '13px', color: '#666' }}>{num} Yetişkin</span>
+                                                </td>
+                                                {timelineDays.map(day => {
+                                                    const dStr = formatDate(day);
+                                                    const finalGuestPrice = adminSettings.getCalculateSplitPrice(dStr, num, 0);
+                                                    return (
+                                                        <td key={dStr} className="data-cell" style={{ color: '#888', fontSize: '13px' }}>
+                                                            {finalGuestPrice.toLocaleString()}
+                                                        </td>
+                                                    )
+                                                })}
+                                            </tr>
+                                        ))}
+
+                                        {/* Dynamic Guest Pricing Rows (Children) */}
+                                        {showGuestPricing && [1, 2, 3].map(num => (
+                                            <tr key={`child-${num}`} className="guest-price-row" style={{ background: '#fdfdfd' }}>
+                                                <td className="sticky-col row-label-cell" style={{ paddingLeft: '30px' }}>
+                                                    <span className="row-label-text" style={{ fontSize: '13px', color: '#446688' }}>+ {num} Çocuk</span>
+                                                </td>
+                                                {timelineDays.map(day => {
+                                                    const dStr = formatDate(day);
+                                                    const finalGuestPrice = adminSettings.getCalculateSplitPrice(dStr, 2, num);
+                                                    return (
+                                                        <td key={dStr} className="data-cell" style={{ color: '#446688', fontSize: '13px', opacity: 0.8 }}>
+                                                            {finalGuestPrice.toLocaleString()}
+                                                        </td>
+                                                    )
+                                                })}
+                                            </tr>
+                                        ))}
+
                                         <tr style={{ height: '10px', background: '#f9f9f9' }}>
                                             <td className="sticky-col" style={{ background: '#f9f9f9', border: 'none' }}></td>
                                             <td colSpan={timelineDays.length} style={{ border: 'none' }}></td>
@@ -364,6 +583,91 @@ function AdminPage() {
                             </div>
                         </div>
                     </>
+                )}
+
+                {activeTab === 'pricing' && (
+                    <section className="pricing-section" style={{ background: 'white', padding: '30px', borderRadius: '8px', border: '1px solid #ddd' }}>
+                        <div style={{ maxWidth: '800px' }}>
+                            <h2 className="page-title">Kişi Başına Fiyat Ayarları</h2>
+                            <p style={{ color: '#666', marginBottom: '30px' }}>
+                                Tesiste konaklayacak misafir tipine göre ek ücretleri buradan belirleyebilirsiniz.
+                                1-2 Yetişkin konaklaması <strong>baz fiyat (Takvimdeki Fiyat)</strong> olarak kabul edilir.
+                            </p>
+
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '30px' }}>
+                                <div style={{ background: '#f8f9fa', padding: '20px', borderRadius: '12px', border: '1px solid #eef0f2' }}>
+                                    <label style={{ display: 'block', fontSize: '14px', fontWeight: 'bold', marginBottom: '8px', color: '#2d4a3e' }}>
+                                        Yetişkin Farkı (3. Kişiden İtibaren)
+                                    </label>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                        <input
+                                            type="number"
+                                            className="form-control"
+                                            style={{ fontSize: '20px', fontWeight: 'bold', padding: '10px' }}
+                                            value={pricing.perAdultIncrement}
+                                            onChange={(e) => setPricing(adminSettings.updatePricingConfig({ perAdultIncrement: Number(e.target.value) }))}
+                                        />
+                                        <span style={{ fontSize: '20px', fontWeight: 'bold', color: '#2d4a3e' }}>₺</span>
+                                    </div>
+                                    <p style={{ fontSize: '11px', color: '#888', marginTop: '8px' }}>2 yetişkinden sonraki her yetişkin için gecelik ek ücret.</p>
+                                </div>
+
+                                <div style={{ background: '#f8f9fa', padding: '20px', borderRadius: '12px', border: '1px solid #eef0f2' }}>
+                                    <label style={{ display: 'block', fontSize: '14px', fontWeight: 'bold', marginBottom: '8px', color: '#2d4a3e' }}>
+                                        Çocuk Farkı (Her Çocuk İçin)
+                                    </label>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                        <input
+                                            type="number"
+                                            className="form-control"
+                                            style={{ fontSize: '20px', fontWeight: 'bold', padding: '10px' }}
+                                            value={pricing.perChildIncrement}
+                                            onChange={(e) => setPricing(adminSettings.updatePricingConfig({ perChildIncrement: Number(e.target.value) }))}
+                                        />
+                                        <span style={{ fontSize: '20px', fontWeight: 'bold', color: '#2d4a3e' }}>₺</span>
+                                    </div>
+                                    <p style={{ fontSize: '11px', color: '#888', marginTop: '8px' }}>Yaş sınırına bakılmaksızın her çocuk için gecelik sabit ücret.</p>
+                                </div>
+                            </div>
+
+                            <table style={{ width: '100%', borderCollapse: 'collapse', background: '#fff' }}>
+                                <thead>
+                                    <tr style={{ textAlign: 'left', borderBottom: '2px solid #eee' }}>
+                                        <th style={{ padding: '15px' }}>Örnek Senaryo</th>
+                                        <th style={{ padding: '15px' }}>Hesaplama Formülü</th>
+                                        <th style={{ padding: '15px' }}>Ek Ücret</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr style={{ borderBottom: '1px solid #f0f0f0', background: '#eaf2ee' }}>
+                                        <td style={{ padding: '15px', fontWeight: 'bold' }}>2 Yetişkin</td>
+                                        <td style={{ padding: '15px', color: '#666' }}>Baz Fiyat</td>
+                                        <td style={{ padding: '15px', fontWeight: 'bold' }}>-</td>
+                                    </tr>
+                                    <tr style={{ borderBottom: '1px solid #f0f0f0' }}>
+                                        <td style={{ padding: '15px' }}>3 Yetişkin</td>
+                                        <td style={{ padding: '15px', color: '#666' }}>Baz + {pricing.perAdultIncrement} ₺</td>
+                                        <td style={{ padding: '15px', fontWeight: 'bold', color: '#2d4a3e' }}>+{pricing.perAdultIncrement} ₺</td>
+                                    </tr>
+                                    <tr style={{ borderBottom: '1px solid #f0f0f0' }}>
+                                        <td style={{ padding: '15px' }}>4 Yetişkin</td>
+                                        <td style={{ padding: '15px', color: '#666' }}>Baz + {pricing.perAdultIncrement * 2} ₺</td>
+                                        <td style={{ padding: '15px', fontWeight: 'bold', color: '#2d4a3e' }}>+{pricing.perAdultIncrement * 2} ₺</td>
+                                    </tr>
+                                    <tr style={{ borderBottom: '1px solid #f0f0f0' }}>
+                                        <td style={{ padding: '15px' }}>2 Yetişkin + 1 Çocuk</td>
+                                        <td style={{ padding: '15px', color: '#666' }}>Baz + {pricing.perChildIncrement} ₺</td>
+                                        <td style={{ padding: '15px', fontWeight: 'bold', color: '#2d4a3e' }}>+{pricing.perChildIncrement} ₺</td>
+                                    </tr>
+                                    <tr style={{ borderBottom: '1px solid #f0f0f0' }}>
+                                        <td style={{ padding: '15px' }}>3 Yetişkin + 1 Çocuk</td>
+                                        <td style={{ padding: '15px', color: '#666' }}>Baz + {pricing.perAdultIncrement} ₺ + {pricing.perChildIncrement} ₺</td>
+                                        <td style={{ padding: '15px', fontWeight: 'bold', color: '#2d4a3e' }}>+{pricing.perAdultIncrement + pricing.perChildIncrement} ₺</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
                 )}
 
                 {activeTab === 'bookings' && (
@@ -386,7 +690,7 @@ function AdminPage() {
                                             onClick={() => setBookingFilter(type)}
                                             style={{
                                                 background: bookingFilter === type ? 'white' : 'transparent',
-                                                color: bookingFilter === type ? '#003580' : '#666',
+                                                color: bookingFilter === type ? '#2d4a3e' : '#666',
                                                 border: 'none',
                                                 padding: '6px 16px',
                                                 borderRadius: '4px',
@@ -611,6 +915,165 @@ function AdminPage() {
                                         ))}
                                     </tbody>
                                 </table>
+                            </div>
+                        </div>
+                    </section>
+                )}
+
+                {activeTab === 'settings' && (
+                    <section className="settings-section" style={{ background: 'white', padding: '30px', borderRadius: '12px', border: '1px solid #ddd' }}>
+                        <h2 className="page-title">Tesis ve İçerik Yönetimi</h2>
+
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '40px' }}>
+
+                            {/* 1. Geniş Kapsamlı Ayarlar */}
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '30px' }}>
+                                <div className="settings-card" style={{ padding: '25px', background: '#f8fafc', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
+                                    <h3 style={{ fontSize: '18px', marginBottom: '20px', color: '#1a362d', display: 'flex', alignItems: 'center', gap: '10px' }}><SettingsIcon /> Kapasite ve Genel Bilgiler</h3>
+                                    <div className="form-group">
+                                        <label>Tesis Adı</label>
+                                        <input type="text" className="form-control" defaultValue="Ayder Kuzey Houses" />
+                                    </div>
+                                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
+                                        <div className="form-group">
+                                            <label>Maks. Yetişkin</label>
+                                            <input type="number" className="form-control" value={pricing.maxAdults} onChange={(e) => setPricing(adminSettings.updatePricingConfig({ maxAdults: Number(e.target.value) }))} />
+                                        </div>
+                                        <div className="form-group">
+                                            <label>Maks. Çocuk</label>
+                                            <input type="number" className="form-control" value={pricing.maxChildren} onChange={(e) => setPricing(adminSettings.updatePricingConfig({ maxChildren: Number(e.target.value) }))} />
+                                        </div>
+                                    </div>
+                                    <div className="form-group">
+                                        <label>Telefon</label>
+                                        <input type="text" className="form-control" defaultValue="+90 532 123 45 67" />
+                                    </div>
+                                    <div className="form-group" style={{ marginTop: '20px' }}>
+                                        <label>Ana Sayfa Kapak Fotoğrafı (Hero)</label>
+                                        <div style={{ display: 'flex', gap: '10px' }}>
+                                            <input
+                                                type="text"
+                                                className="form-control"
+                                                value={propertyData.heroImage}
+                                                onChange={(e) => setPropertyData(adminSettings.updatePropertyData({ heroImage: e.target.value }))}
+                                                placeholder="Resim URL'si"
+                                            />
+                                            {propertyData.heroImage && (
+                                                <div style={{ width: '60px', height: '40px', borderRadius: '4px', overflow: 'hidden', border: '1px solid #ddd' }}>
+                                                    <img src={propertyData.heroImage} alt="Hero Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="settings-card" style={{ padding: '25px', background: '#f8fafc', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
+                                    <h3 style={{ fontSize: '18px', marginBottom: '20px', color: '#1a362d', display: 'flex', alignItems: 'center', gap: '10px' }}><EditIcon /> Tesis Açıklaması</h3>
+                                    <textarea
+                                        className="form-control"
+                                        rows="6"
+                                        style={{ resize: 'none' }}
+                                        value={propertyData.description}
+                                        onChange={(e) => setPropertyData(adminSettings.updatePropertyData({ description: e.target.value }))}
+                                    ></textarea>
+                                    <p style={{ fontSize: '11px', color: '#64748b', marginTop: '10px' }}>Arama sonuçları ve ana sayfa üzerinde görünecek karşılama metni.</p>
+                                </div>
+                            </div>
+
+                            {/* 2. Olanaklar Yönetimi */}
+                            <div style={{ padding: '25px', background: '#fff', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
+                                <h3 style={{ fontSize: '18px', marginBottom: '20px', color: '#1a362d' }}>Öne Çıkan Olanaklar (Aminities)</h3>
+                                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', marginBottom: '20px' }}>
+                                    {propertyData.amenities.map(item => (
+                                        <div key={item.id} style={{ display: 'flex', alignItems: 'center', gap: '10px', background: '#f1f5f9', padding: '8px 15px', borderRadius: '30px', border: '1px solid #e2e8f0' }}>
+                                            <span style={{ fontSize: '14px', fontWeight: '600', color: '#334155' }}>{item.name}</span>
+                                            <button
+                                                onClick={() => {
+                                                    const updated = propertyData.amenities.filter(a => a.id !== item.id);
+                                                    setPropertyData(adminSettings.updatePropertyData({ amenities: updated }));
+                                                }}
+                                                style={{ border: 'none', background: 'none', color: '#94a3b8', cursor: 'pointer', padding: 0 }}
+                                            >&times;</button>
+                                        </div>
+                                    ))}
+                                </div>
+                                <div style={{ display: 'flex', gap: '10px', maxWidth: '400px' }}>
+                                    <input
+                                        type="text"
+                                        id="newAmenity"
+                                        className="form-control"
+                                        placeholder="Yeni olanak (örn: Kahvaltı)"
+                                        onKeyDown={(e) => {
+                                            if (e.key === 'Enter') {
+                                                const val = e.target.value;
+                                                if (val) {
+                                                    const updated = [...propertyData.amenities, { id: Date.now(), name: val, icon: 'info' }];
+                                                    setPropertyData(adminSettings.updatePropertyData({ amenities: updated }));
+                                                    e.target.value = '';
+                                                }
+                                            }
+                                        }}
+                                    />
+                                    <button
+                                        className="btn-primary"
+                                        onClick={() => {
+                                            const input = document.getElementById('newAmenity');
+                                            if (input.value) {
+                                                const updated = [...propertyData.amenities, { id: Date.now(), name: input.value, icon: 'info' }];
+                                                setPropertyData(adminSettings.updatePropertyData({ amenities: updated }));
+                                                input.value = '';
+                                            }
+                                        }}
+                                    >Ekle</button>
+                                </div>
+                            </div>
+
+                            {/* 3. Fotoğraf Galerisi */}
+                            <div style={{ padding: '25px', background: '#fff', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                                    <h3 style={{ fontSize: '18px', color: '#1a362d', margin: 0 }}>Site Fotoğraf Galerisi</h3>
+                                    <div style={{ display: 'flex', gap: '10px' }}>
+                                        <input
+                                            type="text"
+                                            id="newPhotoUrl"
+                                            placeholder="Fotoğraf URL'si ekleyin..."
+                                            className="form-control"
+                                            style={{ minWidth: '300px' }}
+                                        />
+                                        <button
+                                            className="btn-primary"
+                                            onClick={() => {
+                                                const input = document.getElementById('newPhotoUrl');
+                                                if (input.value) {
+                                                    const updated = [...propertyData.photos, input.value];
+                                                    setPropertyData(adminSettings.updatePropertyData({ photos: updated }));
+                                                    input.value = '';
+                                                }
+                                            }}
+                                        >Fotoğraf Ekle</button>
+                                    </div>
+                                </div>
+                                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '15px' }}>
+                                    {propertyData.photos.map((url, idx) => (
+                                        <div key={idx} style={{ position: 'relative', borderRadius: '8px', overflow: 'hidden', height: '140px', border: '1px solid #eee' }}>
+                                            <img src={url} alt={`Property ${idx}`} style={{ width: '100%', height: '100%', objectFit: 'crop' }} />
+                                            <button
+                                                onClick={() => {
+                                                    const updated = propertyData.photos.filter((_, i) => i !== idx);
+                                                    setPropertyData(adminSettings.updatePropertyData({ photos: updated }));
+                                                }}
+                                                style={{
+                                                    position: 'absolute', top: '5px', right: '5px',
+                                                    background: 'rgba(212, 17, 30, 0.8)', color: 'white',
+                                                    border: 'none', borderRadius: '50%', width: '24px', height: '24px',
+                                                    cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center'
+                                                }}
+                                            >
+                                                <TrashIcon />
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
                         </div>
                     </section>

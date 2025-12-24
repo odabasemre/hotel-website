@@ -1,12 +1,19 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { useCustomAvailability } from '../../hooks/useCustomAvailability'
+import { adminSettings } from '../../services/adminSettings'
 
 function Hero() {
     const { t } = useTranslation()
     const navigate = useNavigate()
     const { isDateBusy } = useCustomAvailability()
+    const [propertyData, setPropertyData] = useState(adminSettings.getPropertyData())
+
+    useEffect(() => {
+        // Refresh property data when component mounts
+        setPropertyData(adminSettings.getPropertyData())
+    }, [])
 
     const [bookingData, setBookingData] = useState({
         checkIn: '',
@@ -14,6 +21,8 @@ function Hero() {
         adults: '2',
         children: '0'
     })
+
+    // ... rest of state stays same ...
 
     const handleChange = (e) => {
         setBookingData({ ...bookingData, [e.target.name]: e.target.value })
@@ -43,10 +52,12 @@ function Hero() {
 
     const today = new Date().toISOString().split('T')[0]
 
+    const heroBg = propertyData.heroImage || "/images/hero/Gemini_Generated_Image_1e0ht31e0ht31e0h.png";
+
     return (
         <section className="hero" id="home">
             <div className="hero-background">
-                <img src="/images/hero/Gemini_Generated_Image_1e0ht31e0ht31e0h.png" alt="Hotel View" />
+                <img src={heroBg} alt="Hotel View" />
                 <div className="hero-overlay"></div>
             </div>
 

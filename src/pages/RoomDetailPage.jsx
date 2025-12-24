@@ -32,7 +32,8 @@ function RoomDetailPage() {
     const [currentDate, setCurrentDate] = useState(new Date())
     const [checkIn, setCheckIn] = useState(null)
     const [checkOut, setCheckOut] = useState(null)
-    const [guests, setGuests] = useState(2)
+    const [adults, setAdults] = useState(2)
+    const [children, setChildren] = useState(0)
     const [formData, setFormData] = useState({ firstName: '', lastName: '', phone: '', email: '', note: '' })
     const [nameError, setNameError] = useState('')
     const [dateError, setDateError] = useState('')
@@ -42,6 +43,10 @@ function RoomDetailPage() {
     const [promoCode, setPromoCode] = useState('')
     const [appliedDiscount, setAppliedDiscount] = useState(null)
     const [promoError, setPromoError] = useState('')
+
+    // Guest Flow State
+    const [isGuestConfirmed, setIsGuestConfirmed] = useState(!!location.state?.preSelect)
+    const [isGuestLocked, setIsGuestLocked] = useState(!!location.state?.preSelect)
 
     const { isDateBusy, getPriceForDate, settings } = useCustomAvailability();
 
@@ -55,7 +60,11 @@ function RoomDetailPage() {
                 setCurrentDate(cin);
             }
             if (pOut) setCheckOut(new Date(pOut));
-            if (pGuests) setGuests(Number(pGuests));
+            if (location.state.preSelect.adults) setAdults(Number(location.state.preSelect.adults));
+            if (location.state.preSelect.children !== undefined) setChildren(Number(location.state.preSelect.children));
+
+            setIsGuestConfirmed(true);
+            setIsGuestLocked(true);
         }
         window.scrollTo(0, 0);
     }, [location.state]);
@@ -66,7 +75,7 @@ function RoomDetailPage() {
         let total = 0;
         let temp = new Date(checkIn);
         while (temp < checkOut) {
-            total += getPriceForDate(temp);
+            total += getPriceForDate(temp, adults, children);
             temp.setDate(temp.getDate() + 1);
         }
         return total;
@@ -186,6 +195,11 @@ function RoomDetailPage() {
 
         if (!isPhoneValid) return;
 
+        if (!isGuestConfirmed) {
+            setDateError("Lütfen önce kişi sayısını onaylayın.");
+            return;
+        }
+
         if (!checkIn || !checkOut) {
             setDateError(t('booking.selectDatesError'));
             return;
@@ -198,7 +212,9 @@ function RoomDetailPage() {
                     name: `${formData.firstName} ${formData.lastName}`, // Combine for backward compatibility
                     checkIn: checkIn.toISOString(),
                     checkOut: checkOut.toISOString(),
-                    guests,
+                    adults,
+                    children,
+                    guests: adults + children,
                     discount: appliedDiscount,
                     totalPrice: calculateFinalTotal()
                 }
@@ -217,26 +233,38 @@ function RoomDetailPage() {
                     </div>
 
                     <div className="booking-grid">
-                        <div className="calendar-section">
+                        <div className={`calendar-section ${!isGuestConfirmed ? 'calendar-locked' : ''}`}>
+                            {!isGuestConfirmed && (
+                                <div className="calendar-lock-overlay">
+                                    <p>Lütfen devam etmek için önce kişi sayısını seçip onaylayın.</p>
+                                </div>
+                            )}
                             <div className="calendar-header">
-                                <button onClick={prevMonth}><ChevronLeftIcon /></button>
+                                <button type="button" onClick={prevMonth}><ChevronLeftIcon /></button>
                                 <span>{currentDate.toLocaleString(i18n.language, { month: 'long', year: 'numeric' })}</span>
-                                <button onClick={nextMonth}><ChevronRightIcon /></button>
+                                <button type="button" onClick={nextMonth}><ChevronRightIcon /></button>
                             </div>
                             <div className="calendar-grid detailed">
                                 {['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz'].map(day => <div key={day} className="calendar-day-name">{day}</div>)}
                                 {emptyDays.map(i => <div key={`empty-${i}`} className="calendar-day empty"></div>)}
                                 {days.map(day => {
                                     const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
+                                    const today = new Date(); today.setHours(0, 0, 0, 0);
+                                    const isPast = date < today;
                                     const isBusy = isDateBusy(date);
-                                    const price = getPriceForDate(date);
-                                    let className = `calendar-day ${isDateSelected(day) ? 'selected' : ''} ${isBusy ? 'busy' : ''}`;
+                                    const price = getPriceForDate(date, adults, children);
+                                    let className = `calendar-day ${isDateSelected(day) ? 'selected' : ''} ${isBusy ? 'busy' : ''} ${isPast ? 'past-date' : ''}`;
 
                                     return (
-                                        <div key={day} className={className} onClick={() => !isBusy && handleDateClick(day)}>
+                                        <div
+                                            key={day}
+                                            className={className}
+                                            onClick={() => !isBusy && !isPast && isGuestConfirmed && handleDateClick(day)}
+                                            style={isPast ? { cursor: 'default', opacity: 0.5 } : {}}
+                                        >
                                             <span className="day-num">{day}</span>
-                                            {!isBusy && <span className="day-price">{price.toLocaleString()}₺</span>}
-                                            {isBusy && <span className="day-price busy-label">DOLU</span>}
+                                            {!isBusy && !isPast && isGuestConfirmed && <span className="day-price">{price.toLocaleString()}₺</span>}
+                                            {isBusy && !isPast && isGuestConfirmed && <span className="day-price busy-label">DOLU</span>}
                                         </div>
                                     )
                                 })}
@@ -244,6 +272,19 @@ function RoomDetailPage() {
                         </div>
 
                         <div className="booking-form-section">
+                            {/* Amenities / Olanaklar Section */}
+                            <div className="amenities-summary-card" style={{ background: '#fff', padding: '20px', borderRadius: '12px', border: '1px solid #e2e8f0', marginBottom: '20px' }}>
+                                <h3 style={{ fontSize: '16px', color: '#1a362d', marginBottom: '15px', fontWeight: '700' }}>Tesis Olanakları</h3>
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                                    {adminSettings.getPropertyData().amenities.map(amenity => (
+                                        <div key={amenity.id} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: '#475569' }}>
+                                            <span style={{ color: '#22c55e', fontSize: '16px' }}>✓</span>
+                                            {amenity.name}
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
                             <form onSubmit={handleSubmit} className="booking-form">
                                 <div className="reservation-summary-card">
                                     <h3>Rezervasyon Özeti</h3>
@@ -363,13 +404,56 @@ function RoomDetailPage() {
                                         placeholder={t('booking.phonePlaceholder')}
                                     />
                                 </div>
-                                <div className="form-group">
-                                    <label>{t('booking.guests')}</label>
-                                    <div className="guests-input">
-                                        <button type="button" onClick={() => setGuests(Math.max(1, guests - 1))}>-</button>
-                                        <span>{guests}</span>
-                                        <button type="button" onClick={() => setGuests(Math.min(7, guests + 1))}>+</button>
+                                <div className={`form-group guest-selection-box ${isGuestLocked ? 'locked' : ''} ${!isGuestConfirmed ? 'highlight' : ''}`} style={{ border: 'none', background: 'transparent', padding: 0 }}>
+                                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '15px' }}>
+                                        <div className="guest-sub-selection">
+                                            <label style={{ fontSize: '13px', color: '#64748b', marginBottom: '8px', display: 'block' }}>Yetişkin (Maks 6)</label>
+                                            <div className="guests-input" style={{ width: '100%', justifyContent: 'space-between' }}>
+                                                <button type="button" onClick={() => !isGuestLocked && setAdults(Math.max(1, adults - 1))} disabled={isGuestLocked || adults <= 1}>-</button>
+                                                <span style={{ fontWeight: '700', fontSize: '1.1rem' }}>{adults}</span>
+                                                <button type="button" onClick={() => !isGuestLocked && (adults + children < 8) && adults < 6 && setAdults(adults + 1)} disabled={isGuestLocked || adults >= 6 || (adults + children >= 8)}>+</button>
+                                            </div>
+                                        </div>
+                                        <div className="guest-sub-selection">
+                                            <label style={{ fontSize: '13px', color: '#64748b', marginBottom: '8px', display: 'block' }}>Çocuk (Maks 3)</label>
+                                            <div className="guests-input" style={{ width: '100%', justifyContent: 'space-between' }}>
+                                                <button type="button" onClick={() => !isGuestLocked && setChildren(Math.max(0, children - 1))} disabled={isGuestLocked || children <= 0}>-</button>
+                                                <span style={{ fontWeight: '700', fontSize: '1.1rem' }}>{children}</span>
+                                                <button type="button" onClick={() => !isGuestLocked && (adults + children < 8) && children < 3 && setChildren(children + 1)} disabled={isGuestLocked || children >= 3 || (adults + children >= 8)}>+</button>
+                                            </div>
+                                        </div>
                                     </div>
+
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '15px', padding: '15px', background: isGuestConfirmed ? '#f8fafc' : '#f0fdf4', borderRadius: '12px', border: isGuestConfirmed ? '1px solid #e2e8f0' : '2px solid #22c55e' }}>
+                                        {!isGuestConfirmed && (
+                                            <button
+                                                type="button"
+                                                className="confirm-guests-btn"
+                                                onClick={() => {
+                                                    setIsGuestConfirmed(true);
+                                                    setIsGuestLocked(true);
+                                                }}
+                                                style={{ flex: 1 }}
+                                            >
+                                                Kişi Sayısını Onayla
+                                            </button>
+                                        )}
+                                        {isGuestConfirmed && (
+                                            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                                                <span style={{ fontSize: '12px', color: '#1a362d', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                                                    <span style={{ width: '6px', height: '6px', background: '#22c55e', borderRadius: '50%' }}></span>
+                                                    {location.state?.preSelect ? 'Ana sayfada seçildi' : 'Seçildi'}
+                                                </span>
+                                                <span style={{ fontSize: '11px', color: '#64748b' }}>{adults} Yetişkin, {children} Çocuk</span>
+                                            </div>
+                                        )}
+                                        {isGuestLocked && !location.state?.preSelect && isGuestConfirmed && (
+                                            <span style={{ fontSize: '11px', color: '#94a3b8' }}>Kilitlendi</span>
+                                        )}
+                                    </div>
+                                    {(adults + children >= 8) && !isGuestLocked && (
+                                        <p style={{ color: '#f59e0b', fontSize: '11px', marginTop: '8px', fontWeight: '500' }}>⚠️ Maksimum kapasite (8 kişi) dolmuştur.</p>
+                                    )}
                                 </div>
                                 <button type="submit" className="submit-booking-btn">
                                     <span className="icon"><CreditCardIcon /></span>
@@ -380,7 +464,7 @@ function RoomDetailPage() {
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     )
 }
 

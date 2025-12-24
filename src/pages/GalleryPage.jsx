@@ -1,10 +1,17 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import '../styles/pages/gallery-page.css'
-import { galleryImages } from '../data/galleryData'
+import { galleryImages as fallbackImages } from '../data/galleryData'
+import { adminSettings } from '../services/adminSettings'
 
 function GalleryPage() {
     const { t } = useTranslation()
+    const [propertyData] = useState(adminSettings.getPropertyData())
+
+    // Combine admin photos with fallback if admin hasn't set any, or just use admin
+    const displayImages = propertyData.photos && propertyData.photos.length > 0
+        ? propertyData.photos.map(src => ({ src, alt: 'Tesis Fotoğrafı', caption: 'Ayder Kuzey' }))
+        : fallbackImages
 
     // Scroll to top on mount
     useEffect(() => {
@@ -20,7 +27,7 @@ function GalleryPage() {
                 </div>
 
                 <div className="gallery-page-grid">
-                    {galleryImages.map((image, index) => (
+                    {displayImages.map((image, index) => (
                         <div className="gallery-page-item" key={index}>
                             <img src={image.src} alt={image.alt} loading="lazy" />
                             <div className="gallery-page-overlay">
