@@ -76,17 +76,18 @@
 }
 
 .booking-bar-form {
-    background: rgba(255, 255, 255, 0.06);
-    /* Daha da şeffaf */
-    backdrop-filter: blur(15px);
+    background: rgba(0, 0, 0, 0.35);
+    /* Daha koyu ve premium cam efekti */
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 20px 20px 20px 40px;
-    border-radius: 8px;
-    /* Keskin Dikdörtgen Hatlar */
+    padding: 10px 10px 10px 40px;
+    border-radius: 100px;
+    /* Oval Hatlar */
     display: flex;
     align-items: center;
     gap: 20px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
 }
 
 .bar-field {
@@ -102,24 +103,133 @@
 }
 
 .bar-field label {
-    font-size: 0.6rem;
+    font-size: 0.65rem;
     font-weight: 800;
-    color: #d4a373;
+    color: var(--color-accent);
     /* Modern Altın Tonlu Etiketler */
     text-transform: uppercase;
     margin-bottom: 5px;
     letter-spacing: 1.5px;
 }
 
-.bar-field input,
-.bar-field select {
+/* Guest Selector Styling */
+.guest-field-wrapper {
+    position: relative;
+    cursor: pointer;
+}
+
+.guest-trigger {
+    width: 100%;
+}
+
+.guest-summary {
+    color: white;
+    font-weight: 500;
+    font-size: 1.1rem;
+    margin-top: 2px;
+}
+
+.guest-panel {
+    position: absolute;
+    top: calc(100% + 15px);
+    right: 0;
+    width: 280px;
+    background: rgba(18, 18, 18, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.guest-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.guest-label-group .main-lab {
+    display: block;
+    font-weight: 600;
+    color: white;
+    font-size: 1rem;
+}
+
+.guest-controls {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.guest-controls button {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: transparent;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 1.2rem;
+    line-height: 1;
+}
+
+.guest-controls button:hover:not(:disabled) {
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+}
+
+.guest-controls button:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.guest-controls span {
+    color: white;
+    font-weight: 600;
+    font-size: 1.1rem;
+    min-width: 20px;
+    text-align: center;
+}
+
+.guest-panel-close {
+    background: var(--color-accent);
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 30px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    margin-top: 5px;
+    transition: all 0.3s ease;
+}
+
+.guest-panel-close:hover {
+    background: var(--color-accent-light);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(197, 163, 93, 0.3);
+}
+
+.bar-field input {
     background: transparent;
     border: none;
     color: white;
     font-weight: 500;
-    font-size: 1.05rem;
+    font-size: 1.1rem;
     outline: none;
     cursor: pointer;
+    width: 100%;
 }
 
 .bar-field input::-webkit-calendar-picker-indicator {
@@ -128,33 +238,27 @@
 }
 
 .bar-submit-btn {
-    background: #d4a373;
+    background: var(--color-accent);
     color: white;
     border: none;
-    padding: 16px 45px;
-    border-radius: 4px;
-    /* Dikdörtgen Buton */
+    padding: 18px 45px;
+    border-radius: 100px;
+    /* Oval Buton */
     font-weight: 700;
     font-size: 1rem;
     text-transform: uppercase;
     letter-spacing: 1px;
     cursor: pointer;
-    transition: all 0.3s;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .bar-submit-btn:hover {
-    background: #b88b5c;
-    box-shadow: 0 0 20px rgba(212, 163, 115, 0.4);
+    background: var(--color-accent-light);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(197, 163, 93, 0.3);
 }
 
 @media (max-width: 992px) {
     .hero-title-premium {
         font-size: 2.8rem;
     }
-
-    .booking-bar-form {
-        flex-direction: column;
-        border-radius: 12px;
-        padding: 30px;
-    }
-}

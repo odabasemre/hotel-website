@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { useCustomAvailability } from '../../hooks/useCustomAvailability'
@@ -18,14 +18,40 @@ function Hero() {
     const [bookingData, setBookingData] = useState({
         checkIn: '',
         checkOut: '',
-        adults: '2',
-        children: '0'
+        adults: 2,
+        children: 0
     })
+
+    const [showGuestPanel, setShowGuestPanel] = useState(false)
+    const guestPanelRef = useRef(null)
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (guestPanelRef.current && !guestPanelRef.current.contains(event.target)) {
+                setShowGuestPanel(false)
+            }
+        }
+        document.addEventListener('mousedown', handleClickOutside)
+        return () => document.removeEventListener('mousedown', handleClickOutside)
+    }, [])
 
     // ... rest of state stays same ...
 
     const handleChange = (e) => {
         setBookingData({ ...bookingData, [e.target.name]: e.target.value })
+    }
+
+    const updateCount = (type, action) => {
+        setBookingData(prev => {
+            const current = Number(prev[type])
+            let next = action === 'inc' ? current + 1 : current - 1
+
+            if (type === 'adults' && next < 1) next = 1
+            if (type === 'children' && next < 0) next = 0
+            if (next > 10) next = 10
+
+            return { ...prev, [type]: next }
+        })
     }
 
     const handleSubmit = (e) => {
@@ -80,18 +106,43 @@ function Hero() {
                             <input type="date" name="checkOut" value={bookingData.checkOut} onChange={handleChange} min={bookingData.checkIn || today} required />
                         </div>
 
-                        <div className="bar-field">
-                            <label>{t('booking.adults')}</label>
-                            <select name="adults" value={bookingData.adults} onChange={handleChange}>
-                                {[1, 2, 3, 4, 5].map(num => <option key={num} value={num}>{num}</option>)}
-                            </select>
-                        </div>
+                        <div className="bar-field guest-field-wrapper" ref={guestPanelRef}>
+                            <div className="guest-trigger" onClick={() => setShowGuestPanel(!showGuestPanel)}>
+                                <label>{t('booking.guests')}</label>
+                                <div className="guest-summary">
+                                    {bookingData.adults} {t('booking.adults')}, {bookingData.children} {t('booking.children')}
+                                </div>
+                            </div>
 
-                        <div className="bar-field">
-                            <label>{t('booking.children')}</label>
-                            <select name="children" value={bookingData.children} onChange={handleChange}>
-                                {[0, 1, 2, 3, 4].map(num => <option key={num} value={num}>{num}</option>)}
-                            </select>
+                            {showGuestPanel && (
+                                <div className="guest-panel">
+                                    <div className="guest-row">
+                                        <div className="guest-label-group">
+                                            <span className="main-lab">{t('booking.adults')}</span>
+                                        </div>
+                                        <div className="guest-controls">
+                                            <button type="button" onClick={(e) => { e.stopPropagation(); updateCount('adults', 'dec'); }} disabled={bookingData.adults <= 1}>−</button>
+                                            <span>{bookingData.adults}</span>
+                                            <button type="button" onClick={(e) => { e.stopPropagation(); updateCount('adults', 'inc'); }}>+</button>
+                                        </div>
+                                    </div>
+
+                                    <div className="guest-row">
+                                        <div className="guest-label-group">
+                                            <span className="main-lab">{t('booking.children')}</span>
+                                        </div>
+                                        <div className="guest-controls">
+                                            <button type="button" onClick={(e) => { e.stopPropagation(); updateCount('children', 'dec'); }} disabled={bookingData.children <= 0}>−</button>
+                                            <span>{bookingData.children}</span>
+                                            <button type="button" onClick={(e) => { e.stopPropagation(); updateCount('children', 'inc'); }}>+</button>
+                                        </div>
+                                    </div>
+
+                                    <button type="button" className="guest-panel-close" onClick={() => setShowGuestPanel(false)}>
+                                        {t('common.done') || 'Tamam'}
+                                    </button>
+                                </div>
+                            )}
                         </div>
 
                         <button type="submit" className="bar-submit-btn">

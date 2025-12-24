@@ -12,7 +12,7 @@ const defaultSettings = {
 };
 
 const defaultPropertyData = {
-    heroImage: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80',
+    heroImage: '/images/hero/Gemini_Generated_Image_1e0ht31e0ht31e0h.png',
     photos: [
         'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80',
         'https://images.unsplash.com/photo-1618773928121-c32242e63f39?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',

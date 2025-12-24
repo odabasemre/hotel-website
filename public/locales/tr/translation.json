@@ -1,6 +1,7 @@
 {
     "common": {
-        "loading": "Yükleniyor..."
+        "loading": "Yükleniyor...",
+        "done": "Tamam"
     },
     "nav": {
         "home": "Ana Sayfa",
