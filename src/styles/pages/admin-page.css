@@ -108,61 +108,130 @@ body {
 }
 
 .page-header {
-    margin-bottom: 24px;
+    margin-bottom: 28px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(45, 74, 62, 0.08);
 }
 
 .page-title {
-    font-size: 24px;
-    font-weight: 700;
-    margin-bottom: 16px;
+    font-size: 26px;
+    font-weight: 800;
+    margin-bottom: 8px;
+    color: var(--b-green-dark);
+    letter-spacing: -0.5px;
 }
 
-/* --- Controls Bar --- */
+.page-subtitle {
+    font-size: 14px;
+    color: var(--b-text-gray);
+    margin: 0;
+}
+
+/* --- Controls Bar - Modern Edition --- */
 .controls-bar {
-    background: white;
-    border: 1px solid var(--b-border);
-    padding: 16px;
-    border-radius: 4px;
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafb 100%);
+    border: 1px solid rgba(45, 74, 62, 0.1);
+    padding: 20px 24px;
+    border-radius: 16px;
     margin-bottom: 24px;
     display: flex;
-    gap: 16px;
+    gap: 20px;
     align-items: center;
     flex-wrap: wrap;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
 }
 
 .date-range-picker {
     display: flex;
     align-items: center;
-    gap: 10px;
-    border: 1px solid var(--b-text-gray);
-    padding: 8px 12px;
-    border-radius: 4px;
+    gap: 12px;
+    border: 1px solid rgba(45, 74, 62, 0.15);
+    padding: 10px 16px;
+    border-radius: 12px;
     background: white;
+    transition: all 0.2s ease;
+}
+
+.date-range-picker:hover {
+    border-color: var(--b-green-dark);
+    box-shadow: 0 2px 8px rgba(45, 74, 62, 0.1);
+}
+
+.date-range-picker input[type="date"] {
+    border: none;
+    background: transparent;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--b-text-dark);
+    cursor: pointer;
+}
+
+.date-range-picker input[type="date"]:focus {
+    outline: none;
+}
+
+.date-range-picker span {
+    color: var(--b-text-gray);
+    font-weight: 500;
 }
 
 .view-mode-selector {
-    padding: 8px 12px;
-    border-radius: 4px;
-    border: 1px solid var(--b-border);
-    min-width: 150px;
+    padding: 12px 16px;
+    border-radius: 12px;
+    border: 1px solid rgba(45, 74, 62, 0.15);
+    min-width: 160px;
+    font-size: 14px;
+    font-weight: 500;
+    background: white;
+    color: var(--b-text-dark);
+    cursor: pointer;
+    transition: all 0.2s ease;
 }
 
-/* --- Calendar Grid Container --- */
+.view-mode-selector:hover {
+    border-color: var(--b-green-dark);
+}
+
+.view-mode-selector:focus {
+    outline: none;
+    border-color: var(--b-green-dark);
+    box-shadow: 0 0 0 3px rgba(45, 74, 62, 0.1);
+}
+
+/* --- Calendar Grid Container - Modern Edition --- */
 .calendar-container {
-    background: white;
-    border: 1px solid var(--b-border);
-    border-radius: 4px;
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafb 100%);
+    border: 1px solid rgba(45, 74, 62, 0.1);
+    border-radius: 16px;
     overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    box-shadow:
+        0 4px 20px rgba(0, 0, 0, 0.05),
+        0 1px 3px rgba(0, 0, 0, 0.03);
 }
 
 .calendar-scroll-wrapper {
     overflow-x: auto;
     position: relative;
     width: 100%;
+    scrollbar-width: thin;
+    scrollbar-color: var(--b-green-dark) #f0f2f5;
+}
+
+.calendar-scroll-wrapper::-webkit-scrollbar {
+    height: 8px;
+}
+
+.calendar-scroll-wrapper::-webkit-scrollbar-track {
+    background: #f0f2f5;
+    border-radius: 10px;
+}
+
+.calendar-scroll-wrapper::-webkit-scrollbar-thumb {
+    background: linear-gradient(90deg, var(--b-green-dark), var(--b-green-light));
+    border-radius: 10px;
 }
 
 .calendar-table {
@@ -170,22 +239,21 @@ body {
     border-spacing: 0;
     min-width: 100%;
     table-layout: fixed;
-    /* Essential for alignment */
 }
 
-/* Header Cells */
+/* Header Cells - Modern */
 .calendar-table th {
-    background: white;
-    border-bottom: 1px solid var(--b-border);
-    border-right: 1px solid var(--b-border);
-    padding: 10px 5px;
+    background: linear-gradient(180deg, #ffffff 0%, #fafbfc 100%);
+    border-bottom: 1px solid rgba(45, 74, 62, 0.08);
+    border-right: 1px solid rgba(45, 74, 62, 0.05);
+    padding: 12px 6px;
     text-align: center;
-    width: 60px;
-    /* Fixed width for day columns */
-    min-width: 60px;
+    width: 70px;
+    min-width: 70px;
     font-size: 13px;
     position: relative;
     box-sizing: border-box;
+    transition: background 0.2s ease;
 }
 
 .th-month-row th {
@@ -197,27 +265,46 @@ body {
 }
 
 .th-date-row th {
-    height: 48px;
+    height: 56px;
     vertical-align: middle;
     box-sizing: border-box;
+    transition: all 0.2s ease;
+}
+
+.th-date-row th:hover {
+    background: rgba(45, 74, 62, 0.03);
 }
 
 .th-day-name {
     display: block;
     color: var(--b-text-gray);
-    font-size: 11px;
+    font-size: 10px;
     text-transform: uppercase;
-    margin-bottom: 2px;
+    margin-bottom: 4px;
+    letter-spacing: 0.5px;
+    font-weight: 600;
 }
 
 .th-day-date {
     display: block;
     font-weight: 700;
-    font-size: 14px;
+    font-size: 15px;
+    color: var(--b-text-dark);
+    line-height: 1.2;
 }
 
 .weekend {
-    background-color: #fcfcfc !important;
+    background-color: #fef7f0 !important;
+    /* Opaque turuncu-bej ton */
+}
+
+.th-date-row th.weekend {
+    background-color: #fef7f0 !important;
+    /* Hafta sonu için opaque arka plan */
+}
+
+.weekend .th-day-date {
+    color: #ea580c;
 }
 
 /* Sticky Column (Room Info & Row Labels) */
@@ -233,111 +320,154 @@ body {
     box-sizing: border-box;
 }
 
+/* === STICKY HEADER FIX - Dikey scroll'da yazıların üst üste binmesini önle === */
 .calendar-table thead th {
     position: sticky;
     z-index: 30;
-    background: white;
+    background-color: #ffffff !important;
+    /* Opaque beyaz arka plan */
     box-sizing: border-box;
     border-bottom: 1px solid var(--b-border) !important;
+    /* Alttan gelen içeriği gizlemek için gölge */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
 }
 
-/* Row 1: Months */
+/* Row 1: Oda Bilgisi ve Aylar - En üstte sabit */
 .th-room-info-row th {
-    top: 120px;
+    top: 0;
     height: 50px;
     padding: 8px 15px !important;
+    background-color: #f8f9fa !important;
+    /* Mat gri arka plan */
+    z-index: 32;
 }
 
-/* Row 2: Days */
+/* Row 2: Günler - İlk satırın altında */
 .th-date-row th {
-    top: 170px;
-    /* 120px + 50px */
-    height: 48px;
+    top: 50px;
+    /* İlk satırın yüksekliği kadar */
+    height: 56px;
+    background-color: #ffffff !important;
+    /* Mat beyaz arka plan */
+    z-index: 31;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
 }
 
+/* Sol sabit sütun - En yüksek z-index */
 .calendar-table thead th.sticky-col {
-    z-index: 40;
+    z-index: 50;
+    /* Diğer tüm başlıklardan üstte */
     left: 0;
+    background-color: #f8f9fa !important;
 }
 
 .th-room-header {
-    background: #fdfdfd !important;
+    background: linear-gradient(135deg, #f8faf9 0%, #ffffff 100%) !important;
     text-align: left !important;
-    padding: 10px 15px !important;
+    padding: 16px 20px !important;
     font-weight: 700;
-    font-size: 14px;
-    border-bottom: 1px solid var(--b-border) !important;
+    font-size: 15px;
+    color: var(--b-green-dark);
+    border-bottom: 1px solid rgba(45, 74, 62, 0.1) !important;
     display: table-cell;
     vertical-align: middle;
+}
+
+.th-room-header span {
+    font-size: 11px;
+    font-weight: 500;
+    color: #888;
+    display: block;
+    margin-top: 4px;
+    letter-spacing: 0.3px;
 }
 
 .month-group-header {
-    background: #f9f9f9 !important;
-    border-bottom: 1px solid var(--b-border) !important;
+    background: linear-gradient(180deg, #f0f4f2 0%, #f8fafa 100%) !important;
+    border-bottom: 1px solid rgba(45, 74, 62, 0.08) !important;
     text-align: left !important;
-    padding-left: 15px !important;
+    padding: 12px 18px !important;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--b-green-dark);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .sub-label-header {
-    background: #fff !important;
+    background: linear-gradient(180deg, #fafbfc 0%, #ffffff 100%) !important;
     font-weight: 600;
-    color: #444;
+    color: #555;
     font-size: 12px;
-    height: 48px;
-    border-bottom: 2px solid #ddd !important;
+    height: 56px;
+    border-bottom: 2px solid rgba(45, 74, 62, 0.15) !important;
+    letter-spacing: 0.3px;
 }
 
-/* Rows */
+/* Rows - Modern Edition */
 .row-label-cell {
-    padding: 0 15px;
+    padding: 0 20px;
     text-align: left;
     font-size: 13px;
     color: var(--b-text-dark);
-    height: 56px;
-    /* Increased for better visibility */
+    height: 52px;
     vertical-align: middle;
-    border-bottom: 1px solid var(--b-border);
+    border-bottom: 1px solid rgba(45, 74, 62, 0.06);
     box-sizing: border-box;
     display: table-cell;
     font-weight: 600;
+    background: linear-gradient(90deg, #ffffff 0%, #fafbfc 100%);
 }
 
 .row-label-text {
-    font-weight: 500;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .data-cell {
-    border-right: 1px solid var(--b-border);
-    border-bottom: 1px solid var(--b-border);
-    padding: 0;
-    height: 56px;
-    /* Increased for better control visibility */
+    border-right: 1px solid rgba(45, 74, 62, 0.04);
+    border-bottom: 1px solid rgba(45, 74, 62, 0.06);
+    padding: 4px;
+    height: 52px;
     vertical-align: middle;
     text-align: center;
     position: relative;
-    transition: background 0.1s;
+    transition: all 0.2s ease;
     box-sizing: border-box;
+    background: #ffffff;
 }
 
 .data-cell:hover {
-    border: 2px solid var(--b-blue-light);
+    background: rgba(45, 74, 62, 0.03);
+    transform: scale(1.02);
     z-index: 5;
+    box-shadow: 0 2px 8px rgba(45, 74, 62, 0.1);
 }
 
-/* Inputs & Selects inside cells */
+/* Inputs & Selects inside cells - Modern */
 .cell-input {
     width: 100%;
     height: 100%;
     border: none;
     text-align: center;
-    font-size: 13px;
+    font-size: 14px;
     background: transparent;
-    font-weight: 500;
+    font-weight: 600;
+    color: var(--b-text-dark);
+    border-radius: 8px;
+    transition: all 0.2s ease;
 }
 
 .cell-input:focus {
     outline: none;
-    background: #f0f7ff;
+    background: linear-gradient(135deg, #f0f7ff 0%, #e8f4fd 100%);
+    box-shadow: inset 0 0 0 2px rgba(45, 74, 62, 0.2);
+}
+
+.cell-input:hover {
+    background: rgba(45, 74, 62, 0.03);
 }
 
 .cell-select {
@@ -345,67 +475,103 @@ body {
     height: 100%;
     border: none;
     text-align: center;
-    font-size: 13px;
+    font-size: 12px;
     background: transparent;
     cursor: pointer;
     font-weight: 700;
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
-    padding: 0 8px;
+    padding: 4px 8px;
     color: inherit;
+    border-radius: 8px;
+    transition: all 0.2s ease;
 }
 
 .cell-select:hover {
-    background: rgba(45, 74, 62, 0.05);
+    background: rgba(45, 74, 62, 0.08);
+    transform: scale(1.02);
 }
 
 .cell-select:focus {
-    outline: 2px solid var(--b-green-dark);
-    outline-offset: -2px;
+    outline: none;
+    box-shadow: inset 0 0 0 2px var(--b-green-dark);
     background: rgba(45, 74, 62, 0.1);
 }
 
-/* Status Colors */
+/* Status Colors - Modern Gradients */
 .status-open {
-    background-color: var(--b-green-bg);
+    background: linear-gradient(135deg, #e8f5e9 0%, #f1f8f2 100%);
+    color: var(--b-green);
+}
+
+.status-open .cell-select {
     color: var(--b-green);
 }
 
 .status-closed {
-    background-color: var(--b-red-bg);
+    background: linear-gradient(135deg, #ffebee 0%, #fff5f5 100%);
+    color: var(--b-red);
+}
+
+.status-closed .cell-select {
     color: var(--b-red);
 }
 
 .cell-sold-out {
-    background-color: var(--b-red) !important;
+    background: linear-gradient(135deg, #d32f2f 0%, #ef5350 100%) !important;
     color: white !important;
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.1);
 }
 
-/* Action Buttons */
+.cell-sold-out .cell-select {
+    color: white;
+}
+
+/* Action Buttons - Modern Edition */
 .btn-primary {
-    background-color: var(--b-green-dark);
+    background: linear-gradient(135deg, var(--b-green-dark) 0%, var(--b-green-light) 100%);
     color: white;
     border: none;
-    padding: 10px 20px;
-    border-radius: 4px;
+    padding: 12px 24px;
+    border-radius: 12px;
     font-weight: 600;
+    font-size: 14px;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(45, 74, 62, 0.25);
+    text-transform: none;
+    letter-spacing: 0.3px;
 }
 
 .btn-primary:hover {
-    background-color: var(--b-green-light);
+    background: linear-gradient(135deg, var(--b-green-light) 0%, var(--b-green-dark) 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(45, 74, 62, 0.35);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(45, 74, 62, 0.3);
 }
 
 .btn-secondary {
-    background-color: transparent;
+    background: transparent;
     color: var(--b-green-dark);
-    border: 1px solid var(--b-green-dark);
-    padding: 8px 16px;
-    border-radius: 4px;
+    border: 2px solid var(--b-green-dark);
+    padding: 10px 20px;
+    border-radius: 12px;
     font-weight: 600;
+    font-size: 14px;
     cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+    background: var(--b-green-dark);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(45, 74, 62, 0.2);
 }
 
 /* Bulk Edit Modal */
@@ -491,23 +657,44 @@ body {
     font-weight: 700;
 }
 
-/* --- Dynamic Pricing Styles --- */
+/* --- Dynamic Pricing Styles - Modern Edition --- */
 .parent-row {
-    background-color: #fcfcfc;
+    background: linear-gradient(90deg, #f8faf9 0%, #ffffff 100%);
 }
 
 .parent-row .row-label-text {
     font-weight: 700;
     color: var(--b-green-dark);
+    font-size: 14px;
+}
+
+.parent-row .data-cell {
+    background: linear-gradient(135deg, #f0f4f2 0%, #fafcfb 100%);
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--b-green-dark);
 }
 
 .guest-price-row {
-    background-color: #fafafa;
+    background: linear-gradient(90deg, #fafbfc 0%, #ffffff 100%);
+}
+
+.guest-price-row:hover {
+    background: linear-gradient(90deg, #f5f7f6 0%, #fafafa 100%);
 }
 
 .guest-price-row .data-cell {
-    background-color: transparent;
-    border-bottom: 1px dashed #eee;
+    background: transparent;
+    border-bottom: 1px dashed rgba(45, 74, 62, 0.1);
+    font-size: 13px;
+    color: #666;
+    transition: all 0.2s ease;
+}
+
+.guest-price-row .data-cell:hover {
+    background: rgba(45, 74, 62, 0.04);
+    color: var(--b-green-dark);
+    font-weight: 600;
 }
 
 .pricing-section table th {

@@ -1,16 +1,19 @@
 import { Suspense, useEffect } from 'react'
 import { Routes, Route, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import Header from './components/common/Header'
-import Footer from './components/common/Footer'
-import Home from './pages/Home'
-import GalleryPage from './pages/GalleryPage'
-import ContactPage from './pages/ContactPage'
-import AboutPage from './pages/AboutPage'
-import RoomsPage from './pages/RoomsPage'
-import RoomDetailPage from './pages/RoomDetailPage'
-import AdminPage from './pages/AdminPage'
-import CheckoutPage from './pages/CheckoutPage'
+
+// Layout Components
+import { Header, Footer } from '@components/layout'
+
+// Pages
+import Home from '@pages/Home'
+import GalleryPage from '@pages/GalleryPage'
+import ContactPage from '@pages/ContactPage'
+import AboutPage from '@pages/AboutPage'
+import RoomsPage from '@pages/RoomsPage'
+import RoomDetailPage from '@pages/RoomDetailPage'
+import AdminPage from '@pages/AdminPage'
+import CheckoutPage from '@pages/CheckoutPage'
 
 // Loading component
 const Loading = () => (

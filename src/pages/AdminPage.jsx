@@ -366,7 +366,10 @@ function AdminPage() {
                 {activeTab === 'inventory' && (
                     <>
                         <div className="page-header">
-                            <h2 className="page-title">Takvim</h2>
+                            <div>
+                                <h2 className="page-title">📅 Fiyat & Kontenjan Takvimi</h2>
+                                <p className="page-subtitle">Günlük fiyatları ve oda durumlarını bu ekrandan yönetebilirsiniz.</p>
+                            </div>
                             <div className="view-selector">
                                 <select className="view-mode-selector">
                                     <option>Liste görünümü</option>
