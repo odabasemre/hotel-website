@@ -59,6 +59,8 @@ const ConciergeIcon = () => (
 
 function Services() {
     const { t } = useTranslation()
+    const propertyData = adminSettings.getPropertyData()
+    const siteTexts = adminSettings.getSiteTexts()
 
     const services = [
         { key: 'spa', icon: <SpaIcon /> },
@@ -76,20 +78,20 @@ function Services() {
                 <div className="services-content">
                     <div className="services-image">
                         <img
-                            src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                            src={propertyData.siteImages?.services?.image1 || "https://images.unsplash.com/photo-1571896349842-33c89424de2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"}
                             alt="Hotel pool view"
                         />
                     </div>
 
                     <div className="services-text">
-                        <h2>{t('services.title')}</h2>
-                        <h3>{t('services.subtitle')}</h3>
-                        <p>{adminSettings.getPropertyData().description || t('services.description')}</p>
+                        <h2>{siteTexts.services?.title || t('services.title')}</h2>
+                        <h3>{siteTexts.services?.subtitle || t('services.subtitle')}</h3>
+                        <p>{propertyData.description || t('services.description')}</p>
                     </div>
 
                     <div className="services-image">
                         <img
-                            src="https://images.unsplash.com/photo-1590490360182-c33d57733427?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                            src={propertyData.siteImages?.services?.image2 || "https://images.unsplash.com/photo-1590490360182-c33d57733427?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"}
                             alt="Hotel room"
                         />
                     </div>

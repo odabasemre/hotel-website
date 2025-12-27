@@ -10,10 +10,12 @@ function Hero() {
     const navigate = useNavigate()
     const { isDateBusy } = useCustomAvailability()
     const [propertyData, setPropertyData] = useState(adminSettings.getPropertyData())
+    const [siteTexts, setSiteTexts] = useState(adminSettings.getSiteTexts())
 
     useEffect(() => {
         // Refresh property data when component mounts
         setPropertyData(adminSettings.getPropertyData())
+        setSiteTexts(adminSettings.getSiteTexts())
     }, [])
 
     const [bookingData, setBookingData] = useState({
@@ -90,8 +92,8 @@ function Hero() {
 
             <div className="hero-center-content">
                 <div className="hero-text-block">
-                    <h1 className="hero-title-premium">{t('hero.title')}</h1>
-                    <p className="hero-subtitle-premium">{t('hero.subtitle')}</p>
+                    <h1 className="hero-title-premium">{siteTexts.hero?.title || t('hero.title')}</h1>
+                    <p className="hero-subtitle-premium">{siteTexts.hero?.subtitle || t('hero.subtitle')}</p>
                 </div>
 
                 {/* Modern Yarı-Saydam Arama Çubuğu */}

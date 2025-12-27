@@ -1,9 +1,12 @@
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
+import { adminSettings } from '@services'
 import './About.css'
 
 function About() {
     const { t } = useTranslation()
+    const propertyData = adminSettings.getPropertyData()
+    const siteTexts = adminSettings.getSiteTexts()
 
     return (
         <section className="about-section" id="about">
@@ -13,7 +16,7 @@ function About() {
                     <div className="about-images">
                         <div className="about-image">
                             <img
-                                src="/images/hero/Gemini_Generated_Image_1e0ht31e0ht31e0h.png"
+                                src={propertyData.siteImages?.about?.image1 || "/images/hero/Gemini_Generated_Image_1e0ht31e0ht31e0h.png"}
                                 alt="Ayder Kuzey Houses Houses"
                             />
                         </div>
@@ -21,9 +24,9 @@ function About() {
 
                     {/* Text Content */}
                     <div className="about-text">
-                        <p className="section-subtitle">{t('about.subtitle')}</p>
-                        <h2 className="section-title">{t('about.storyTitle')}</h2>
-                        <p className="about-description">{t('about.description')}</p>
+                        <p className="section-subtitle">{siteTexts.about?.subtitle || t('about.subtitle')}</p>
+                        <h2 className="section-title">{siteTexts.about?.title || t('about.storyTitle')}</h2>
+                        <p className="about-description">{siteTexts.about?.description || t('about.description')}</p>
 
                         {/* CTA Button */}
                         <Link to="/about" className="about-cta-btn">
@@ -37,3 +40,4 @@ function About() {
 }
 
 export default About
+

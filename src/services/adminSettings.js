@@ -3,12 +3,52 @@ const BOOKINGS_KEY = 'ayder_hotel_bookings';
 const PROMOS_KEY = 'ayder_hotel_promos';
 const PRICING_KEY = 'ayder_hotel_pricing';
 const PROPERTY_KEY = 'ayder_hotel_property';
+const TEXTS_KEY = 'ayder_hotel_texts';
 
 const defaultSettings = {
     nightlyPrice: 5000,
     totalRooms: 2,
     currency: 'TL',
     dailyData: {}
+};
+
+// Varsayılan site yazıları
+const defaultSiteTexts = {
+    hero: {
+        title: 'Ayder Kuzey Houses',
+        subtitle: 'Doğanın Kalbinde Lüks Konaklama',
+        description: 'Karadeniz\'in eşsiz doğasında, Ayder Yaylası\'nın büyüleyici manzarasına karşı unutulmaz bir tatil deneyimi yaşayın.'
+    },
+    services: {
+        title: 'Hizmetlerimiz',
+        subtitle: 'Konforunuz İçin Her Şey Düşünüldü',
+        items: [
+            { title: 'Jakuzi', description: 'Özel jakuzili odalarımızda dinlenin' },
+            { title: 'Kahvaltı', description: 'Organik yöresel kahvaltı' },
+            { title: 'Wi-Fi', description: 'Ücretsiz yüksek hızlı internet' },
+            { title: 'Otopark', description: 'Ücretsiz özel otopark alanı' }
+        ]
+    },
+    rooms: {
+        title: 'Odalarımız',
+        subtitle: 'Konfor ve Doğanın Buluşması',
+        description: 'Her detayın özenle tasarlandığı odalarımızda, doğanın huzurunu yaşayın.'
+    },
+    about: {
+        title: 'Hakkımızda',
+        subtitle: 'Ayder Kuzey Houses',
+        description: 'Doğanın kalbinde, Ayder Yaylası\'nın büyüleyici manzarasına karşı konforlu ve huzurlu bir konaklama deneyimi sunuyoruz. Misafirlerimize ev konforu ve doğanın huzurunu bir arada yaşatmayı hedefliyoruz.',
+        features: ['Doğa ile iç içe konum', 'Jakuzili özel odalar', 'Yöresel organik kahvaltı', 'Ücretsiz Wi-Fi ve otopark']
+    },
+    footer: {
+        description: 'Ayder Yaylası\'nın kalbinde, doğa ile iç içe unutulmaz bir konaklama deneyimi.',
+        copyright: '© 2024 Ayder Kuzey Houses. Tüm hakları saklıdır.'
+    },
+    contact: {
+        phone: '+90 555 123 4567',
+        email: 'info@ayderkuzeyhouses.com',
+        address: 'Ayder Yaylası, Çamlıhemşin, Rize'
+    }
 };
 
 const defaultPropertyData = {
@@ -30,7 +70,23 @@ const defaultPropertyData = {
         { id: 5, name: 'Kahvaltı Dahil', icon: 'restaurant' },
         { id: 6, name: 'Ücretsiz Otopark', icon: 'local_parking' }
     ],
-    description: 'Doğanın kalbinde, Ayder Yaylası’nın büyüleyici manzarasına karşı konforlu ve huzurlu bir konaklama deneyimi sunuyoruz.'
+    description: "Doğanın kalbinde, Ayder Yaylası'nın büyüleyici manzarasına karşı konforlu ve huzurlu bir konaklama deneyimi sunuyoruz.",
+    // Site bölümleri için fotoğraf yönetimi
+    siteImages: {
+        hero: {
+            background: '/images/hero/Gemini_Generated_Image_1e0ht31e0ht31e0h.png'
+        },
+        services: {
+            image1: 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+            image2: 'https://images.unsplash.com/photo-1590490360182-c33d57733427?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+        },
+        room: {
+            main: 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80'
+        },
+        about: {
+            image1: '/images/hero/Gemini_Generated_Image_1e0ht31e0ht31e0h.png'
+        }
+    }
 };
 
 const defaultPricing = {
@@ -381,6 +437,33 @@ export const adminSettings = {
             const current = adminSettings.getPropertyData();
             const updated = { ...current, ...data };
             localStorage.setItem(PROPERTY_KEY, JSON.stringify(updated));
+            return updated;
+        } catch (e) { return null; }
+    },
+
+    // --- SITE TEXTS MANAGEMENT ---
+    getSiteTexts: () => {
+        try {
+            const saved = localStorage.getItem(TEXTS_KEY);
+            if (!saved) return defaultSiteTexts;
+            // Deep merge with defaults to handle new fields
+            const parsed = JSON.parse(saved);
+            return {
+                hero: { ...defaultSiteTexts.hero, ...parsed.hero },
+                services: { ...defaultSiteTexts.services, ...parsed.services },
+                rooms: { ...defaultSiteTexts.rooms, ...parsed.rooms },
+                about: { ...defaultSiteTexts.about, ...parsed.about },
+                footer: { ...defaultSiteTexts.footer, ...parsed.footer },
+                contact: { ...defaultSiteTexts.contact, ...parsed.contact }
+            };
+        } catch (e) { return defaultSiteTexts; }
+    },
+
+    updateSiteTexts: (data) => {
+        try {
+            const current = adminSettings.getSiteTexts();
+            const updated = { ...current, ...data };
+            localStorage.setItem(TEXTS_KEY, JSON.stringify(updated));
             return updated;
         } catch (e) { return null; }
     }

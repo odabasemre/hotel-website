@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import usePlaceDetails from '../../../hooks/usePlaceDetails'
+import { adminSettings } from '@services'
 import './Footer.css'
 
 // Icons
@@ -41,6 +42,7 @@ const InstagramIcon = () => (
 function Footer() {
     const { t } = useTranslation()
     const { address, phone, email, loading } = usePlaceDetails()
+    const siteTexts = adminSettings.getSiteTexts()
 
     const quickLinks = [
         { to: '/', label: t('nav.home') },
@@ -50,6 +52,10 @@ function Footer() {
         { to: '/contact', label: t('nav.contact') },
     ]
 
+    // Use admin texts if available, otherwise fall back to hook data
+    const displayAddress = siteTexts.contact?.address || address
+    const displayPhone = siteTexts.contact?.phone || phone
+    const displayEmail = siteTexts.contact?.email || email
 
     return (
         <footer className="footer">
@@ -61,7 +67,7 @@ function Footer() {
                             <span className="footer-logo-text">Ayder Kuzey Houses</span>
                         </div>
                         <p className="footer-description">
-                            {t('footer.description')}
+                            {siteTexts.footer?.description || t('footer.description')}
                         </p>
                         <div className="footer-social">
                             <a href="https://www.instagram.com/ayderkuzey/" className="footer-social-link" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
@@ -95,7 +101,7 @@ function Footer() {
                                 <MapPinIcon />
                             </div>
                             <p className="footer-contact-text">
-                                {loading ? t('common.loading') : address}
+                                {loading && !siteTexts.contact?.address ? t('common.loading') : displayAddress}
                             </p>
                         </div>
                         <div className="footer-contact-item">
@@ -103,7 +109,7 @@ function Footer() {
                                 <PhoneIcon />
                             </div>
                             <p className="footer-contact-text">
-                                {loading ? t('common.loading') : phone}
+                                {loading && !siteTexts.contact?.phone ? t('common.loading') : displayPhone}
                             </p>
                         </div>
                         <div className="footer-contact-item">
@@ -111,7 +117,7 @@ function Footer() {
                                 <MailIcon />
                             </div>
                             <p className="footer-contact-text">
-                                {email}
+                                {displayEmail}
                             </p>
                         </div>
                     </div>
@@ -122,7 +128,7 @@ function Footer() {
                 <div className="footer-bottom">
                     <div className="footer-bottom-content">
                         <p className="footer-copyright">
-                            {t('footer.copyright')}
+                            {siteTexts.footer?.copyright || t('footer.copyright')}
                         </p>
                         <div className="footer-bottom-links">
                             <a href="#" className="footer-bottom-link">Privacy Policy</a>
@@ -136,3 +142,4 @@ function Footer() {
 }
 
 export default Footer
+

@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next'
+import { adminSettings } from '@services'
 import './RoomShowcase.css'
 
 // Feature Icons
@@ -62,6 +63,7 @@ const AcIcon = () => (
 
 function RoomShowcase() {
     const { t } = useTranslation()
+    const propertyData = adminSettings.getPropertyData()
 
     const features = [
         { key: 'size', icon: <SizeIcon /> },
@@ -79,7 +81,7 @@ function RoomShowcase() {
                     {/* Room Image */}
                     <div className="room-image">
                         <img
-                            src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
+                            src={propertyData.siteImages?.room?.main || "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"}
                             alt="Luxury hotel room"
                         />
                         <span className="room-image-badge">Exclusive</span>
