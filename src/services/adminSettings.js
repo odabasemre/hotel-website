@@ -1,9 +1,14 @@
+import { settingsApi, bookingsApi, uploadApi } from './api.js';
+
 const SETTINGS_KEY = 'ayder_hotel_settings';
 const BOOKINGS_KEY = 'ayder_hotel_bookings';
 const PROMOS_KEY = 'ayder_hotel_promos';
 const PRICING_KEY = 'ayder_hotel_pricing';
 const PROPERTY_KEY = 'ayder_hotel_property';
 const TEXTS_KEY = 'ayder_hotel_texts';
+
+// API modu kontrolü - true ise API kullanır, false ise localStorage
+const USE_API = import.meta.env.VITE_API_URL ? true : false;
 
 const defaultSettings = {
     nightlyPrice: 5000,
@@ -71,7 +76,6 @@ const defaultPropertyData = {
         { id: 6, name: 'Ücretsiz Otopark', icon: 'local_parking' }
     ],
     description: "Doğanın kalbinde, Ayder Yaylası'nın büyüleyici manzarasına karşı konforlu ve huzurlu bir konaklama deneyimi sunuyoruz.",
-    // Site bölümleri için fotoğraf yönetimi
     siteImages: {
         hero: {
             background: '/images/hero/Gemini_Generated_Image_1e0ht31e0ht31e0h.png'
@@ -109,7 +113,23 @@ const defaultPricing = {
     maxTotalOccupancy: 8
 };
 
+// Cache for API responses
+let apiCache = {
+    settings: null,
+    bookings: null,
+    property: null,
+    texts: null,
+    lastFetch: {}
+};
+
+const CACHE_DURATION = 5000; // 5 saniye
+
+function isCacheValid(key) {
+    return apiCache.lastFetch[key] && (Date.now() - apiCache.lastFetch[key]) < CACHE_DURATION;
+}
+
 export const adminSettings = {
+    // Settings
     getSettings: () => {
         try {
             const saved = localStorage.getItem(SETTINGS_KEY);
@@ -126,8 +146,34 @@ export const adminSettings = {
         }
     },
 
+    getSettingsAsync: async () => {
+        if (USE_API) {
+            try {
+                const data = await settingsApi.get('general');
+                // localStorage'a da kaydet (offline fallback)
+                localStorage.setItem(SETTINGS_KEY, JSON.stringify(data));
+                return data;
+            } catch (e) {
+                console.warn('API error, falling back to localStorage:', e);
+                return adminSettings.getSettings();
+            }
+        }
+        return adminSettings.getSettings();
+    },
+
     saveSettings: (newSettings) => {
         localStorage.setItem(SETTINGS_KEY, JSON.stringify(newSettings));
+    },
+
+    saveSettingsAsync: async (newSettings) => {
+        localStorage.setItem(SETTINGS_KEY, JSON.stringify(newSettings));
+        if (USE_API) {
+            try {
+                await settingsApi.update('general', newSettings);
+            } catch (e) {
+                console.warn('API save failed:', e);
+            }
+        }
     },
 
     getDayData: (dateStr) => {
@@ -147,17 +193,14 @@ export const adminSettings = {
         adminSettings.saveSettings(settings);
     },
 
-    // Calculates real-time inventory: (Configured Total - Active Bookings)
     getCalculatedDayData: (dateStr) => {
         const rawData = adminSettings.getDayData(dateStr);
         const bookings = adminSettings.getBookings();
 
-        // Count active bookings for this date
         const checkDate = new Date(dateStr).getTime();
         const activeBookings = bookings.filter(b => {
             const start = new Date(b.checkIn).getTime();
             const end = new Date(b.checkOut).getTime();
-            // Booking includes start date, excludes end date (standard hotel logic)
             return checkDate >= start && checkDate < end;
         }).length;
 
@@ -165,34 +208,29 @@ export const adminSettings = {
 
         return {
             ...rawData,
-            rawInventory: rawData.inventory, // Base capacity configured by admin
-            effectiveInventory: effectiveInventory, // Remaining rooms after bookings
+            rawInventory: rawData.inventory,
+            effectiveInventory: effectiveInventory,
             isSoldOut: effectiveInventory === 0,
-            closed: rawData.closed || effectiveInventory === 0 // Force closed if no rooms
+            closed: rawData.closed || effectiveInventory === 0
         };
     },
 
+    // Bookings
     getBookings: () => {
         try {
             const saved = localStorage.getItem(BOOKINGS_KEY);
             let bookings = saved ? JSON.parse(saved) : [];
 
-            // --- Auto-Repair: Assign Room Numbers if missing or conflicting ---
             let needsSave = false;
-
-            // Sort by ID (creation time) to ensure consistent assignment
             bookings.sort((a, b) => a.id - b.id);
 
             const processed = [];
 
             bookings.forEach(booking => {
-                // If already has a valid room number [1, 2], we try to keep it, but check conflict
                 let assigned = booking.roomNumber;
-
                 const bStart = new Date(booking.checkIn).getTime();
                 const bEnd = new Date(booking.checkOut).getTime();
 
-                // Check against ALREADY processed bookings for overlaps in the SAME room
                 const isConflict = (roomStr) => {
                     return processed.some(p => {
                         if (String(p.roomNumber) !== String(roomStr)) return false;
@@ -202,11 +240,10 @@ export const adminSettings = {
                     });
                 };
 
-                // If no room assigned, or current assignment conflicts, find a new one
                 if (!assigned || isConflict(assigned)) {
                     if (!isConflict(1)) assigned = 1;
                     else if (!isConflict(2)) assigned = 2;
-                    else assigned = 'Overbook'; // Should not happen if strictly 2 rooms
+                    else assigned = 'Overbook';
 
                     if (booking.roomNumber !== assigned) {
                         booking.roomNumber = assigned;
@@ -225,31 +262,39 @@ export const adminSettings = {
         } catch (e) { return []; }
     },
 
+    getBookingsAsync: async () => {
+        if (USE_API) {
+            try {
+                const data = await bookingsApi.getAll();
+                // localStorage'a da kaydet
+                localStorage.setItem(BOOKINGS_KEY, JSON.stringify(data));
+                return data;
+            } catch (e) {
+                console.warn('API error, falling back to localStorage:', e);
+                return adminSettings.getBookings();
+            }
+        }
+        return adminSettings.getBookings();
+    },
+
     addBooking: (booking) => {
         const bookings = adminSettings.getBookings();
-
-        // --- Room Assignment Logic ---
         const newStart = new Date(booking.checkIn).getTime();
         const newEnd = new Date(booking.checkOut).getTime();
 
-        // Find conflicting bookings
         const overlaps = bookings.filter(b => {
             const bStart = new Date(b.checkIn).getTime();
             const bEnd = new Date(b.checkOut).getTime();
-            // Check if ranges overlap
             return (newStart < bEnd && newEnd > bStart);
         });
 
         const takenRooms = overlaps.map(b => b.roomNumber).filter(Boolean);
 
-        // Try assigning Room 1, then Room 2
         let assignedRoom = 1;
         if (takenRooms.includes(1)) {
             if (!takenRooms.includes(2)) {
                 assignedRoom = 2;
             } else {
-                // If both 1 and 2 are taken (shouldn't happen if availability check passed)
-                // We'll mark it as 'Overbook' or just default to 1 for admin to resolve
                 assignedRoom = 'Overbook';
             }
         }
@@ -258,13 +303,48 @@ export const adminSettings = {
         localStorage.setItem(BOOKINGS_KEY, JSON.stringify(bookings));
     },
 
+    addBookingAsync: async (booking) => {
+        // Önce localStorage'a ekle
+        adminSettings.addBooking(booking);
+        
+        if (USE_API) {
+            try {
+                await bookingsApi.create({
+                    guestName: booking.name || booking.guestName,
+                    guestEmail: booking.email || booking.guestEmail,
+                    guestPhone: booking.phone || booking.guestPhone,
+                    checkIn: booking.checkIn,
+                    checkOut: booking.checkOut,
+                    guests: booking.guests || booking.adults + (booking.children || 0),
+                    roomType: booking.roomType || 'bungalow',
+                    totalPrice: booking.totalPrice,
+                    currency: booking.currency || 'TRY',
+                    notes: booking.notes
+                });
+            } catch (e) {
+                console.warn('API booking save failed:', e);
+            }
+        }
+    },
+
     deleteBooking: (id) => {
         const bookings = adminSettings.getBookings();
         const filtered = bookings.filter(b => b.id !== id);
         localStorage.setItem(BOOKINGS_KEY, JSON.stringify(filtered));
     },
 
-    // --- PROMOTION CODES ---
+    deleteBookingAsync: async (id) => {
+        adminSettings.deleteBooking(id);
+        if (USE_API) {
+            try {
+                await bookingsApi.delete(id);
+            } catch (e) {
+                console.warn('API delete failed:', e);
+            }
+        }
+    },
+
+    // Promotions
     getPromotions: () => {
         try {
             const saved = localStorage.getItem(PROMOS_KEY);
@@ -274,7 +354,6 @@ export const adminSettings = {
 
     addPromotion: (promo) => {
         const list = adminSettings.getPromotions();
-        // Check for duplicates
         if (list.find(p => p.code === promo.code)) return false;
         list.push({ ...promo, id: Date.now(), createdAt: new Date().toISOString() });
         localStorage.setItem(PROMOS_KEY, JSON.stringify(list));
@@ -291,7 +370,6 @@ export const adminSettings = {
         const list = adminSettings.getPromotions();
         const index = list.findIndex(p => p.id === id);
         if (index === -1) return false;
-
         list[index] = { ...list[index], ...updatedData };
         localStorage.setItem(PROMOS_KEY, JSON.stringify(list));
         return true;
@@ -303,7 +381,7 @@ export const adminSettings = {
         return promo || null;
     },
 
-    // --- PER-GUEST PRICING MANAGEMENT ---
+    // Pricing
     getPricing: () => {
         try {
             const saved = localStorage.getItem(PRICING_KEY);
@@ -329,7 +407,6 @@ export const adminSettings = {
         const pricing = adminSettings.getPricing();
         const updated = { ...pricing, ...config };
 
-        // Regenerate prices based on new config
         const newPricing = {
             1: updated.basePrice,
             2: updated.basePrice
@@ -345,34 +422,28 @@ export const adminSettings = {
     },
 
     updateBasePriceForGuests: (basePrice) => {
-        const pricing = adminSettings.getPricing();
         return adminSettings.updatePricingConfig({ basePrice });
     },
 
-    // Calculate price for split guest counts for a specific date
     getCalculateSplitPrice: (dateStr, adults, children) => {
         const dayData = adminSettings.getDayData(dateStr);
         const basePriceForDate = dayData.price;
 
         let extraCharge = 0;
 
-        // Adult pricing: 1-2 is base, 3+ is +499 each
         if (adults > 2) {
             extraCharge += (adults - 2) * 499;
         }
 
-        // Child pricing: 299 each
         extraCharge += (children * 299);
 
         return basePriceForDate + extraCharge;
     },
 
-    // Backward compatibility or simple person count (deprecated but kept for fallback)
     getEffectivePrice: (dateStr, numGuests) => {
         return adminSettings.getCalculateSplitPrice(dateStr, numGuests, 0);
     },
 
-    // Calculate total price for a date range and split guest counts
     calculateTotalPrice: (checkIn, checkOut, adults, children) => {
         const start = new Date(checkIn);
         const end = new Date(checkOut);
@@ -390,7 +461,7 @@ export const adminSettings = {
         return total;
     },
 
-    // --- ANALYTICS ENGINE ---
+    // Analytics
     getAnalytics: (year = new Date().getFullYear()) => {
         const bookings = adminSettings.getBookings();
         const stats = {
@@ -411,7 +482,6 @@ export const adminSettings = {
                 stats.availableYears.push(bYear);
             }
 
-            // Only process statistics for the requested year
             if (bYear === year) {
                 const month = checkIn.getMonth();
                 const nights = Math.ceil((checkOut - checkIn) / (1000 * 60 * 60 * 24));
@@ -434,12 +504,27 @@ export const adminSettings = {
         return stats;
     },
 
-    // --- PROPERTY MANAGEMENT ---
+    // Property Management
     getPropertyData: () => {
         try {
             const saved = localStorage.getItem(PROPERTY_KEY);
             return saved ? JSON.parse(saved) : defaultPropertyData;
         } catch (e) { return defaultPropertyData; }
+    },
+
+    getPropertyDataAsync: async () => {
+        if (USE_API) {
+            try {
+                const data = await settingsApi.getPropertyInfo();
+                if (data && Object.keys(data).length > 0) {
+                    localStorage.setItem(PROPERTY_KEY, JSON.stringify(data));
+                    return data;
+                }
+            } catch (e) {
+                console.warn('API error, falling back to localStorage:', e);
+            }
+        }
+        return adminSettings.getPropertyData();
     },
 
     updatePropertyData: (data) => {
@@ -451,12 +536,25 @@ export const adminSettings = {
         } catch (e) { return null; }
     },
 
-    // --- SITE TEXTS MANAGEMENT ---
+    updatePropertyDataAsync: async (data) => {
+        const updated = adminSettings.updatePropertyData(data);
+        if (USE_API && updated) {
+            try {
+                for (const [key, value] of Object.entries(data)) {
+                    await settingsApi.updatePropertyInfo(key, value);
+                }
+            } catch (e) {
+                console.warn('API update failed:', e);
+            }
+        }
+        return updated;
+    },
+
+    // Site Texts Management
     getSiteTexts: () => {
         try {
             const saved = localStorage.getItem(TEXTS_KEY);
             if (!saved) return defaultSiteTexts;
-            // Deep merge with defaults to handle new fields
             const parsed = JSON.parse(saved);
             return {
                 hero: { ...defaultSiteTexts.hero, ...parsed.hero },
@@ -469,6 +567,21 @@ export const adminSettings = {
         } catch (e) { return defaultSiteTexts; }
     },
 
+    getSiteTextsAsync: async (lang = 'tr') => {
+        if (USE_API) {
+            try {
+                const data = await settingsApi.getTexts(lang);
+                if (data && Object.keys(data).length > 0) {
+                    localStorage.setItem(TEXTS_KEY, JSON.stringify(data));
+                    return data;
+                }
+            } catch (e) {
+                console.warn('API error, falling back to localStorage:', e);
+            }
+        }
+        return adminSettings.getSiteTexts();
+    },
+
     updateSiteTexts: (data) => {
         try {
             const current = adminSettings.getSiteTexts();
@@ -476,5 +589,63 @@ export const adminSettings = {
             localStorage.setItem(TEXTS_KEY, JSON.stringify(updated));
             return updated;
         } catch (e) { return null; }
+    },
+
+    updateSiteTextsAsync: async (data, lang = 'tr') => {
+        const updated = adminSettings.updateSiteTexts(data);
+        if (USE_API && updated) {
+            try {
+                for (const [section, content] of Object.entries(data)) {
+                    await settingsApi.updateTexts(section, lang, content);
+                }
+            } catch (e) {
+                console.warn('API update failed:', e);
+            }
+        }
+        return updated;
+    },
+
+    // Image Upload Helper
+    uploadImage: async (file, section, imageKey) => {
+        if (USE_API) {
+            try {
+                const result = await uploadApi.uploadSingle(file, section, imageKey);
+                return result.path;
+            } catch (e) {
+                console.error('Upload failed:', e);
+                throw e;
+            }
+        }
+        
+        // Fallback: Convert to base64 for localStorage
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+        });
+    },
+
+    uploadImages: async (files, section = 'gallery') => {
+        if (USE_API) {
+            try {
+                const result = await uploadApi.uploadMultiple(Array.from(files), section);
+                return result.files.map(f => f.path);
+            } catch (e) {
+                console.error('Upload failed:', e);
+                throw e;
+            }
+        }
+        
+        // Fallback: Convert all to base64
+        const promises = Array.from(files).map(file => {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        });
+        return Promise.all(promises);
     }
 };
