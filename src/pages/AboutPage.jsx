@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
+import { adminSettings } from '../services/adminSettings'
 import '../styles/pages/about-page.css'
 
 // Icons for features
@@ -41,6 +42,10 @@ const UserIcon = () => (
 
 function AboutPage() {
     const { t } = useTranslation()
+    const propertyData = adminSettings.getPropertyData()
+    
+    // Get about image from admin settings or use default
+    const aboutImage = propertyData.siteImages?.about?.image1 || '/images/hero/Gemini_Generated_Image_1e0ht31e0ht31e0h.png'
 
     useEffect(() => {
         window.scrollTo(0, 0)
@@ -75,7 +80,7 @@ function AboutPage() {
                     </div>
                     <div className="about-page-story-image">
                         <img
-                            src="/images/hero/Gemini_Generated_Image_1e0ht31e0ht31e0h.png"
+                            src={aboutImage}
                             alt="Ayder Kuzey Houses Houses"
                         />
                         <div className="about-page-badge">

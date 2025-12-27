@@ -1,7 +1,8 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import roomData from '../data/roomsData'
+import { adminSettings } from '../services/adminSettings'
 import '../styles/pages/rooms-page.css'
 
 // Icons
@@ -50,12 +51,62 @@ const CalendarIcon = () => (
     </svg>
 )
 
+const ChevronLeftIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+        <polyline points="15 18 9 12 15 6" />
+    </svg>
+)
+
+const ChevronRightIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+        <polyline points="9 18 15 12 9 6" />
+    </svg>
+)
+
 function RoomsPage() {
     const { t } = useTranslation()
+    const [currentImageIndex, setCurrentImageIndex] = useState(0)
 
     useEffect(() => {
         window.scrollTo(0, 0)
     }, [])
+
+    // Oda fotoğrafları - admin settings'den veya varsayılan
+    const propertyData = adminSettings.getPropertyData()
+    
+    // Get room images from gallery in siteImages
+    const getGalleryImages = () => {
+        const gallery = propertyData.siteImages?.gallery || {}
+        const images = []
+        for (let i = 1; i <= 8; i++) {
+            const img = gallery[`image${i}`]
+            if (img) images.push(img)
+        }
+        // If no images, use defaults
+        if (images.length === 0) {
+            return [
+                'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
+                'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80',
+                'https://images.unsplash.com/photo-1618773928121-c32242e63f39?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                'https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+            ]
+        }
+        return images
+    }
+    
+    const roomImages = getGalleryImages()
+
+    const nextImage = () => {
+        setCurrentImageIndex((prev) => (prev + 1) % roomImages.length)
+    }
+
+    const prevImage = () => {
+        setCurrentImageIndex((prev) => (prev - 1 + roomImages.length) % roomImages.length)
+    }
+
+    const goToImage = (index) => {
+        setCurrentImageIndex(index)
+    }
 
     const featuresList = [
         { key: 'riverView', icon: '🏞️' },
@@ -78,6 +129,166 @@ function RoomsPage() {
                 <div className="rooms-page-layout">
                     {/* Main Content */}
                     <div className="rooms-page-main">
+                        {/* Room Image Gallery Carousel */}
+                        <section className="room-gallery-section" style={{
+                            marginBottom: '40px',
+                            position: 'relative',
+                            borderRadius: '20px',
+                            overflow: 'hidden',
+                            boxShadow: '0 10px 40px rgba(0,0,0,0.12)',
+                            background: '#f8fafc'
+                        }}>
+                            <div style={{ position: 'relative', width: '100%', height: '500px' }}>
+                                {/* Main Image */}
+                                <img 
+                                    src={roomImages[currentImageIndex]} 
+                                    alt={`Oda ${currentImageIndex + 1}`}
+                                    style={{
+                                        width: '100%',
+                                        height: '100%',
+                                        objectFit: 'cover',
+                                        transition: 'opacity 0.5s ease'
+                                    }}
+                                    onError={(e) => {
+                                        e.target.src = "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
+                                    }}
+                                />
+                                
+                                {/* Navigation Overlay */}
+                                <div style={{
+                                    position: 'absolute',
+                                    top: 0,
+                                    left: 0,
+                                    right: 0,
+                                    bottom: 0,
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'space-between',
+                                    padding: '0 20px',
+                                    background: 'linear-gradient(to right, rgba(0,0,0,0.3) 0%, transparent 20%, transparent 80%, rgba(0,0,0,0.3) 100%)'
+                                }}>
+                                    {/* Previous Button */}
+                                    <button
+                                        onClick={prevImage}
+                                        style={{
+                                            width: '50px',
+                                            height: '50px',
+                                            borderRadius: '50%',
+                                            background: 'rgba(255, 255, 255, 0.95)',
+                                            border: 'none',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            cursor: 'pointer',
+                                            transition: 'all 0.3s ease',
+                                            boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                                            backdropFilter: 'blur(10px)'
+                                        }}
+                                        onMouseEnter={(e) => {
+                                            e.target.style.transform = 'scale(1.1)';
+                                            e.target.style.background = 'rgba(255, 255, 255, 1)';
+                                        }}
+                                        onMouseLeave={(e) => {
+                                            e.target.style.transform = 'scale(1)';
+                                            e.target.style.background = 'rgba(255, 255, 255, 0.95)';
+                                        }}
+                                    >
+                                        <ChevronLeftIcon />
+                                    </button>
+
+                                    {/* Next Button */}
+                                    <button
+                                        onClick={nextImage}
+                                        style={{
+                                            width: '50px',
+                                            height: '50px',
+                                            borderRadius: '50%',
+                                            background: 'rgba(255, 255, 255, 0.95)',
+                                            border: 'none',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            cursor: 'pointer',
+                                            transition: 'all 0.3s ease',
+                                            boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                                            backdropFilter: 'blur(10px)'
+                                        }}
+                                        onMouseEnter={(e) => {
+                                            e.target.style.transform = 'scale(1.1)';
+                                            e.target.style.background = 'rgba(255, 255, 255, 1)';
+                                        }}
+                                        onMouseLeave={(e) => {
+                                            e.target.style.transform = 'scale(1)';
+                                            e.target.style.background = 'rgba(255, 255, 255, 0.95)';
+                                        }}
+                                    >
+                                        <ChevronRightIcon />
+                                    </button>
+                                </div>
+
+                                {/* Image Counter Badge */}
+                                <div style={{
+                                    position: 'absolute',
+                                    top: '20px',
+                                    right: '20px',
+                                    background: 'rgba(26, 54, 45, 0.9)',
+                                    backdropFilter: 'blur(10px)',
+                                    color: 'white',
+                                    padding: '10px 16px',
+                                    borderRadius: '12px',
+                                    fontSize: '14px',
+                                    fontWeight: '600',
+                                    boxShadow: '0 4px 12px rgba(0,0,0,0.2)'
+                                }}>
+                                    {currentImageIndex + 1} / {roomImages.length}
+                                </div>
+
+                                {/* Thumbnail Navigation */}
+                                <div style={{
+                                    position: 'absolute',
+                                    bottom: '20px',
+                                    left: '50%',
+                                    transform: 'translateX(-50%)',
+                                    display: 'flex',
+                                    gap: '10px',
+                                    padding: '12px 16px',
+                                    background: 'rgba(255, 255, 255, 0.95)',
+                                    backdropFilter: 'blur(10px)',
+                                    borderRadius: '16px',
+                                    boxShadow: '0 4px 16px rgba(0,0,0,0.15)'
+                                }}>
+                                    {roomImages.map((_, index) => (
+                                        <button
+                                            key={index}
+                                            onClick={() => goToImage(index)}
+                                            style={{
+                                                width: currentImageIndex === index ? '32px' : '10px',
+                                                height: '10px',
+                                                borderRadius: '5px',
+                                                border: 'none',
+                                                background: currentImageIndex === index 
+                                                    ? 'linear-gradient(135deg, #1a362d 0%, #2d5a4a 100%)'
+                                                    : '#cbd5e1',
+                                                cursor: 'pointer',
+                                                transition: 'all 0.3s ease',
+                                                boxShadow: currentImageIndex === index ? '0 2px 8px rgba(26, 54, 45, 0.3)' : 'none'
+                                            }}
+                                            onMouseEnter={(e) => {
+                                                if (currentImageIndex !== index) {
+                                                    e.target.style.background = '#94a3b8';
+                                                }
+                                            }}
+                                            onMouseLeave={(e) => {
+                                                if (currentImageIndex !== index) {
+                                                    e.target.style.background = '#cbd5e1';
+                                                }
+                                            }}
+                                        />
+                                    ))}
+                                </div>
+                            </div>
+                        </section>
+
                         {/* Room Description */}
                         <section className="room-description-section">
                             <h2 className="room-name">{t('rooms.roomName')}</h2>
@@ -136,7 +347,6 @@ function RoomsPage() {
                     <div className="rooms-page-sidebar">
                         <div className="booking-card premium">
                             <div className="card-header">
-                                <span className="price-tag">{t('rooms.priceFrom')} <strong>5.000 TL</strong></span>
                                 <h3>{t('rooms.bookNow')}</h3>
                             </div>
                             <p className="booking-desc">{t('rooms.bookingInfoText') || 'Rezervasyon işlemlerinizi takvim üzerinden tarih seçerek güvenle tamamlayabilirsiniz.'}</p>

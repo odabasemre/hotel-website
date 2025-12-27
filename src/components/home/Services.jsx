@@ -58,6 +58,7 @@ const ConciergeIcon = () => (
 
 function Services() {
     const { t } = useTranslation()
+    const propertyData = adminSettings.getPropertyData()
 
     const services = [
         { key: 'spa', icon: <SpaIcon /> },
@@ -68,6 +69,10 @@ function Services() {
         { key: 'concierge', icon: <ConciergeIcon /> },
     ]
 
+    // Get images from admin settings or use defaults
+    const servicesImage1 = propertyData.siteImages?.services?.image1 || 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+    const servicesImage2 = propertyData.siteImages?.services?.image2 || 'https://images.unsplash.com/photo-1590490360182-c33d57733427?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+
     return (
         <section className="services section">
             <div className="container">
@@ -75,7 +80,7 @@ function Services() {
                 <div className="services-content">
                     <div className="services-image">
                         <img
-                            src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                            src={servicesImage1}
                             alt="Hotel pool view"
                         />
                     </div>
@@ -83,12 +88,12 @@ function Services() {
                     <div className="services-text">
                         <h2>{t('services.title')}</h2>
                         <h3>{t('services.subtitle')}</h3>
-                        <p>{adminSettings.getPropertyData().description || t('services.description')}</p>
+                        <p>{propertyData.description || t('services.description')}</p>
                     </div>
 
                     <div className="services-image">
                         <img
-                            src="https://images.unsplash.com/photo-1590490360182-c33d57733427?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                            src={servicesImage2}
                             alt="Hotel room"
                         />
                     </div>

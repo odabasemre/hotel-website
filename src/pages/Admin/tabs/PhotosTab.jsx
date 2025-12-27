@@ -61,7 +61,7 @@ function PhotosTab({
     }
 
     // Drop zone component
-    const DropZone = ({ section, imageKey, currentImage, label, description }) => {
+    const DropZone = ({ section, imageKey, currentImage, label, description, size = 'normal' }) => {
         const [isDragging, setIsDragging] = useState(false)
         const inputRef = useRef()
 
@@ -92,10 +92,11 @@ function PhotosTab({
 
         // Use pending image if exists, otherwise use saved image
         const displayImage = pendingImages?.[section]?.[imageKey] || currentImage
+        const height = size === 'small' ? '120px' : size === 'large' ? '250px' : '180px'
 
         return (
-            <div style={{ marginBottom: '15px' }}>
-                {label && <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '10px', fontSize: '14px' }}>{label}</label>}
+            <div style={{ marginBottom: '10px' }}>
+                {label && <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '8px', fontSize: '13px' }}>{label}</label>}
                 <div
                     onDrop={handleDrop}
                     onDragOver={handleDragOver}
@@ -103,7 +104,7 @@ function PhotosTab({
                     onClick={handleClick}
                     style={{
                         width: '100%',
-                        height: '180px',
+                        height: height,
                         borderRadius: '12px',
                         border: isDragging ? '3px dashed #2d4a3e' : (pendingImages?.[section]?.[imageKey] ? '3px solid #22c55e' : '2px dashed #cbd5e1'),
                         background: isDragging ? '#e8f5e9' : (displayImage ? 'transparent' : '#f8fafc'),
@@ -144,28 +145,25 @@ function PhotosTab({
                                 bottom: 0,
                                 left: 0,
                                 right: 0,
-                                padding: '12px',
+                                padding: size === 'small' ? '8px' : '12px',
                                 background: 'linear-gradient(transparent, rgba(0,0,0,0.7))',
                                 color: 'white',
-                                fontSize: '12px',
+                                fontSize: size === 'small' ? '10px' : '12px',
                                 textAlign: 'center'
                             }}>
-                                {pendingImages?.[section]?.[imageKey] ? '🟢 Yeni fotoğraf yüklendi (kaydetmeyi unutmayın)' : '📷 Değiştirmek için tıklayın veya sürükleyin'}
+                                {pendingImages?.[section]?.[imageKey] ? '🟢 Yeni' : '📷 Değiştir'}
                             </div>
                         </>
                     ) : (
                         <>
-                            <div style={{ fontSize: '40px', marginBottom: '10px', opacity: 0.5 }}>📷</div>
-                            <p style={{ margin: 0, color: '#64748b', fontSize: '14px', fontWeight: '500' }}>
-                                Fotoğrafı buraya sürükleyin
-                            </p>
-                            <p style={{ margin: '5px 0 0', color: '#94a3b8', fontSize: '12px' }}>
-                                veya tıklayarak seçin
+                            <div style={{ fontSize: size === 'small' ? '24px' : '40px', marginBottom: '8px', opacity: 0.5 }}>📷</div>
+                            <p style={{ margin: 0, color: '#64748b', fontSize: size === 'small' ? '11px' : '14px', fontWeight: '500' }}>
+                                Sürükle veya tıkla
                             </p>
                         </>
                     )}
                 </div>
-                {description && <p style={{ fontSize: '12px', color: '#666', marginTop: '8px' }}>{description}</p>}
+                {description && <p style={{ fontSize: '11px', color: '#666', marginTop: '6px' }}>{description}</p>}
             </div>
         )
     }
@@ -281,7 +279,7 @@ function PhotosTab({
                 </div>
             )}
 
-            <div style={{ display: 'grid', gap: '30px' }}>
+            <div style={{ display: 'grid', gap: '25px' }}>
                 {/* Hero Section */}
                 <div style={{ padding: '25px', background: '#f8fafc', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
                     <h3 style={{ fontSize: '18px', marginBottom: '20px', color: '#1a362d', display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -292,13 +290,14 @@ function PhotosTab({
                         imageKey="background"
                         currentImage={propertyData.siteImages?.hero?.background || propertyData.heroImage}
                         description="Ana sayfanın üst kısmında görünen arka plan görseli. Önerilen boyut: 1920x1080px"
+                        size="large"
                     />
                 </div>
 
                 {/* Services Section */}
                 <div style={{ padding: '25px', background: '#f8fafc', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
                     <h3 style={{ fontSize: '18px', marginBottom: '20px', color: '#1a362d' }}>
-                        🛎️ Hizmetler Bölümü
+                        🛎️ Hizmetler Bölümü (Ana Sayfa)
                     </h3>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
                         <DropZone
@@ -318,16 +317,16 @@ function PhotosTab({
                     </div>
                 </div>
 
-                {/* Room Section */}
+                {/* Rooms Section */}
                 <div style={{ padding: '25px', background: '#f8fafc', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
                     <h3 style={{ fontSize: '18px', marginBottom: '20px', color: '#1a362d' }}>
-                        🛏️ Oda Tanıtım Görseli
+                        🛏️ Odalar Sayfası
                     </h3>
                     <DropZone
-                        section="room"
+                        section="rooms"
                         imageKey="main"
-                        currentImage={propertyData.siteImages?.room?.main}
-                        description="Ana sayfadaki oda tanıtım bölümünde görünen fotoğraf. Önerilen boyut: 1000x800px"
+                        currentImage={propertyData.siteImages?.rooms?.main}
+                        description="Odalar sayfasındaki ana oda görseli. Önerilen boyut: 1000x800px"
                     />
                 </div>
 
@@ -343,6 +342,37 @@ function PhotosTab({
                         description="Hakkımızda bölümünde görünen ana fotoğraf. Önerilen boyut: 800x600px"
                     />
                 </div>
+
+                {/* Gallery Section */}
+                <div style={{ padding: '25px', background: '#f0fdf4', borderRadius: '12px', border: '1px solid #86efac' }}>
+                    <h3 style={{ fontSize: '18px', marginBottom: '8px', color: '#1a362d' }}>
+                        🖼️ Galeri Sayfası
+                    </h3>
+                    <p style={{ color: '#666', fontSize: '13px', marginBottom: '20px' }}>
+                        Galeri sayfasında ve oda detaylarında görünecek fotoğraflar.
+                    </p>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '15px' }}>
+                        <DropZone section="gallery" imageKey="image1" currentImage={propertyData.siteImages?.gallery?.image1} label="Galeri 1" size="small" />
+                        <DropZone section="gallery" imageKey="image2" currentImage={propertyData.siteImages?.gallery?.image2} label="Galeri 2" size="small" />
+                        <DropZone section="gallery" imageKey="image3" currentImage={propertyData.siteImages?.gallery?.image3} label="Galeri 3" size="small" />
+                        <DropZone section="gallery" imageKey="image4" currentImage={propertyData.siteImages?.gallery?.image4} label="Galeri 4" size="small" />
+                        <DropZone section="gallery" imageKey="image5" currentImage={propertyData.siteImages?.gallery?.image5} label="Galeri 5" size="small" />
+                        <DropZone section="gallery" imageKey="image6" currentImage={propertyData.siteImages?.gallery?.image6} label="Galeri 6" size="small" />
+                        <DropZone section="gallery" imageKey="image7" currentImage={propertyData.siteImages?.gallery?.image7} label="Galeri 7" size="small" />
+                        <DropZone section="gallery" imageKey="image8" currentImage={propertyData.siteImages?.gallery?.image8} label="Galeri 8" size="small" />
+                    </div>
+                </div>
+            </div>
+
+            {/* Info Section */}
+            <div style={{ marginTop: '25px', padding: '20px', background: '#eff6ff', borderRadius: '12px', border: '1px solid #bfdbfe' }}>
+                <h4 style={{ marginBottom: '12px', color: '#1e40af', fontSize: '15px' }}>💡 Fotoğraf Yükleme İpuçları</h4>
+                <ul style={{ margin: 0, paddingLeft: '20px', color: '#3b82f6', fontSize: '13px', lineHeight: '1.8' }}>
+                    <li>Maksimum dosya boyutu: 5MB</li>
+                    <li>Önerilen format: JPG veya PNG</li>
+                    <li>Hero görseli için en az 1920x1080px çözünürlük önerilir</li>
+                    <li>Değişiklikler sadece "Kaydet" butonuna tıklandığında kaydedilir</li>
+                </ul>
             </div>
         </section>
     )

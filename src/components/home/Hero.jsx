@@ -78,7 +78,8 @@ function Hero() {
 
     const today = new Date().toISOString().split('T')[0]
 
-    const heroBg = propertyData.heroImage || "/images/hero/Gemini_Generated_Image_1e0ht31e0ht31e0h.png";
+    // Get hero background from siteImages or fallback to heroImage
+    const heroBg = propertyData.siteImages?.hero?.background || propertyData.heroImage || "/images/hero/Gemini_Generated_Image_1e0ht31e0ht31e0h.png";
 
     return (
         <section className="hero" id="home">

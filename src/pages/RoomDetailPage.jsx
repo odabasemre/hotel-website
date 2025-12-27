@@ -234,12 +234,8 @@ function RoomDetailPage() {
 
                     <div className="booking-grid">
                         <div className={`calendar-section ${!isGuestConfirmed ? 'calendar-locked' : ''}`}>
-                            {!isGuestConfirmed && (
-                                <div className="calendar-lock-overlay">
-                                    <p>Lütfen devam etmek için önce kişi sayısını seçip onaylayın.</p>
-                                </div>
-                            )}
-                            <div className="calendar-header">
+                            {/* Calendar Section */}
+                            <div className="calendar-header" style={{ opacity: isGuestConfirmed ? 1 : 0.4, pointerEvents: isGuestConfirmed ? 'auto' : 'none' }}>
                                 <button type="button" onClick={prevMonth}><ChevronLeftIcon /></button>
                                 <span>{currentDate.toLocaleString(i18n.language, { month: 'long', year: 'numeric' })}</span>
                                 <button type="button" onClick={nextMonth}><ChevronRightIcon /></button>
@@ -272,17 +268,338 @@ function RoomDetailPage() {
                         </div>
 
                         <div className="booking-form-section">
-                            {/* Amenities / Olanaklar Section */}
-                            <div className="amenities-summary-card" style={{ background: '#fff', padding: '20px', borderRadius: '12px', border: '1px solid #e2e8f0', marginBottom: '20px' }}>
-                                <h3 style={{ fontSize: '16px', color: '#1a362d', marginBottom: '15px', fontWeight: '700' }}>Tesis Olanakları</h3>
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-                                    {adminSettings.getPropertyData().amenities.map(amenity => (
-                                        <div key={amenity.id} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: '#475569' }}>
-                                            <span style={{ color: '#22c55e', fontSize: '16px' }}>✓</span>
-                                            {amenity.name}
+                            {/* Guest Selection Card - Above Summary */}
+                            <div className="guest-selection-card-floating" style={{
+                                position: 'relative',
+                                zIndex: isGuestConfirmed ? 1 : 10,
+                                marginBottom: '24px',
+                                background: isGuestConfirmed 
+                                    ? 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)' 
+                                    : 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
+                                backdropFilter: 'blur(10px)',
+                                border: isGuestConfirmed ? '2px solid #cbd5e1' : '3px solid #1a362d',
+                                borderRadius: '20px',
+                                padding: '28px',
+                                boxShadow: isGuestConfirmed 
+                                    ? '0 4px 12px rgba(0,0,0,0.08)' 
+                                    : '0 12px 40px rgba(26, 54, 45, 0.25), 0 0 0 1px rgba(26, 54, 45, 0.1)',
+                                transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                                transform: isGuestConfirmed ? 'scale(0.98)' : 'scale(1)'
+                            }}>
+                                <h3 style={{ 
+                                    fontSize: '17px', 
+                                    fontWeight: '800', 
+                                    color: isGuestConfirmed ? '#475569' : '#1a362d',
+                                    marginBottom: '18px',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '10px',
+                                    letterSpacing: '-0.3px'
+                                }}>
+                                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{
+                                        filter: isGuestConfirmed ? 'none' : 'drop-shadow(0 2px 4px rgba(26, 54, 45, 0.2))'
+                                    }}>
+                                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                                        <circle cx="9" cy="7" r="4" />
+                                        <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                                        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                                    </svg>
+                                    Kişi Sayısı Seçimi
+                                </h3>
+                                
+                                {!isGuestConfirmed ? (
+                                    <>
+                                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '18px', marginBottom: '24px' }}>
+                                            <div>
+                                                <label style={{ 
+                                                    fontSize: '14px', 
+                                                    color: '#1e293b', 
+                                                    marginBottom: '10px', 
+                                                    display: 'block', 
+                                                    fontWeight: '600',
+                                                    letterSpacing: '-0.2px'
+                                                }}>
+                                                    Yetişkin <span style={{color: '#94a3b8', fontWeight: '500'}}>(Maks 6)</span>
+                                                </label>
+                                                <div style={{ 
+                                                    display: 'flex', 
+                                                    alignItems: 'center', 
+                                                    justifyContent: 'space-between',
+                                                    background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
+                                                    border: '2px solid #e2e8f0',
+                                                    borderRadius: '14px',
+                                                    padding: '14px 18px',
+                                                    boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+                                                    transition: 'all 0.3s ease'
+                                                }}>
+                                                    <button type="button" onClick={() => setAdults(Math.max(1, adults - 1))} disabled={adults <= 1} style={{
+                                                        width: '42px',
+                                                        height: '42px',
+                                                        borderRadius: '10px',
+                                                        border: 'none',
+                                                        background: adults <= 1 ? '#e2e8f0' : 'linear-gradient(135deg, #1a362d 0%, #2d5a4a 100%)',
+                                                        color: adults <= 1 ? '#94a3b8' : 'white',
+                                                        fontSize: '22px',
+                                                        fontWeight: '600',
+                                                        cursor: adults <= 1 ? 'not-allowed' : 'pointer',
+                                                        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                                                        boxShadow: adults <= 1 ? 'none' : '0 4px 12px rgba(26, 54, 45, 0.25)',
+                                                        transform: adults <= 1 ? 'none' : 'translateY(0)'
+                                                    }}
+                                                    onMouseEnter={(e) => {
+                                                        if (adults > 1) {
+                                                            e.target.style.transform = 'translateY(-2px)';
+                                                            e.target.style.boxShadow = '0 6px 16px rgba(26, 54, 45, 0.35)';
+                                                        }
+                                                    }}
+                                                    onMouseLeave={(e) => {
+                                                        if (adults > 1) {
+                                                            e.target.style.transform = 'translateY(0)';
+                                                            e.target.style.boxShadow = '0 4px 12px rgba(26, 54, 45, 0.25)';
+                                                        }
+                                                    }}
+                                                    >−</button>
+                                                    <span style={{ 
+                                                        fontWeight: '800', 
+                                                        fontSize: '24px', 
+                                                        color: '#1a362d',
+                                                        textShadow: '0 1px 2px rgba(0,0,0,0.1)'
+                                                    }}>{adults}</span>
+                                                    <button type="button" onClick={() => (adults + children < 8) && adults < 6 && setAdults(adults + 1)} disabled={adults >= 6 || (adults + children >= 8)} style={{
+                                                        width: '42px',
+                                                        height: '42px',
+                                                        borderRadius: '10px',
+                                                        border: 'none',
+                                                        background: (adults >= 6 || adults + children >= 8) ? '#e2e8f0' : 'linear-gradient(135deg, #1a362d 0%, #2d5a4a 100%)',
+                                                        color: (adults >= 6 || adults + children >= 8) ? '#94a3b8' : 'white',
+                                                        fontSize: '22px',
+                                                        fontWeight: '600',
+                                                        cursor: (adults >= 6 || adults + children >= 8) ? 'not-allowed' : 'pointer',
+                                                        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                                                        boxShadow: (adults >= 6 || adults + children >= 8) ? 'none' : '0 4px 12px rgba(26, 54, 45, 0.25)',
+                                                        transform: (adults >= 6 || adults + children >= 8) ? 'none' : 'translateY(0)'
+                                                    }}
+                                                    onMouseEnter={(e) => {
+                                                        if (adults < 6 && adults + children < 8) {
+                                                            e.target.style.transform = 'translateY(-2px)';
+                                                            e.target.style.boxShadow = '0 6px 16px rgba(26, 54, 45, 0.35)';
+                                                        }
+                                                    }}
+                                                    onMouseLeave={(e) => {
+                                                        if (adults < 6 && adults + children < 8) {
+                                                            e.target.style.transform = 'translateY(0)';
+                                                            e.target.style.boxShadow = '0 4px 12px rgba(26, 54, 45, 0.25)';
+                                                        }
+                                                    }}
+                                                    >+</button>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <label style={{ 
+                                                    fontSize: '14px', 
+                                                    color: '#1e293b', 
+                                                    marginBottom: '10px', 
+                                                    display: 'block', 
+                                                    fontWeight: '600',
+                                                    letterSpacing: '-0.2px'
+                                                }}>
+                                                    Çocuk <span style={{color: '#94a3b8', fontWeight: '500'}}>(Maks 3)</span>
+                                                </label>
+                                                <div style={{ 
+                                                    display: 'flex', 
+                                                    alignItems: 'center', 
+                                                    justifyContent: 'space-between',
+                                                    background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
+                                                    border: '2px solid #e2e8f0',
+                                                    borderRadius: '14px',
+                                                    padding: '14px 18px',
+                                                    boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+                                                    transition: 'all 0.3s ease'
+                                                }}>
+                                                    <button type="button" onClick={() => setChildren(Math.max(0, children - 1))} disabled={children <= 0} style={{
+                                                        width: '42px',
+                                                        height: '42px',
+                                                        borderRadius: '10px',
+                                                        border: 'none',
+                                                        background: children <= 0 ? '#e2e8f0' : 'linear-gradient(135deg, #1a362d 0%, #2d5a4a 100%)',
+                                                        color: children <= 0 ? '#94a3b8' : 'white',
+                                                        fontSize: '22px',
+                                                        fontWeight: '600',
+                                                        cursor: children <= 0 ? 'not-allowed' : 'pointer',
+                                                        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                                                        boxShadow: children <= 0 ? 'none' : '0 4px 12px rgba(26, 54, 45, 0.25)',
+                                                        transform: children <= 0 ? 'none' : 'translateY(0)'
+                                                    }}
+                                                    onMouseEnter={(e) => {
+                                                        if (children > 0) {
+                                                            e.target.style.transform = 'translateY(-2px)';
+                                                            e.target.style.boxShadow = '0 6px 16px rgba(26, 54, 45, 0.35)';
+                                                        }
+                                                    }}
+                                                    onMouseLeave={(e) => {
+                                                        if (children > 0) {
+                                                            e.target.style.transform = 'translateY(0)';
+                                                            e.target.style.boxShadow = '0 4px 12px rgba(26, 54, 45, 0.25)';
+                                                        }
+                                                    }}
+                                                    >−</button>
+                                                    <span style={{ 
+                                                        fontWeight: '800', 
+                                                        fontSize: '24px', 
+                                                        color: '#1a362d',
+                                                        textShadow: '0 1px 2px rgba(0,0,0,0.1)'
+                                                    }}>{children}</span>
+                                                    <button type="button" onClick={() => (adults + children < 8) && children < 3 && setChildren(children + 1)} disabled={children >= 3 || (adults + children >= 8)} style={{
+                                                        width: '42px',
+                                                        height: '42px',
+                                                        borderRadius: '10px',
+                                                        border: 'none',
+                                                        background: (children >= 3 || adults + children >= 8) ? '#e2e8f0' : 'linear-gradient(135deg, #1a362d 0%, #2d5a4a 100%)',
+                                                        color: (children >= 3 || adults + children >= 8) ? '#94a3b8' : 'white',
+                                                        fontSize: '22px',
+                                                        fontWeight: '600',
+                                                        cursor: (children >= 3 || adults + children >= 8) ? 'not-allowed' : 'pointer',
+                                                        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                                                        boxShadow: (children >= 3 || adults + children >= 8) ? 'none' : '0 4px 12px rgba(26, 54, 45, 0.25)',
+                                                        transform: (children >= 3 || adults + children >= 8) ? 'none' : 'translateY(0)'
+                                                    }}
+                                                    onMouseEnter={(e) => {
+                                                        if (children < 3 && adults + children < 8) {
+                                                            e.target.style.transform = 'translateY(-2px)';
+                                                            e.target.style.boxShadow = '0 6px 16px rgba(26, 54, 45, 0.35)';
+                                                        }
+                                                    }}
+                                                    onMouseLeave={(e) => {
+                                                        if (children < 3 && adults + children < 8) {
+                                                            e.target.style.transform = 'translateY(0)';
+                                                            e.target.style.boxShadow = '0 4px 12px rgba(26, 54, 45, 0.25)';
+                                                        }
+                                                    }}
+                                                    >+</button>
+                                                </div>
+                                            </div>
                                         </div>
-                                    ))}
-                                </div>
+                                        
+                                        {(adults + children >= 8) && (
+                                            <p style={{ 
+                                                color: '#ea580c', 
+                                                fontSize: '13px', 
+                                                marginBottom: '18px', 
+                                                fontWeight: '600', 
+                                                display: 'flex', 
+                                                alignItems: 'center', 
+                                                gap: '8px',
+                                                background: 'linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%)',
+                                                padding: '12px 16px',
+                                                borderRadius: '10px',
+                                                border: '1px solid #fed7aa'
+                                            }}>
+                                                <span style={{ fontSize: '16px' }}>⚠️</span>
+                                                Maksimum kapasite (8 kişi) dolmuştur.
+                                            </p>
+                                        )}
+                                        
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                setIsGuestConfirmed(true);
+                                                setIsGuestLocked(true);
+                                            }}
+                                            style={{
+                                                width: '100%',
+                                                padding: '18px',
+                                                background: 'linear-gradient(135deg, #1a362d 0%, #2d5a4a 100%)',
+                                                color: 'white',
+                                                border: 'none',
+                                                borderRadius: '14px',
+                                                fontSize: '16px',
+                                                fontWeight: '700',
+                                                cursor: 'pointer',
+                                                transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                                                boxShadow: '0 8px 20px rgba(26, 54, 45, 0.3)',
+                                                position: 'relative',
+                                                overflow: 'hidden',
+                                                letterSpacing: '0.3px'
+                                            }}
+                                            onMouseEnter={(e) => {
+                                                e.target.style.transform = 'translateY(-3px)';
+                                                e.target.style.boxShadow = '0 12px 28px rgba(26, 54, 45, 0.4)';
+                                            }}
+                                            onMouseLeave={(e) => {
+                                                e.target.style.transform = 'translateY(0)';
+                                                e.target.style.boxShadow = '0 8px 20px rgba(26, 54, 45, 0.3)';
+                                            }}
+                                        >
+                                            <span style={{ position: 'relative', zIndex: 1 }}>
+                                                Kişi Sayısını Onayla ve Devam Et →
+                                            </span>
+                                        </button>
+                                    </>
+                                ) : (
+                                    <div style={{ 
+                                        display: 'flex', 
+                                        alignItems: 'center', 
+                                        justifyContent: 'space-between',
+                                        padding: '12px 16px',
+                                        background: 'linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%)',
+                                        borderRadius: '12px',
+                                        border: '1px solid #86efac'
+                                    }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                            <div style={{ 
+                                                width: '32px', 
+                                                height: '32px', 
+                                                borderRadius: '50%', 
+                                                background: '#22c55e',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                color: 'white',
+                                                fontSize: '16px'
+                                            }}>✓</div>
+                                            <div>
+                                                <div style={{ fontSize: '14px', fontWeight: '600', color: '#1a362d' }}>
+                                                    {adults} Yetişkin{children > 0 ? `, ${children} Çocuk` : ''}
+                                                </div>
+                                                <div style={{ fontSize: '12px', color: '#64748b' }}>
+                                                    {location.state?.preSelect ? 'Ana sayfadan seçildi' : 'Seçim onaylandı'}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {!location.state?.preSelect && (
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    setIsGuestConfirmed(false);
+                                                    setIsGuestLocked(false);
+                                                    setCheckIn(null);
+                                                    setCheckOut(null);
+                                                }}
+                                                style={{
+                                                    padding: '6px 12px',
+                                                    background: 'white',
+                                                    color: '#64748b',
+                                                    border: '1px solid #e2e8f0',
+                                                    borderRadius: '8px',
+                                                    fontSize: '12px',
+                                                    fontWeight: '500',
+                                                    cursor: 'pointer',
+                                                    transition: 'all 0.2s'
+                                                }}
+                                                onMouseEnter={(e) => {
+                                                    e.target.style.background = '#f8fafc';
+                                                    e.target.style.borderColor = '#cbd5e1';
+                                                }}
+                                                onMouseLeave={(e) => {
+                                                    e.target.style.background = 'white';
+                                                    e.target.style.borderColor = '#e2e8f0';
+                                                }}
+                                            >
+                                                Değiştir
+                                            </button>
+                                        )}
+                                    </div>
+                                )}
                             </div>
 
                             <form onSubmit={handleSubmit} className="booking-form">
@@ -403,57 +720,6 @@ function RoomDetailPage() {
                                         onValidation={setIsPhoneValid}
                                         placeholder={t('booking.phonePlaceholder')}
                                     />
-                                </div>
-                                <div className={`form-group guest-selection-box ${isGuestLocked ? 'locked' : ''} ${!isGuestConfirmed ? 'highlight' : ''}`} style={{ border: 'none', background: 'transparent', padding: 0 }}>
-                                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '15px' }}>
-                                        <div className="guest-sub-selection">
-                                            <label style={{ fontSize: '13px', color: '#64748b', marginBottom: '8px', display: 'block' }}>Yetişkin (Maks 6)</label>
-                                            <div className="guests-input" style={{ width: '100%', justifyContent: 'space-between' }}>
-                                                <button type="button" onClick={() => !isGuestLocked && setAdults(Math.max(1, adults - 1))} disabled={isGuestLocked || adults <= 1}>-</button>
-                                                <span style={{ fontWeight: '700', fontSize: '1.1rem' }}>{adults}</span>
-                                                <button type="button" onClick={() => !isGuestLocked && (adults + children < 8) && adults < 6 && setAdults(adults + 1)} disabled={isGuestLocked || adults >= 6 || (adults + children >= 8)}>+</button>
-                                            </div>
-                                        </div>
-                                        <div className="guest-sub-selection">
-                                            <label style={{ fontSize: '13px', color: '#64748b', marginBottom: '8px', display: 'block' }}>Çocuk (Maks 3)</label>
-                                            <div className="guests-input" style={{ width: '100%', justifyContent: 'space-between' }}>
-                                                <button type="button" onClick={() => !isGuestLocked && setChildren(Math.max(0, children - 1))} disabled={isGuestLocked || children <= 0}>-</button>
-                                                <span style={{ fontWeight: '700', fontSize: '1.1rem' }}>{children}</span>
-                                                <button type="button" onClick={() => !isGuestLocked && (adults + children < 8) && children < 3 && setChildren(children + 1)} disabled={isGuestLocked || children >= 3 || (adults + children >= 8)}>+</button>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '15px', padding: '15px', background: isGuestConfirmed ? '#f8fafc' : '#f0fdf4', borderRadius: '12px', border: isGuestConfirmed ? '1px solid #e2e8f0' : '2px solid #22c55e' }}>
-                                        {!isGuestConfirmed && (
-                                            <button
-                                                type="button"
-                                                className="confirm-guests-btn"
-                                                onClick={() => {
-                                                    setIsGuestConfirmed(true);
-                                                    setIsGuestLocked(true);
-                                                }}
-                                                style={{ flex: 1 }}
-                                            >
-                                                Kişi Sayısını Onayla
-                                            </button>
-                                        )}
-                                        {isGuestConfirmed && (
-                                            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '2px' }}>
-                                                <span style={{ fontSize: '12px', color: '#1a362d', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '5px' }}>
-                                                    <span style={{ width: '6px', height: '6px', background: '#22c55e', borderRadius: '50%' }}></span>
-                                                    {location.state?.preSelect ? 'Ana sayfada seçildi' : 'Seçildi'}
-                                                </span>
-                                                <span style={{ fontSize: '11px', color: '#64748b' }}>{adults} Yetişkin, {children} Çocuk</span>
-                                            </div>
-                                        )}
-                                        {isGuestLocked && !location.state?.preSelect && isGuestConfirmed && (
-                                            <span style={{ fontSize: '11px', color: '#94a3b8' }}>Kilitlendi</span>
-                                        )}
-                                    </div>
-                                    {(adults + children >= 8) && !isGuestLocked && (
-                                        <p style={{ color: '#f59e0b', fontSize: '11px', marginTop: '8px', fontWeight: '500' }}>⚠️ Maksimum kapasite (8 kişi) dolmuştur.</p>
-                                    )}
                                 </div>
                                 <button type="submit" className="submit-booking-btn">
                                     <span className="icon"><CreditCardIcon /></span>

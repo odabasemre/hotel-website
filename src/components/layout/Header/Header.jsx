@@ -94,6 +94,7 @@ function Header() {
     const navLinks = [
         { to: '/', label: t('nav.home') },
         { to: '/rooms', label: t('nav.rooms') },
+        { to: '/activities', label: t('activities.title') },
         { to: '/about', label: t('nav.about') },
         { to: '/gallery', label: t('nav.gallery') },
         { to: '/contact', label: t('nav.contact') },

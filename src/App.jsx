@@ -12,6 +12,8 @@ import ContactPage from '@pages/ContactPage'
 import AboutPage from '@pages/AboutPage'
 import RoomsPage from '@pages/RoomsPage'
 import RoomDetailPage from '@pages/RoomDetailPage'
+import ActivitiesPage from '@pages/ActivitiesPage'
+import ActivityDetailPage from '@pages/ActivityDetailPage'
 import AdminPage from '@pages/AdminPage'
 import CheckoutPage from '@pages/CheckoutPage'
 
@@ -49,6 +51,8 @@ function App() {
                         <Route path="/rooms" element={<RoomsPage />} />
                         <Route path="/rooms/:slug" element={<RoomDetailPage />} />
                         <Route path="/about" element={<AboutPage />} />
+                        <Route path="/activities" element={<ActivitiesPage />} />
+                        <Route path="/activities/:id" element={<ActivityDetailPage />} />
                         <Route path="/gallery" element={<GalleryPage />} />
                         <Route path="/contact" element={<ContactPage />} />
                         <Route path="/admin" element={<AdminPage />} />
