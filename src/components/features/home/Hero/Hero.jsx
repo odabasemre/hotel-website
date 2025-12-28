@@ -13,9 +13,20 @@ function Hero() {
     const [siteTexts, setSiteTexts] = useState(adminSettings.getSiteTexts())
 
     useEffect(() => {
-        // Refresh property data when component mounts
-        setPropertyData(adminSettings.getPropertyData())
-        setSiteTexts(adminSettings.getSiteTexts())
+        // Refresh property data when component mounts and fetch from API
+        const fetchData = async () => {
+            try {
+                const property = await adminSettings.getPropertyDataAsync()
+                const texts = await adminSettings.getSiteTextsAsync()
+                setPropertyData(property)
+                setSiteTexts(texts)
+            } catch (error) {
+                console.error('Error fetching data:', error)
+                setPropertyData(adminSettings.getPropertyData())
+                setSiteTexts(adminSettings.getSiteTexts())
+            }
+        }
+        fetchData()
     }, [])
 
     const [bookingData, setBookingData] = useState({
@@ -82,11 +93,13 @@ function Hero() {
     const today = new Date().toISOString().split('T')[0]
 
     const heroBg = propertyData.heroImage || "/images/hero/Gemini_Generated_Image_1e0ht31e0ht31e0h.png";
+    // Cache-busting: Add timestamp to uploaded images
+    const heroBgWithCache = heroBg.startsWith('/uploads') ? `${heroBg}?t=${Date.now()}` : heroBg;
 
     return (
         <section className="hero" id="home">
             <div className="hero-background">
-                <img src={heroBg} alt="Hotel View" />
+                <img src={heroBgWithCache} alt="Hotel View" key={heroBgWithCache} />
                 <div className="hero-overlay"></div>
             </div>
 
@@ -137,11 +150,11 @@ function Hero() {
 
                         <div className="bar-divider"></div>
 
-                        {/* Yetişkin */}
+                        {/* Kişi Sayısı */}
                         <div className="bar-field guest-field-wrapper" ref={guestPanelRef}>
-                            <label>YETİŞKİN</label>
+                            <label>KİŞİ SAYISI</label>
                             <div className="guest-select-trigger" onClick={() => setShowGuestPanel(!showGuestPanel)}>
-                                <span className="guest-value">{bookingData.adults}</span>
+                                <span className="guest-value">{bookingData.adults + bookingData.children} Kişi</span>
                                 <span className="dropdown-arrow">▼</span>
                             </div>
 
@@ -174,17 +187,6 @@ function Hero() {
                                     </button>
                                 </div>
                             )}
-                        </div>
-
-                        <div className="bar-divider"></div>
-
-                        {/* Çocuk */}
-                        <div className="bar-field">
-                            <label>ÇOCUK</label>
-                            <div className="guest-select-trigger" onClick={() => setShowGuestPanel(!showGuestPanel)}>
-                                <span className="guest-value">{bookingData.children}</span>
-                                <span className="dropdown-arrow">▼</span>
-                            </div>
                         </div>
 
                         {/* Ara Butonu */}

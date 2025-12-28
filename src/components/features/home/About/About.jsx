@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { adminSettings } from '@services'
@@ -5,8 +6,25 @@ import './About.css'
 
 function About() {
     const { t } = useTranslation()
-    const propertyData = adminSettings.getPropertyData()
-    const siteTexts = adminSettings.getSiteTexts()
+    const [propertyData, setPropertyData] = useState(adminSettings.getPropertyData())
+    const [siteTexts, setSiteTexts] = useState(adminSettings.getSiteTexts())
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const property = await adminSettings.getPropertyDataAsync()
+                const texts = await adminSettings.getSiteTextsAsync()
+                setPropertyData(property)
+                setSiteTexts(texts)
+            } catch (error) {
+                console.error('Error fetching data:', error)
+            }
+        }
+        fetchData()
+    }, [])
+
+    const aboutImage = propertyData.siteImages?.about?.image1 || "/images/hero/Gemini_Generated_Image_1e0ht31e0ht31e0h.png"
+    const aboutImageWithCache = aboutImage.startsWith('/uploads') ? `${aboutImage}?t=${Date.now()}` : aboutImage
 
     return (
         <section className="about-section" id="about">
@@ -16,8 +34,9 @@ function About() {
                     <div className="about-images">
                         <div className="about-image">
                             <img
-                                src={propertyData.siteImages?.about?.image1 || "/images/hero/Gemini_Generated_Image_1e0ht31e0ht31e0h.png"}
+                                src={aboutImageWithCache}
                                 alt="Ayder Kuzey Houses Houses"
+                                key={aboutImageWithCache}
                             />
                         </div>
                     </div>

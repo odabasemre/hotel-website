@@ -48,7 +48,7 @@ function RoomDetailPage() {
     const [isGuestConfirmed, setIsGuestConfirmed] = useState(!!location.state?.preSelect)
     const [isGuestLocked, setIsGuestLocked] = useState(!!location.state?.preSelect)
 
-    const { isDateBusy, getPriceForDate, settings } = useCustomAvailability();
+    const { isDateBusy, isDateAlmostFull, getPriceForDate, settings } = useCustomAvailability();
 
     // Homepage'den gelen veriyi işle
     useEffect(() => {
@@ -248,8 +248,9 @@ function RoomDetailPage() {
                                     const today = new Date(); today.setHours(0, 0, 0, 0);
                                     const isPast = date < today;
                                     const isBusy = isDateBusy(date);
+                                    const isAlmostFull = isDateAlmostFull(date);
                                     const price = getPriceForDate(date, adults, children);
-                                    let className = `calendar-day ${isDateSelected(day) ? 'selected' : ''} ${isBusy ? 'busy' : ''} ${isPast ? 'past-date' : ''}`;
+                                    let className = `calendar-day ${isDateSelected(day) ? 'selected' : ''} ${isBusy ? 'busy' : ''} ${isAlmostFull ? 'almost-full' : ''} ${isPast ? 'past-date' : ''}`;
 
                                     return (
                                         <div
@@ -258,6 +259,7 @@ function RoomDetailPage() {
                                             onClick={() => !isBusy && !isPast && isGuestConfirmed && handleDateClick(day)}
                                             style={isPast ? { cursor: 'default', opacity: 0.5 } : {}}
                                         >
+                                            {isAlmostFull && !isBusy && !isPast && isGuestConfirmed && <span className="day-status almost-full-label">DOLMAK ÜZERE !</span>}
                                             <span className="day-num">{day}</span>
                                             {!isBusy && !isPast && isGuestConfirmed && <span className="day-price">{price.toLocaleString()}₺</span>}
                                             {isBusy && !isPast && isGuestConfirmed && <span className="day-price busy-label">DOLU</span>}

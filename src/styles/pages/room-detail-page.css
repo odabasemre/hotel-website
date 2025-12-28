@@ -139,6 +139,22 @@
     color: #ef4444;
 }
 
+/* Dolmak üzere stili */
+.calendar-day.almost-full {
+    /* Arka plan rengi kaldırıldı */
+}
+
+.day-status.almost-full-label {
+    font-size: 0.45rem;
+    font-weight: 700;
+    color: rgba(0, 0, 0, 0.7);
+    text-transform: uppercase;
+    letter-spacing: 0.1px;
+    margin-top: 2px;
+    line-height: 1;
+    white-space: nowrap;
+}
+
 /* Reservation Summary Card */
 .reservation-summary-card {
     background: #f1f5f9;

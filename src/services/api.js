@@ -1,5 +1,7 @@
 // API Configuration
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+// Dev: Vite proxy kullanır (/api -> localhost:5000)
+// Prod: Nginx proxy kullanır (/api -> backend:5000)
+const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
 // Fetch wrapper with error handling
 async function fetchApi(endpoint, options = {}) {

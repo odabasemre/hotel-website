@@ -12,11 +12,13 @@ function PhotosTab({
     showConfirmPopup,
     setShowConfirmPopup
 }) {
+    const [uploading, setUploading] = useState(false)
+    
     // Get current images (pending or saved)
     const currentImages = pendingImages || propertyData.siteImages || {}
 
-    // Image upload handler - saves to pending state
-    const handleImageUpload = (file, section, key) => {
+    // Image upload handler - uploads to API immediately
+    const handleImageUpload = async (file, section, key) => {
         if (!file) return
 
         // Check file type
@@ -25,39 +27,64 @@ function PhotosTab({
             return
         }
 
-        // Check file size (max 5MB)
-        if (file.size > 5 * 1024 * 1024) {
-            alert('Dosya boyutu 5MB\'dan küçük olmalıdır.')
+        // Check file size (max 20MB to match backend)
+        if (file.size > 20 * 1024 * 1024) {
+            alert('Dosya boyutu 20MB\'dan küçük olmalıdır.')
             return
         }
 
-        const reader = new FileReader()
-        reader.onload = (e) => {
-            const base64 = e.target.result
+        setUploading(true)
+        try {
+            // Upload to API
+            const imageKey = `${section}_${key}`
+            const imagePath = await adminSettings.uploadImage(file, section, imageKey)
+            
+            // Update pending images with the new path
             const updatedImages = {
                 ...currentImages,
-                [section]: { ...currentImages[section], [key]: base64 }
+                [section]: { ...currentImages[section], [key]: imagePath }
             }
             setPendingImages(updatedImages)
             setHasImageChanges(true)
+            alert(`✅ ${file.name} yüklendi!`)
+        } catch (error) {
+            console.error('Upload error:', error)
+            alert('❌ Fotoğraf yüklenirken hata oluştu. Lütfen tekrar deneyin.')
+        } finally {
+            setUploading(false)
         }
-        reader.readAsDataURL(file)
     }
 
     // Save all pending changes
-    const handleSaveImages = () => {
+    const handleSaveImages = async () => {
         if (!pendingImages) return
 
-        const updated = {
-            ...propertyData,
-            siteImages: pendingImages,
-            heroImage: pendingImages.hero?.background || propertyData.heroImage
+        setUploading(true)
+        try {
+            const updated = {
+                ...propertyData,
+                siteImages: pendingImages,
+                heroImage: pendingImages.hero?.background || propertyData.heroImage
+            }
+            
+            // Save to both localStorage and API
+            await adminSettings.updatePropertyDataAsync(updated)
+            setPropertyData(updated)
+            setPendingImages(null)
+            setHasImageChanges(false)
+            setShowConfirmPopup(false)
+            
+            // Force page reload to clear cache
+            alert('✅ Fotoğraflar başarıyla kaydedildi! Sayfa yenileniyor...')
+            setTimeout(() => {
+                window.location.reload()
+            }, 1000)
+        } catch (error) {
+            console.error('Save error:', error)
+            alert('❌ Kaydetme sırasında hata oluştu.')
+        } finally {
+            setUploading(false)
         }
-        setPropertyData(adminSettings.updatePropertyData(updated))
-        setPendingImages(null)
-        setHasImageChanges(false)
-        setShowConfirmPopup(false)
-        alert('✅ Fotoğraflar başarıyla kaydedildi!')
     }
 
     // Drop zone component
@@ -68,13 +95,17 @@ function PhotosTab({
         const handleDrop = (e) => {
             e.preventDefault()
             setIsDragging(false)
-            const file = e.dataTransfer.files[0]
-            handleImageUpload(file, section, imageKey)
+            if (!uploading) {
+                const file = e.dataTransfer.files[0]
+                handleImageUpload(file, section, imageKey)
+            }
         }
 
         const handleDragOver = (e) => {
             e.preventDefault()
-            setIsDragging(true)
+            if (!uploading) {
+                setIsDragging(true)
+            }
         }
 
         const handleDragLeave = () => {
@@ -82,12 +113,16 @@ function PhotosTab({
         }
 
         const handleClick = () => {
-            inputRef.current?.click()
+            if (!uploading) {
+                inputRef.current?.click()
+            }
         }
 
         const handleFileChange = (e) => {
-            const file = e.target.files[0]
-            handleImageUpload(file, section, imageKey)
+            if (!uploading) {
+                const file = e.target.files[0]
+                handleImageUpload(file, section, imageKey)
+            }
         }
 
         // Use pending image if exists, otherwise use saved image
@@ -125,6 +160,29 @@ function PhotosTab({
                         onChange={handleFileChange}
                         style={{ display: 'none' }}
                     />
+
+                    {uploading ? (
+                        <div style={{
+                            position: 'absolute',
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
+                            background: 'rgba(0,0,0,0.7)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            color: 'white',
+                            fontSize: '16px',
+                            fontWeight: 'bold',
+                            zIndex: 10
+                        }}>
+                            <div style={{ textAlign: 'center' }}>
+                                <div style={{ fontSize: '32px', marginBottom: '10px' }}>⏳</div>
+                                Yükleniyor...
+                            </div>
+                        </div>
+                    ) : null}
 
                     {displayImage ? (
                         <>
@@ -368,7 +426,7 @@ function PhotosTab({
             <div style={{ marginTop: '25px', padding: '20px', background: '#eff6ff', borderRadius: '12px', border: '1px solid #bfdbfe' }}>
                 <h4 style={{ marginBottom: '12px', color: '#1e40af', fontSize: '15px' }}>💡 Fotoğraf Yükleme İpuçları</h4>
                 <ul style={{ margin: 0, paddingLeft: '20px', color: '#3b82f6', fontSize: '13px', lineHeight: '1.8' }}>
-                    <li>Maksimum dosya boyutu: 5MB</li>
+                    <li>Maksimum dosya boyutu: 20MB</li>
                     <li>Önerilen format: JPG veya PNG</li>
                     <li>Hero görseli için en az 1920x1080px çözünürlük önerilir</li>
                     <li>Değişiklikler sadece "Kaydet" butonuna tıklandığında kaydedilir</li>

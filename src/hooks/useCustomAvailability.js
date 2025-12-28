@@ -3,6 +3,7 @@ import { adminSettings } from '../services/adminSettings';
 
 export const useCustomAvailability = () => {
     const [busyDates, setBusyDates] = useState([]);
+    const [almostFullDates, setAlmostFullDates] = useState([]); // Dolmak üzere olan tarihler
     const [settings, setSettings] = useState(adminSettings.getSettings());
 
     const refreshAvailability = () => {
@@ -12,6 +13,7 @@ export const useCustomAvailability = () => {
 
         const countsByDate = {};
         const fullyBusyDates = [];
+        const almostFull = [];
 
         // 1. Rezervasyonları işle
         bookings.forEach(booking => {
@@ -34,14 +36,19 @@ export const useCustomAvailability = () => {
 
             const dayData = adminSettings.getDayData(dateStr);
             const reservedCount = countsByDate[dateStr] || 0;
+            const remainingInventory = dayData.inventory - reservedCount;
 
             // Eğer manuel olarak "Kapalı" (Stop Sale) yapıldıysa veya kontenjan dolduysa busy işaretle
-            if (dayData.closed || reservedCount >= dayData.inventory) {
+            if (dayData.closed || remainingInventory <= 0) {
                 fullyBusyDates.push(new Date(dateStr));
+            } else if (remainingInventory === 1) {
+                // Sadece 1 kişilik yer kaldıysa "dolmak üzere"
+                almostFull.push(new Date(dateStr));
             }
         }
 
         setBusyDates(fullyBusyDates);
+        setAlmostFullDates(almostFull);
     };
 
     useEffect(() => {
@@ -56,11 +63,19 @@ export const useCustomAvailability = () => {
         );
     };
 
+    const isDateAlmostFull = (date) => {
+        if (!date) return false;
+        const checkStr = date.toISOString().split('T')[0];
+        return almostFullDates.some(almostDate =>
+            almostDate.toISOString().split('T')[0] === checkStr
+        );
+    };
+
     const getPriceForDate = (date) => {
         if (!date) return settings.nightlyPrice || 5000;
         const dateStr = date.toISOString().split('T')[0];
         return adminSettings.getDayData(dateStr).price;
     };
 
-    return { isDateBusy, getPriceForDate, settings, refreshAvailability };
+    return { isDateBusy, isDateAlmostFull, getPriceForDate, settings, refreshAvailability };
 };

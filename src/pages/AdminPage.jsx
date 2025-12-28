@@ -9,7 +9,6 @@ import {
     PricingTab,
     PromotionsTab,
     BookingsTab,
-    SettingsTab,
     PhotosTab,
     TextsTab
 } from './Admin/tabs'
@@ -207,7 +206,6 @@ function AdminPage() {
                         <li><button className={activeTab === 'bookings' ? 'active' : ''} onClick={() => setActiveTab('bookings')}><ListIcon /> Rezervasyonlar</button></li>
                         <li><button className={activeTab === 'photos' ? 'active' : ''} onClick={() => setActiveTab('photos')}><ImageIcon /> Fotoğraflar</button></li>
                         <li><button className={activeTab === 'texts' ? 'active' : ''} onClick={() => setActiveTab('texts')}><TextIcon /> Yazılar</button></li>
-                        <li><button className={activeTab === 'settings' ? 'active' : ''} onClick={() => setActiveTab('settings')}><SettingsIcon /> Tesis ▾</button></li>
                     </ul>
                     <div className="nav-actions">
                         <button className="logout-btn" onClick={() => setIsLoggedIn(false)}>Çıkış Yap</button>
@@ -288,16 +286,6 @@ function AdminPage() {
                     <TextsTab
                         siteTexts={siteTexts}
                         setSiteTexts={setSiteTexts}
-                    />
-                )}
-
-                {/* Settings Tab */}
-                {activeTab === 'settings' && (
-                    <SettingsTab
-                        pricing={pricing}
-                        setPricing={setPricing}
-                        propertyData={propertyData}
-                        setPropertyData={setPropertyData}
                     />
                 )}
             </main>

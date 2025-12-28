@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { adminSettings } from '@services'
 import './RoomShowcase.css'
@@ -63,7 +64,22 @@ const AcIcon = () => (
 
 function RoomShowcase() {
     const { t } = useTranslation()
-    const propertyData = adminSettings.getPropertyData()
+    const [propertyData, setPropertyData] = useState(adminSettings.getPropertyData())
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const property = await adminSettings.getPropertyDataAsync()
+                setPropertyData(property)
+            } catch (error) {
+                console.error('Error fetching data:', error)
+            }
+        }
+        fetchData()
+    }, [])
+
+    const roomImage = propertyData.siteImages?.room?.main || "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
+    const roomImageWithCache = roomImage.startsWith('/uploads') ? `${roomImage}?t=${Date.now()}` : roomImage
 
     const features = [
         { key: 'size', icon: <SizeIcon /> },
@@ -81,8 +97,9 @@ function RoomShowcase() {
                     {/* Room Image */}
                     <div className="room-image">
                         <img
-                            src={propertyData.siteImages?.room?.main || "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"}
+                            src={roomImageWithCache}
                             alt="Luxury hotel room"
+                            key={roomImageWithCache}
                         />
                         <span className="room-image-badge">Exclusive</span>
                     </div>
@@ -107,10 +124,9 @@ function RoomShowcase() {
                             ))}
                         </div>
 
-                        {/* Price and CTA */}
+                        {/* CTA Button */}
                         <div className="room-price">
-                            <span className="price-label">{t('room.price')}</span>
-                            <a href="#booking" className="btn btn-primary room-cta">
+                            <a href="/rooms" className="btn btn-primary room-cta">
                                 {t('room.bookRoom')}
                             </a>
                         </div>

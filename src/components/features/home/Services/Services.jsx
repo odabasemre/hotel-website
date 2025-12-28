@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { adminSettings } from '@services'
 import './Services.css'
@@ -59,8 +60,22 @@ const ConciergeIcon = () => (
 
 function Services() {
     const { t } = useTranslation()
-    const propertyData = adminSettings.getPropertyData()
-    const siteTexts = adminSettings.getSiteTexts()
+    const [propertyData, setPropertyData] = useState(adminSettings.getPropertyData())
+    const [siteTexts, setSiteTexts] = useState(adminSettings.getSiteTexts())
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const property = await adminSettings.getPropertyDataAsync()
+                const texts = await adminSettings.getSiteTextsAsync()
+                setPropertyData(property)
+                setSiteTexts(texts)
+            } catch (error) {
+                console.error('Error fetching data:', error)
+            }
+        }
+        fetchData()
+    }, [])
 
     const services = [
         { key: 'spa', icon: <SpaIcon /> },
@@ -71,6 +86,15 @@ function Services() {
         { key: 'concierge', icon: <ConciergeIcon /> },
     ]
 
+    // Add cache-busting to uploaded images
+    const addCacheBuster = (url) => {
+        if (!url) return url
+        return url.startsWith('/uploads') ? `${url}?t=${Date.now()}` : url
+    }
+
+    const servicesImage1 = addCacheBuster(propertyData.siteImages?.services?.image1) || "https://images.unsplash.com/photo-1571896349842-33c89424de2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+    const servicesImage2 = addCacheBuster(propertyData.siteImages?.services?.image2) || "https://images.unsplash.com/photo-1590490360182-c33d57733427?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+
     return (
         <section className="services section">
             <div className="container">
@@ -78,8 +102,9 @@ function Services() {
                 <div className="services-content">
                     <div className="services-image">
                         <img
-                            src={propertyData.siteImages?.services?.image1 || "https://images.unsplash.com/photo-1571896349842-33c89424de2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"}
+                            src={servicesImage1}
                             alt="Hotel pool view"
+                            key={servicesImage1}
                         />
                     </div>
 
@@ -91,8 +116,9 @@ function Services() {
 
                     <div className="services-image">
                         <img
-                            src={propertyData.siteImages?.services?.image2 || "https://images.unsplash.com/photo-1590490360182-c33d57733427?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"}
+                            src={servicesImage2}
                             alt="Hotel room"
+                            key={servicesImage2}
                         />
                     </div>
                 </div>

@@ -67,7 +67,8 @@
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: var(--spacing-xl) var(--spacing-md);
-    margin-bottom: var(--spacing-3xl);
+    margin-bottom: 0;
+    padding-bottom: var(--spacing-md);
 }
 
 .feature-item {
@@ -96,36 +97,32 @@
     color: var(--color-text);
 }
 
-/* Room Price */
+/* Room CTA */
 .room-price {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding-top: var(--spacing-xl);
-    border-top: 1px solid var(--color-border);
-}
-
-.price-label {
-    font-family: var(--font-primary);
-    font-size: var(--fs-2xl);
-    font-weight: var(--fw-regular);
-    color: var(--color-primary);
+    justify-content: center;
+    padding-top: var(--spacing-lg);
+    padding-bottom: var(--spacing-lg);
+    border-bottom: 1px solid var(--color-border);
 }
 
 .room-cta {
-    padding: 16px 40px;
+    padding: 18px 64px;
     background-color: var(--color-primary);
     color: var(--color-white);
     text-transform: uppercase;
     letter-spacing: 2px;
-    font-size: 10px;
+    font-size: 11px;
     font-weight: var(--fw-bold);
     transition: all var(--transition-base);
+    border-radius: 0;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
 }
 
 .room-cta:hover {
     background-color: var(--color-primary-dark);
     transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
 }
 
 /* Responsive */
@@ -149,13 +146,8 @@
         grid-template-columns: 1fr;
     }
 
-    .room-price {
-        flex-direction: column;
-        gap: var(--spacing-lg);
-        text-align: center;
-    }
-
     .room-cta {
         width: 100%;
+        max-width: 320px;
     }
 }
