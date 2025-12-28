@@ -74,13 +74,17 @@ function RoomsPage() {
     // Oda fotoğrafları - admin settings'den veya varsayılan
     const propertyData = adminSettings.getPropertyData()
     
-    // Get room images from gallery in siteImages
-    const getGalleryImages = () => {
-        const gallery = propertyData.siteImages?.gallery || {}
+    // Get room images from rooms section in siteImages
+    const getRoomSlideImages = () => {
+        const rooms = propertyData.siteImages?.rooms || {}
         const images = []
         for (let i = 1; i <= 8; i++) {
-            const img = gallery[`image${i}`]
-            if (img) images.push(img)
+            const img = rooms[`slide${i}`]
+            if (img) {
+                // Cache busting for uploaded images
+                const imgUrl = img.startsWith('/uploads') ? `${img}?t=${Date.now()}` : img
+                images.push(imgUrl)
+            }
         }
         // If no images, use defaults
         if (images.length === 0) {
@@ -88,13 +92,17 @@ function RoomsPage() {
                 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
                 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80',
                 'https://images.unsplash.com/photo-1618773928121-c32242e63f39?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-                'https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+                'https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                'https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                'https://images.unsplash.com/photo-1590490360182-c33d57733427?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
             ]
         }
         return images
     }
     
-    const roomImages = getGalleryImages()
+    const roomImages = getRoomSlideImages()
 
     const nextImage = () => {
         setCurrentImageIndex((prev) => (prev + 1) % roomImages.length)

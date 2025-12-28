@@ -1,6 +1,7 @@
 import express from 'express';
 import pool from '../database/db.js';
 import { v4 as uuidv4 } from 'uuid';
+import { sendBookingNotification } from '../utils/emailService.js';
 
 const router = express.Router();
 
@@ -62,6 +63,7 @@ router.get('/:id', async (req, res) => {
 
 // Yeni rezervasyon oluştur
 router.post('/', async (req, res) => {
+    console.log('📥 Yeni rezervasyon isteği alındı:', req.body);
     try {
         const {
             guestName,
@@ -86,7 +88,56 @@ router.post('/', async (req, res) => {
             [bookingId, guestName, guestEmail, guestPhone, checkIn, checkOut, guests, roomType, totalPrice, currency || 'TRY', notes]
         );
 
-        res.status(201).json(result.rows[0]);
+        const booking = result.rows[0];
+        console.log('💾 Rezervasyon veritabanına kaydedildi:', bookingId);
+
+        // Rezervasyon tarihlerinde kontenjanı güncelle (pricing tablosunda is_available = false yap)
+        try {
+            const startDate = new Date(checkIn);
+            const endDate = new Date(checkOut);
+            const tempDate = new Date(startDate);
+            
+            while (tempDate < endDate) {
+                const dateStr = tempDate.toISOString().split('T')[0];
+                
+                // Bu tarihteki aktif rezervasyon sayısını kontrol et
+                const activeBookingsResult = await pool.query(
+                    `SELECT COUNT(*) as count FROM bookings 
+                     WHERE check_in <= $1 AND check_out > $1 
+                     AND status != 'cancelled'`,
+                    [dateStr]
+                );
+                const activeCount = parseInt(activeBookingsResult.rows[0].count);
+                
+                // totalRooms (varsayılan 2) ile karşılaştır, doluysa kapat
+                const totalRooms = 2; // Varsayılan oda sayısı
+                if (activeCount >= totalRooms) {
+                    await pool.query(
+                        `INSERT INTO pricing (date, is_available) VALUES ($1, false)
+                         ON CONFLICT (date) DO UPDATE SET is_available = false`,
+                        [dateStr]
+                    );
+                    console.log(`📅 ${dateStr} tarihi dolu olarak işaretlendi`);
+                }
+                
+                tempDate.setDate(tempDate.getDate() + 1);
+            }
+        } catch (inventoryError) {
+            console.error('⚠️ Kontenjan güncelleme hatası:', inventoryError.message);
+        }
+
+        // Rezervasyon bildirimi mailini gönder
+        try {
+            console.log('📧 Mail gönderimi başlatılıyor...');
+            const mailResult = await sendBookingNotification(booking);
+            console.log('✅ Rezervasyon maili gönderildi:', bookingId, mailResult);
+        } catch (emailError) {
+            console.error('⚠️ Mail gönderme hatası (rezervasyon kaydedildi):', emailError.message);
+            console.error('Detaylı hata:', emailError);
+            // Mail hatasında bile rezervasyon başarılı sayılır
+        }
+
+        res.status(201).json(booking);
     } catch (error) {
         console.error('Error creating booking:', error);
         res.status(500).json({ error: 'Failed to create booking' });

@@ -35,11 +35,11 @@ function CheckoutPage() {
         tempDate.setDate(tempDate.getDate() + 1)
     }
 
-    const handlePayment = (e) => {
+    const handlePayment = async (e) => {
         e.preventDefault()
         setIsProcessing(true)
-        setTimeout(() => {
-            adminSettings.addBooking({ ...bookingData, totalPrice, createdAt: new Date().toISOString() })
+        setTimeout(async () => {
+            await adminSettings.addBookingAsync({ ...bookingData, totalPrice, createdAt: new Date().toISOString() })
             setIsProcessing(false)
             alert("Ödeme Başarılı!")
             navigate('/')

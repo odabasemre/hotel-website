@@ -377,15 +377,22 @@ function PhotosTab({
 
                 {/* Rooms Section */}
                 <div style={{ padding: '25px', background: '#f8fafc', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
-                    <h3 style={{ fontSize: '18px', marginBottom: '20px', color: '#1a362d' }}>
+                    <h3 style={{ fontSize: '18px', marginBottom: '8px', color: '#1a362d' }}>
                         🛏️ Odalar Sayfası
                     </h3>
-                    <DropZone
-                        section="rooms"
-                        imageKey="main"
-                        currentImage={propertyData.siteImages?.rooms?.main}
-                        description="Odalar sayfasındaki ana oda görseli. Önerilen boyut: 1000x800px"
-                    />
+                    <p style={{ color: '#666', fontSize: '13px', marginBottom: '20px' }}>
+                        Odalar sayfasındaki slider'da görünecek 8 adet fotoğraf.
+                    </p>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '15px' }}>
+                        <DropZone section="rooms" imageKey="slide1" currentImage={propertyData.siteImages?.rooms?.slide1} label="Oda 1" size="small" />
+                        <DropZone section="rooms" imageKey="slide2" currentImage={propertyData.siteImages?.rooms?.slide2} label="Oda 2" size="small" />
+                        <DropZone section="rooms" imageKey="slide3" currentImage={propertyData.siteImages?.rooms?.slide3} label="Oda 3" size="small" />
+                        <DropZone section="rooms" imageKey="slide4" currentImage={propertyData.siteImages?.rooms?.slide4} label="Oda 4" size="small" />
+                        <DropZone section="rooms" imageKey="slide5" currentImage={propertyData.siteImages?.rooms?.slide5} label="Oda 5" size="small" />
+                        <DropZone section="rooms" imageKey="slide6" currentImage={propertyData.siteImages?.rooms?.slide6} label="Oda 6" size="small" />
+                        <DropZone section="rooms" imageKey="slide7" currentImage={propertyData.siteImages?.rooms?.slide7} label="Oda 7" size="small" />
+                        <DropZone section="rooms" imageKey="slide8" currentImage={propertyData.siteImages?.rooms?.slide8} label="Oda 8" size="small" />
+                    </div>
                 </div>
 
                 {/* About Section */}

@@ -60,9 +60,20 @@ function Hero() {
             const current = Number(prev[type])
             let next = action === 'inc' ? current + 1 : current - 1
 
+            // Minimum limitler
             if (type === 'adults' && next < 1) next = 1
             if (type === 'children' && next < 0) next = 0
-            if (next > 10) next = 10
+            
+            // Maximum limitler: 6 yetişkin, 3 çocuk, toplam 8 kişi
+            if (type === 'adults' && next > 6) next = 6
+            if (type === 'children' && next > 3) next = 3
+            
+            // Toplam kişi kontrolü (max 8)
+            const otherType = type === 'adults' ? 'children' : 'adults'
+            const otherCount = prev[otherType]
+            if (next + otherCount > 8) {
+                next = 8 - otherCount
+            }
 
             return { ...prev, [type]: next }
         })
@@ -167,7 +178,7 @@ function Hero() {
                                         <div className="guest-controls">
                                             <button type="button" onClick={(e) => { e.stopPropagation(); updateCount('adults', 'dec'); }} disabled={bookingData.adults <= 1}>−</button>
                                             <span>{bookingData.adults}</span>
-                                            <button type="button" onClick={(e) => { e.stopPropagation(); updateCount('adults', 'inc'); }}>+</button>
+                                            <button type="button" onClick={(e) => { e.stopPropagation(); updateCount('adults', 'inc'); }} disabled={bookingData.adults >= 6 || (bookingData.adults + bookingData.children) >= 8}>+</button>
                                         </div>
                                     </div>
 
@@ -178,7 +189,7 @@ function Hero() {
                                         <div className="guest-controls">
                                             <button type="button" onClick={(e) => { e.stopPropagation(); updateCount('children', 'dec'); }} disabled={bookingData.children <= 0}>−</button>
                                             <span>{bookingData.children}</span>
-                                            <button type="button" onClick={(e) => { e.stopPropagation(); updateCount('children', 'inc'); }}>+</button>
+                                            <button type="button" onClick={(e) => { e.stopPropagation(); updateCount('children', 'inc'); }} disabled={bookingData.children >= 3 || (bookingData.adults + bookingData.children) >= 8}>+</button>
                                         </div>
                                     </div>
 

@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next'
+import { adminSettings } from '../../services/adminSettings'
 
 // Feature Icons
 const SizeIcon = () => (
@@ -61,6 +62,19 @@ const AcIcon = () => (
 
 function RoomShowcase() {
     const { t } = useTranslation()
+    const siteTexts = adminSettings.getSiteTexts()
+
+    // Helper function to get text styles
+    const getTextStyle = (section, field) => {
+        const styles = siteTexts[section]?.[`${field}Style`] || {}
+        return {
+            fontSize: styles.fontSize ? `${styles.fontSize}px` : undefined,
+            fontWeight: styles.fontWeight || undefined,
+            fontStyle: styles.fontStyle || undefined,
+            textAlign: styles.textAlign || undefined,
+            fontFamily: styles.fontFamily || undefined
+        }
+    }
 
     const features = [
         { key: 'size', icon: <SizeIcon /> },
@@ -86,9 +100,15 @@ function RoomShowcase() {
 
                     {/* Room Info */}
                     <div className="room-info">
-                        <p className="section-subtitle">{t('room.subtitle')}</p>
-                        <h2 className="section-title">{t('room.title')}</h2>
-                        <p className="room-description">{t('room.description')}</p>
+                        <p className="section-subtitle" style={getTextStyle('rooms', 'subtitle')}>
+                            {siteTexts.rooms?.subtitle || t('room.subtitle')}
+                        </p>
+                        <h2 className="section-title" style={getTextStyle('rooms', 'title')}>
+                            {siteTexts.rooms?.title || t('room.title')}
+                        </h2>
+                        <p className="room-description" style={getTextStyle('rooms', 'description')}>
+                            {siteTexts.rooms?.description || t('room.description')}
+                        </p>
 
                         {/* Features */}
                         <div className="room-features">

@@ -44,6 +44,18 @@ function Footer() {
     const { address, phone, email, loading } = usePlaceDetails()
     const siteTexts = adminSettings.getSiteTexts()
 
+    // Helper function to get text styles
+    const getTextStyle = (section, field) => {
+        const styles = siteTexts[section]?.[`${field}Style`] || {}
+        return {
+            fontSize: styles.fontSize ? `${styles.fontSize}px` : undefined,
+            fontWeight: styles.fontWeight || undefined,
+            fontStyle: styles.fontStyle || undefined,
+            textAlign: styles.textAlign || undefined,
+            fontFamily: styles.fontFamily || undefined
+        }
+    }
+
     const quickLinks = [
         { to: '/', label: t('nav.home') },
         { to: '/#rooms', label: t('nav.rooms') },
@@ -66,7 +78,7 @@ function Footer() {
                         <div className="footer-logo">
                             <span className="footer-logo-text">Ayder Kuzey Houses</span>
                         </div>
-                        <p className="footer-description">
+                        <p className="footer-description" style={getTextStyle('footer', 'description')}>
                             {siteTexts.footer?.description || t('footer.description')}
                         </p>
                         <div className="footer-social">

@@ -59,6 +59,19 @@ const ConciergeIcon = () => (
 function Services() {
     const { t } = useTranslation()
     const propertyData = adminSettings.getPropertyData()
+    const siteTexts = adminSettings.getSiteTexts()
+
+    // Helper function to get text styles
+    const getTextStyle = (section, field) => {
+        const styles = siteTexts[section]?.[`${field}Style`] || {}
+        return {
+            fontSize: styles.fontSize ? `${styles.fontSize}px` : undefined,
+            fontWeight: styles.fontWeight || undefined,
+            fontStyle: styles.fontStyle || undefined,
+            textAlign: styles.textAlign || undefined,
+            fontFamily: styles.fontFamily || undefined
+        }
+    }
 
     const services = [
         { key: 'spa', icon: <SpaIcon /> },
@@ -86,8 +99,12 @@ function Services() {
                     </div>
 
                     <div className="services-text">
-                        <h2>{t('services.title')}</h2>
-                        <h3>{t('services.subtitle')}</h3>
+                        <h2 style={getTextStyle('services', 'title')}>
+                            {siteTexts.services?.title || t('services.title')}
+                        </h2>
+                        <h3 style={getTextStyle('services', 'subtitle')}>
+                            {siteTexts.services?.subtitle || t('services.subtitle')}
+                        </h3>
                         <p>{propertyData.description || t('services.description')}</p>
                     </div>
 
