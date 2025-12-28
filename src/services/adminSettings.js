@@ -428,16 +428,43 @@ export const adminSettings = {
     getCalculateSplitPrice: (dateStr, adults, children) => {
         const dayData = adminSettings.getDayData(dateStr);
         const basePriceForDate = dayData.price;
+        const pricing = adminSettings.getPricing();
 
         let extraCharge = 0;
 
+        // 2 yetişkinden sonraki her yetişkin için ek ücret
         if (adults > 2) {
-            extraCharge += (adults - 2) * 499;
+            extraCharge += (adults - 2) * pricing.perAdultIncrement;
         }
 
-        extraCharge += (children * 299);
+        // Her çocuk için ek ücret
+        extraCharge += (children * pricing.perChildIncrement);
 
         return basePriceForDate + extraCharge;
+    },
+
+    // Fiyat detaylarını döndür (formüllü gösterim için)
+    getPriceBreakdown: (dateStr, adults, children) => {
+        const dayData = adminSettings.getDayData(dateStr);
+        const basePriceForDate = dayData.price;
+        const pricing = adminSettings.getPricing();
+
+        let adultExtra = 0;
+        let childExtra = 0;
+
+        if (adults > 2) {
+            adultExtra = (adults - 2) * pricing.perAdultIncrement;
+        }
+        childExtra = children * pricing.perChildIncrement;
+
+        return {
+            basePrice: basePriceForDate,
+            adultExtra,
+            childExtra,
+            totalExtra: adultExtra + childExtra,
+            totalPrice: basePriceForDate + adultExtra + childExtra,
+            formula: `${basePriceForDate.toLocaleString()}₺${adultExtra > 0 ? ` + ${adultExtra.toLocaleString()}₺` : ''}${childExtra > 0 ? ` + ${childExtra.toLocaleString()}₺` : ''}`
+        };
     },
 
     getEffectivePrice: (dateStr, numGuests) => {

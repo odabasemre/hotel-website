@@ -213,10 +213,10 @@ function InventoryTab({
                                     </td>
                                     {timelineDays.map(day => {
                                         const dStr = formatDate(day)
-                                        const finalGuestPrice = adminSettings.getCalculateSplitPrice(dStr, num, 0)
+                                        const breakdown = adminSettings.getPriceBreakdown(dStr, num, 0)
                                         return (
-                                            <td key={dStr} className="data-cell" style={{ color: '#888', fontSize: '13px' }}>
-                                                {finalGuestPrice.toLocaleString()}
+                                            <td key={dStr} className="data-cell" style={{ color: '#888', fontSize: '12px' }} title={breakdown.formula}>
+                                                {breakdown.totalPrice.toLocaleString()}
                                             </td>
                                         )
                                     })}
@@ -231,10 +231,10 @@ function InventoryTab({
                                     </td>
                                     {timelineDays.map(day => {
                                         const dStr = formatDate(day)
-                                        const finalGuestPrice = adminSettings.getCalculateSplitPrice(dStr, 2, num)
+                                        const breakdown = adminSettings.getPriceBreakdown(dStr, 2, num)
                                         return (
-                                            <td key={dStr} className="data-cell" style={{ color: '#446688', fontSize: '13px', opacity: 0.8 }}>
-                                                {finalGuestPrice.toLocaleString()}
+                                            <td key={dStr} className="data-cell" style={{ color: '#446688', fontSize: '12px', opacity: 0.8 }} title={breakdown.formula}>
+                                                {breakdown.totalPrice.toLocaleString()}
                                             </td>
                                         )
                                     })}

@@ -71,11 +71,17 @@ export const useCustomAvailability = () => {
         );
     };
 
-    const getPriceForDate = (date) => {
+    const getPriceForDate = (date, adults = 2, children = 0) => {
         if (!date) return settings.nightlyPrice || 5000;
         const dateStr = date.toISOString().split('T')[0];
-        return adminSettings.getDayData(dateStr).price;
+        return adminSettings.getCalculateSplitPrice(dateStr, adults, children);
     };
 
-    return { isDateBusy, isDateAlmostFull, getPriceForDate, settings, refreshAvailability };
+    const getPriceBreakdownForDate = (date, adults = 2, children = 0) => {
+        if (!date) return { basePrice: 5000, adultExtra: 0, childExtra: 0, totalPrice: 5000, formula: '5.000₺' };
+        const dateStr = date.toISOString().split('T')[0];
+        return adminSettings.getPriceBreakdown(dateStr, adults, children);
+    };
+
+    return { isDateBusy, isDateAlmostFull, getPriceForDate, getPriceBreakdownForDate, settings, refreshAvailability };
 };
