@@ -152,6 +152,23 @@
     color: #1a362d;
 }
 
+.activity-card-duration-badge {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    background: rgba(26, 54, 45, 0.9);
+    backdrop-filter: blur(10px);
+    padding: 8px 14px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.activity-card-duration-badge span {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #ffffff;
+}
+
 .activity-card-content {
     padding: 24px 32px;
     flex: 1;

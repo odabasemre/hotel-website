@@ -83,6 +83,9 @@ function ActivitiesPage() {
                                     <MapPinIcon />
                                     <span>{activity.distance} km</span>
                                 </div>
+                                <div className="activity-card-duration-badge">
+                                    <span>{activity.duration}</span>
+                                </div>
                             </div>
 
                             {/* Content */}
@@ -92,7 +95,6 @@ function ActivitiesPage() {
                                 
                                 {/* Footer */}
                                 <div className="activity-card-footer">
-                                    <span className="activity-duration">{activity.duration}</span>
                                     <div className="activity-link-arrow">
                                         <span>{t('activities.learnMore')}</span>
                                         <ArrowRightIcon />

@@ -1,5 +1,24 @@
 const activitiesData = [
     {
+        id: 'ayder-kuzey-houses',
+        name: 'Ayder Kuzey Houses 😊',
+        distance: 0,
+        image: '/images/activities/ayder-kuzey-houses.jpg',
+        shortDescription: 'Zaten buradasınız! En akıllı tercih :)',
+        activities: [
+            { icon: '🍳', name: 'Serpme Kahvaltı', description: 'Yöresel lezzetlerle dolu, dere manzaralı kahvaltı keyfi' },
+            { icon: '📸', name: 'Fotoğraf Çekimi', description: 'Doğa ile iç içe Instagram\'lık kareler yakalayın' },
+            { icon: '🥾', name: 'Doğa Yürüyüşü', description: 'Tesisimizden başlayan orman yürüyüş parkurları' },
+            { icon: '♨️', name: 'Jakuzi Keyfi', description: 'Dere manzaralı jakuzide huzur bulun' },
+            { icon: '☕', name: 'Teras Keyfi', description: 'Nehir sesini dinleyerek çay ve kahve molası' },
+            { icon: '🌙', name: 'Yıldız Gözlemi', description: 'Işık kirliliğinden uzak, yıldızlı geceler' }
+        ],
+        details: 'Ayder Kuzey Houses, doğanın kalbinde, nehir kenarında konumlanan eşsiz bir kaçış noktasıdır. Tesisimizde konaklarken aslında en güzel aktiviteyi zaten yapıyorsunuz: Doğayla iç içe, huzur dolu bir tatil! Bungalovlarımızda jakuzi keyfi, terasımızda nehir manzaralı kahvaltı ve akşam yıldız gözlemi... Daha ne olsun? 😊',
+        season: 'Tüm mevsimler',
+        duration: 'Konaklama süreniz boyunca',
+        difficulty: 'Kolay (Çok kolay aslında, sadece rahatlayın!)'
+    },
+    {
         id: 'yedigoller',
         name: 'Yedigöller Milli Parkı',
         distance: 25,
