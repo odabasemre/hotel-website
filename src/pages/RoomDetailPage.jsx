@@ -288,11 +288,9 @@ function RoomDetailPage() {
                                             style={isPast || (!isClickable && !canSelectAsCheckout) ? { cursor: 'default', opacity: isPast ? 0.5 : 1 } : { cursor: 'pointer' }}
                                         >
                                             {isAlmostFull && !isBusy && !isPast && isGuestConfirmed && <span className="day-status almost-full-label">DOLMAK ÜZERE !</span>}
-                                            {canSelectAsCheckout && <span className="day-status checkout-label">ÇIKIŞ</span>}
                                             <span className="day-num">{day}</span>
-                                            {!isBusy && !isPast && isGuestConfirmed && <span className="day-price">{price.toLocaleString()}₺</span>}
+                                            {!isBusy && !isPast && isGuestConfirmed && !canSelectAsCheckout && <span className="day-price">{price.toLocaleString()}₺</span>}
                                             {isBusy && !isPast && isGuestConfirmed && !canSelectAsCheckout && <span className="day-price busy-label">DOLU</span>}
-                                            {canSelectAsCheckout && <span className="day-price checkout-price">Çıkış Günü</span>}
                                         </div>
                                     )
                                 })}
