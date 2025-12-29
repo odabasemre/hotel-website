@@ -16,6 +16,8 @@ import ActivitiesPage from '@pages/ActivitiesPage'
 import ActivityDetailPage from '@pages/ActivityDetailPage'
 import AdminPage from '@pages/AdminPage'
 import CheckoutPage from '@pages/CheckoutPage'
+import PrivacyPolicyPage from '@pages/PrivacyPolicyPage'
+import DistanceSalesContractPage from '@pages/DistanceSalesContractPage'
 
 // Loading component
 const Loading = () => (
@@ -57,6 +59,8 @@ function App() {
                         <Route path="/contact" element={<ContactPage />} />
                         <Route path="/admin" element={<AdminPage />} />
                         <Route path="/checkout" element={<CheckoutPage />} />
+                        <Route path="/gizlilik-sozlesmesi" element={<PrivacyPolicyPage />} />
+                        <Route path="/mesafeli-satis-sozlesmesi" element={<DistanceSalesContractPage />} />
                     </Routes>
                 </main>
                 <Footer />

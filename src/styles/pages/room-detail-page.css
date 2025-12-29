@@ -139,6 +139,36 @@
     color: #ef4444;
 }
 
+/* Çıkış günü olarak seçilebilir stil */
+.calendar-day.checkout-available {
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%) !important;
+    border: 2px solid #f59e0b !important;
+    cursor: pointer !important;
+    opacity: 1 !important;
+}
+
+.calendar-day.checkout-available:hover {
+    background: linear-gradient(135deg, #fde68a 0%, #fbbf24 100%) !important;
+    transform: scale(1.05);
+}
+
+.day-status.checkout-label {
+    font-size: 0.5rem;
+    font-weight: 700;
+    color: #d97706;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    margin-top: 2px;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+.day-price.checkout-price {
+    font-size: 0.6rem;
+    color: #92400e;
+    font-weight: 600;
+}
+
 /* Dolmak üzere stili */
 .calendar-day.almost-full {
     /* Arka plan rengi kaldırıldı */

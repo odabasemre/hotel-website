@@ -134,23 +134,46 @@ function RoomDetailPage() {
 
     const handleDateClick = (day) => {
         const selectedDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day)
-        if (isDateBusy(selectedDate)) return;
-
+        
         const today = new Date(); today.setHours(0, 0, 0, 0);
         if (selectedDate < today) return;
 
-        // Reset promo when dates change to re-calculate validation if needed (optional, keeping it simple)
-        // setAppliedDiscount(null); 
-
+        // Giriş tarihi seçimi veya yeni seçim başlatma
         if (!checkIn || (checkIn && checkOut)) {
-            setCheckIn(selectedDate); setCheckOut(null);
-            setAppliedDiscount(null); // Reset promo on new selection
-        } else if (selectedDate > checkIn) {
+            // Giriş tarihi olarak dolu gün seçilemez
+            if (isDateBusy(selectedDate)) return;
+            setCheckIn(selectedDate); 
+            setCheckOut(null);
+            setAppliedDiscount(null);
+        } 
+        // Çıkış tarihi seçimi
+        else if (selectedDate > checkIn) {
+            // Çıkış tarihi olarak dolu gün SEÇİLEBİLİR (o gün çıkış yapılacak)
+            // Ancak aradaki günler dolu olmamalı
+            let hasConflictInBetween = false;
+            let temp = new Date(checkIn);
+            temp.setDate(temp.getDate() + 1); // Giriş gününden sonraki gün
+            while (temp < selectedDate) {
+                if (isDateBusy(temp)) { 
+                    hasConflictInBetween = true; 
+                    break; 
+                }
+                temp.setDate(temp.getDate() + 1);
+            }
+            
+            if (hasConflictInBetween) {
+                alert('Seçtiğiniz tarihler arasında dolu günler bulunmaktadır.');
+                return;
+            }
+            
             setCheckOut(selectedDate);
-            setAppliedDiscount(null); // Reset promo on new selection
-        } else {
+            setAppliedDiscount(null);
+        } 
+        // Giriş tarihinden önce bir tarih seçildi - yeni giriş tarihi olarak ata
+        else {
+            if (isDateBusy(selectedDate)) return;
             setCheckIn(selectedDate);
-            setAppliedDiscount(null); // Reset promo on new selection
+            setAppliedDiscount(null);
         }
     }
 
@@ -250,19 +273,26 @@ function RoomDetailPage() {
                                     const isBusy = isDateBusy(date);
                                     const isAlmostFull = isDateAlmostFull(date);
                                     const price = getPriceForDate(date, adults, children);
-                                    let className = `calendar-day ${isDateSelected(day) ? 'selected' : ''} ${isBusy ? 'busy' : ''} ${isAlmostFull ? 'almost-full' : ''} ${isPast ? 'past-date' : ''}`;
+                                    
+                                    // Çıkış tarihi olarak dolu gün seçilebilir (checkIn seçiliyse ve checkOut seçili değilse)
+                                    const canSelectAsCheckout = checkIn && !checkOut && date > checkIn && isBusy;
+                                    const isClickable = !isPast && isGuestConfirmed && (!isBusy || canSelectAsCheckout);
+                                    
+                                    let className = `calendar-day ${isDateSelected(day) ? 'selected' : ''} ${isBusy && !canSelectAsCheckout ? 'busy' : ''} ${canSelectAsCheckout ? 'checkout-available' : ''} ${isAlmostFull ? 'almost-full' : ''} ${isPast ? 'past-date' : ''}`;
 
                                     return (
                                         <div
                                             key={day}
                                             className={className}
-                                            onClick={() => !isBusy && !isPast && isGuestConfirmed && handleDateClick(day)}
-                                            style={isPast ? { cursor: 'default', opacity: 0.5 } : {}}
+                                            onClick={() => isClickable && handleDateClick(day)}
+                                            style={isPast || (!isClickable && !canSelectAsCheckout) ? { cursor: 'default', opacity: isPast ? 0.5 : 1 } : { cursor: 'pointer' }}
                                         >
                                             {isAlmostFull && !isBusy && !isPast && isGuestConfirmed && <span className="day-status almost-full-label">DOLMAK ÜZERE !</span>}
+                                            {canSelectAsCheckout && <span className="day-status checkout-label">ÇIKIŞ</span>}
                                             <span className="day-num">{day}</span>
                                             {!isBusy && !isPast && isGuestConfirmed && <span className="day-price">{price.toLocaleString()}₺</span>}
-                                            {isBusy && !isPast && isGuestConfirmed && <span className="day-price busy-label">DOLU</span>}
+                                            {isBusy && !isPast && isGuestConfirmed && !canSelectAsCheckout && <span className="day-price busy-label">DOLU</span>}
+                                            {canSelectAsCheckout && <span className="day-price checkout-price">Çıkış Günü</span>}
                                         </div>
                                     )
                                 })}

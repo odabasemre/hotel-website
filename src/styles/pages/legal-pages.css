@@ -1,0 +1,159 @@
+/* Legal Pages (Gizlilik ve Mesafeli Satış Sözleşmesi) Stilleri */
+.legal-page {
+    min-height: 100vh;
+    padding: 120px 0 60px;
+    background: #f8f9fa;
+}
+
+.legal-page .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.legal-page h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #2c3e50;
+    text-align: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 3px solid #3498db;
+}
+
+.legal-content {
+    background: white;
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    line-height: 1.7;
+}
+
+.legal-content h2 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #34495e;
+    margin: 2rem 0 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #ecf0f1;
+}
+
+.legal-content h2:first-of-type {
+    margin-top: 0;
+}
+
+.legal-content p {
+    margin-bottom: 1.5rem;
+    color: #555;
+    font-size: 1rem;
+    text-align: justify;
+}
+
+.legal-content ul {
+    margin: 1rem 0 2rem 1rem;
+}
+
+.legal-content li {
+    margin-bottom: 0.8rem;
+    color: #555;
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+.legal-content strong {
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+/* Checkout sayfasında sözleşme checkboxları */
+.contracts-section {
+    margin: 30px 0;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    border: 2px solid #e9ecef;
+}
+
+.contract-checkbox {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 15px;
+    gap: 10px;
+}
+
+.contract-checkbox:last-child {
+    margin-bottom: 0;
+}
+
+.contract-checkbox input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    margin-top: 2px;
+    accent-color: #3498db;
+    cursor: pointer;
+}
+
+.contract-checkbox label {
+    font-size: 0.95rem;
+    color: #555;
+    cursor: pointer;
+    line-height: 1.5;
+}
+
+.contract-checkbox label a {
+    color: #3498db;
+    text-decoration: none;
+    font-weight: 500;
+    border-bottom: 1px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.contract-checkbox label a:hover {
+    color: #2980b9;
+    border-bottom-color: #2980b9;
+}
+
+/* Ödeme butonunun disabled durumu */
+.pay-btn:disabled {
+    background: #bdc3c7 !important;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.pay-btn:disabled:hover {
+    background: #bdc3c7 !important;
+    transform: none;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .legal-page {
+        padding: 100px 0 40px;
+    }
+    
+    .legal-page h1 {
+        font-size: 2rem;
+    }
+    
+    .legal-content {
+        padding: 25px 20px;
+        margin: 0 10px;
+    }
+    
+    .legal-content h2 {
+        font-size: 1.5rem;
+    }
+    
+    .contracts-section {
+        margin: 20px 0;
+        padding: 15px;
+    }
+    
+    .contract-checkbox {
+        align-items: flex-start;
+    }
+    
+    .contract-checkbox label {
+        font-size: 0.9rem;
+    }
+}

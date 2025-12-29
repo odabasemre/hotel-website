@@ -4,6 +4,84 @@ import { useNavigate } from 'react-router-dom'
 import { useCustomAvailability } from '../../hooks/useCustomAvailability'
 import { adminSettings } from '../../services/adminSettings'
 
+// Custom Calendar Component
+const CustomCalendar = ({ selectedDate, onDateSelect, minDate, isOpen, onClose, label }) => {
+    const [currentMonth, setCurrentMonth] = useState(new Date())
+    const calendarRef = useRef(null)
+    const { isDateBusy } = useCustomAvailability()
+
+    useEffect(() => {
+        const handleClickOutside = (e) => {
+            if (calendarRef.current && !calendarRef.current.contains(e.target)) {
+                onClose()
+            }
+        }
+        if (isOpen) document.addEventListener('mousedown', handleClickOutside)
+        return () => document.removeEventListener('mousedown', handleClickOutside)
+    }, [isOpen, onClose])
+
+    if (!isOpen) return null
+
+    const year = currentMonth.getFullYear()
+    const month = currentMonth.getMonth()
+    const daysInMonth = new Date(year, month + 1, 0).getDate()
+    const firstDayOfMonth = new Date(year, month, 1).getDay()
+    const adjustedFirstDay = firstDayOfMonth === 0 ? 6 : firstDayOfMonth - 1 // Monday first
+
+    const monthNames = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık']
+    const dayNames = ['Pt', 'Sa', 'Ça', 'Pe', 'Cu', 'Ct', 'Pa']
+
+    const prevMonth = () => setCurrentMonth(new Date(year, month - 1, 1))
+    const nextMonth = () => setCurrentMonth(new Date(year, month + 1, 1))
+
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+
+    const handleDayClick = (day) => {
+        const date = new Date(year, month, day)
+        if (date < today) return
+        if (minDate && date < new Date(minDate)) return
+        if (isDateBusy(date)) return
+        onDateSelect(date.toISOString().split('T')[0])
+        onClose()
+    }
+
+    return (
+        <div className="custom-calendar-dropdown" ref={calendarRef}>
+            <div className="calendar-header-nav">
+                <button type="button" onClick={prevMonth} className="cal-nav-btn">◀</button>
+                <span className="cal-month-year">{monthNames[month]} {year}</span>
+                <button type="button" onClick={nextMonth} className="cal-nav-btn">▶</button>
+            </div>
+            <div className="calendar-day-names">
+                {dayNames.map(d => <span key={d}>{d}</span>)}
+            </div>
+            <div className="calendar-days-grid">
+                {[...Array(adjustedFirstDay)].map((_, i) => <span key={`empty-${i}`} className="cal-day empty"></span>)}
+                {[...Array(daysInMonth)].map((_, i) => {
+                    const day = i + 1
+                    const date = new Date(year, month, day)
+                    const isPast = date < today
+                    const isBusy = isDateBusy(date)
+                    const isSelected = selectedDate === date.toISOString().split('T')[0]
+                    const isToday = date.toDateString() === today.toDateString()
+                    const isDisabled = isPast || isBusy || (minDate && date < new Date(minDate))
+                    
+                    return (
+                        <span 
+                            key={day}
+                            className={`cal-day ${isSelected ? 'selected' : ''} ${isToday ? 'today' : ''} ${isDisabled ? 'disabled' : ''} ${isBusy ? 'busy' : ''}`}
+                            onClick={() => !isDisabled && handleDayClick(day)}
+                        >
+                            {day}
+                        </span>
+                    )
+                })}
+            </div>
+        </div>
+    )
+}
+
 function Hero() {
     const { t } = useTranslation()
     const navigate = useNavigate()
@@ -36,7 +114,11 @@ function Hero() {
     })
 
     const [showGuestPanel, setShowGuestPanel] = useState(false)
+    const [showCheckInCalendar, setShowCheckInCalendar] = useState(false)
+    const [showCheckOutCalendar, setShowCheckOutCalendar] = useState(false)
     const guestPanelRef = useRef(null)
+    const checkInRef = useRef(null)
+    const checkOutRef = useRef(null)
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -80,6 +162,12 @@ function Hero() {
 
     const handleSubmit = (e) => {
         e.preventDefault()
+        
+        if (!bookingData.checkIn || !bookingData.checkOut) {
+            alert('Lütfen giriş ve çıkış tarihlerini seçiniz.')
+            return
+        }
+        
         const start = new Date(bookingData.checkIn)
         const end = new Date(bookingData.checkOut)
 
@@ -125,14 +213,40 @@ function Hero() {
                 {/* Yatay, İnce ve Şeffaf Arama Çubuğu */}
                 <div className="booking-bar-container">
                     <form className="booking-bar-form" onSubmit={handleSubmit}>
-                        <div className="bar-field">
-                            <label>{t('booking.checkIn')}</label>
-                            <input type="date" name="checkIn" value={bookingData.checkIn} onChange={handleChange} min={today} required />
+                        <div className="bar-field date-field-wrapper" ref={checkInRef}>
+                            <div className="date-trigger" onClick={() => { setShowCheckInCalendar(!showCheckInCalendar); setShowCheckOutCalendar(false); }}>
+                                <label>{t('booking.checkIn')}</label>
+                                <div className="date-display">
+                                    {bookingData.checkIn ? new Date(bookingData.checkIn).toLocaleDateString('tr-TR', { day: '2-digit', month: 'short', year: 'numeric' }) : 'Tarih Seçin'}
+                                    <span className="calendar-icon">📅</span>
+                                </div>
+                            </div>
+                            <CustomCalendar
+                                selectedDate={bookingData.checkIn}
+                                onDateSelect={(date) => setBookingData(prev => ({ ...prev, checkIn: date, checkOut: prev.checkOut && new Date(prev.checkOut) <= new Date(date) ? '' : prev.checkOut }))}
+                                minDate={today}
+                                isOpen={showCheckInCalendar}
+                                onClose={() => setShowCheckInCalendar(false)}
+                                label="Giriş Tarihi"
+                            />
                         </div>
 
-                        <div className="bar-field">
-                            <label>{t('booking.checkOut')}</label>
-                            <input type="date" name="checkOut" value={bookingData.checkOut} onChange={handleChange} min={bookingData.checkIn || today} required />
+                        <div className="bar-field date-field-wrapper" ref={checkOutRef}>
+                            <div className="date-trigger" onClick={() => { setShowCheckOutCalendar(!showCheckOutCalendar); setShowCheckInCalendar(false); }}>
+                                <label>{t('booking.checkOut')}</label>
+                                <div className="date-display">
+                                    {bookingData.checkOut ? new Date(bookingData.checkOut).toLocaleDateString('tr-TR', { day: '2-digit', month: 'short', year: 'numeric' }) : 'Tarih Seçin'}
+                                    <span className="calendar-icon">📅</span>
+                                </div>
+                            </div>
+                            <CustomCalendar
+                                selectedDate={bookingData.checkOut}
+                                onDateSelect={(date) => setBookingData(prev => ({ ...prev, checkOut: date }))}
+                                minDate={bookingData.checkIn || today}
+                                isOpen={showCheckOutCalendar}
+                                onClose={() => setShowCheckOutCalendar(false)}
+                                label="Çıkış Tarihi"
+                            />
                         </div>
 
                         <div className="bar-field guest-field-wrapper" ref={guestPanelRef}>

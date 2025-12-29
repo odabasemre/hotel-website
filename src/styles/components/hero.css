@@ -237,6 +237,181 @@
     opacity: 0.5;
 }
 
+/* Custom Calendar Picker Styles */
+.bar-field input[type="date"]::-webkit-datetime-edit {
+    font-family: inherit;
+}
+
+.bar-field input[type="date"]::-webkit-datetime-edit-fields-wrapper {
+    padding: 0;
+}
+
+/* Modern Date Input Styling */
+input[type="date"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    border-radius: 4px;
+    margin-right: 2px;
+    opacity: 0.7;
+    filter: invert(1);
+    transition: all 0.3s ease;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator:hover {
+    opacity: 1;
+}
+
+/* Custom Calendar Dropdown Styles */
+.date-field-wrapper {
+    position: relative;
+}
+
+.date-trigger {
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+}
+
+.date-display {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    color: white;
+    font-weight: 500;
+    font-size: 1.1rem;
+}
+
+.calendar-icon {
+    font-size: 1rem;
+    opacity: 0.7;
+}
+
+.custom-calendar-dropdown {
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    padding: 20px;
+    min-width: 320px;
+    z-index: 1000;
+    animation: calendarSlideIn 0.3s ease;
+}
+
+@keyframes calendarSlideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+.calendar-header-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #f1f5f9;
+}
+
+.cal-nav-btn {
+    background: #f8fafc;
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: #64748b;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cal-nav-btn:hover {
+    background: var(--color-primary);
+    color: white;
+}
+
+.cal-month-year {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #1e293b;
+}
+
+.calendar-day-names {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+    margin-bottom: 10px;
+}
+
+.calendar-day-names span {
+    text-align: center;
+    font-weight: 600;
+    font-size: 0.75rem;
+    color: #94a3b8;
+    text-transform: uppercase;
+}
+
+.calendar-days-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+}
+
+.cal-day {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.95rem;
+    font-weight: 500;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: #334155;
+}
+
+.cal-day.empty {
+    cursor: default;
+}
+
+.cal-day:not(.empty):not(.disabled):hover {
+    background: #f1f5f9;
+}
+
+.cal-day.today {
+    border: 2px solid var(--color-primary);
+    color: var(--color-primary);
+    font-weight: 700;
+}
+
+.cal-day.selected {
+    background: var(--color-primary) !important;
+    color: white !important;
+    font-weight: 700;
+}
+
+.cal-day.disabled {
+    color: #cbd5e1;
+    cursor: not-allowed;
+}
+
+.cal-day.busy {
+    background: #fee2e2;
+    color: #ef4444;
+    text-decoration: line-through;
+    cursor: not-allowed;
+}
+
 .bar-submit-btn {
     background: var(--color-accent);
     color: white;

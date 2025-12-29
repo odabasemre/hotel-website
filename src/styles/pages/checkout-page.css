@@ -194,6 +194,231 @@
     font-weight: 500;
 }
 
+/* Sözleşme Onay Bölümü */
+.contracts-section {
+    margin: var(--spacing-xl) 0;
+    padding: var(--spacing-lg);
+    background: var(--color-bg);
+    border-radius: var(--radius-md);
+    border: 2px solid var(--color-border);
+}
+
+.contract-checkbox {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: var(--spacing-md);
+    gap: var(--spacing-sm);
+}
+
+.contract-checkbox:last-child {
+    margin-bottom: 0;
+}
+
+.contract-checkbox input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    margin-top: 2px;
+    accent-color: var(--color-primary);
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+}
+
+.contract-checkbox input[type="checkbox"]:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.contract-checkbox label {
+    font-size: var(--fs-sm);
+    color: var(--color-text);
+    cursor: pointer;
+    line-height: 1.5;
+    user-select: none;
+}
+
+.must-read {
+    color: #e74c3c;
+    font-size: 0.85em;
+    font-weight: var(--fw-medium);
+    margin-left: var(--spacing-xs);
+}
+
+.contract-checkbox label a {
+    color: var(--color-primary);
+    text-decoration: none;
+    font-weight: var(--fw-medium);
+    border-bottom: 1px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.contract-checkbox label a:hover {
+    color: var(--color-primary-dark);
+    border-bottom-color: var(--color-primary-dark);
+}
+
+/* Sözleşme link butonu */
+.contract-link-btn {
+    background: none;
+    border: none;
+    color: var(--color-primary);
+    text-decoration: underline;
+    cursor: pointer;
+    font-size: inherit;
+    font-weight: var(--fw-medium);
+    padding: 0;
+    transition: all 0.3s ease;
+}
+
+.contract-link-btn:hover {
+    color: var(--color-primary-dark);
+}
+
+/* Modal stilleri */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.modal-content {
+    background: white;
+    border-radius: var(--radius-lg);
+    max-width: 700px;
+    width: 100%;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-xl);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.modal-header h2 {
+    margin: 0;
+    color: var(--color-primary);
+    font-size: var(--fs-xl);
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: var(--color-text-light);
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.modal-close:hover {
+    background: var(--color-bg);
+    color: var(--color-text);
+}
+
+.modal-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--spacing-xl);
+}
+
+.contract-text h3 {
+    color: var(--color-primary);
+    margin-bottom: var(--spacing-lg);
+    font-size: var(--fs-lg);
+}
+
+.contract-text h4 {
+    color: var(--color-text);
+    margin: var(--spacing-lg) 0 var(--spacing-md);
+    font-size: var(--fs-md);
+}
+
+.contract-text p {
+    color: var(--color-text);
+    line-height: 1.6;
+    margin-bottom: var(--spacing-md);
+    text-align: justify;
+}
+
+.contract-text ul {
+    margin: var(--spacing-md) 0;
+    padding-left: var(--spacing-lg);
+}
+
+.contract-text li {
+    color: var(--color-text);
+    margin-bottom: var(--spacing-xs);
+    line-height: 1.6;
+}
+
+.contract-text a {
+    color: var(--color-primary);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.contract-text a:hover {
+    border-bottom-color: var(--color-primary);
+}
+
+.modal-footer {
+    padding: var(--spacing-xl);
+    border-top: 1px solid var(--color-border);
+    display: flex;
+    justify-content: center;
+}
+
+.modal-btn {
+    background: var(--color-primary);
+    color: white;
+    border: none;
+    padding: var(--spacing-md) var(--spacing-xl);
+    border-radius: var(--radius-md);
+    font-size: var(--fs-md);
+    font-weight: var(--fw-medium);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.modal-btn:hover {
+    background: var(--color-primary-dark);
+    transform: translateY(-2px);
+}
+
+/* Ödeme butonunun disabled durumu */
+.pay-btn:disabled {
+    background: #bdc3c7 !important;
+    cursor: not-allowed;
+    opacity: 0.6;
+    transform: none;
+}
+
+.pay-btn:disabled:hover {
+    background: #bdc3c7 !important;
+    transform: none;
+    box-shadow: none;
+}
+
 /* Responsive */
 @media (max-width: 900px) {
     .checkout-grid {
@@ -204,5 +429,37 @@
         order: -1;
         /* Show summary first on mobile */
         position: static;
+    }
+    
+    .modal-overlay {
+        padding: 10px;
+    }
+    
+    .modal-content {
+        max-height: 95vh;
+    }
+    
+    .modal-header {
+        padding: var(--spacing-lg);
+    }
+    
+    .modal-body {
+        padding: var(--spacing-lg);
+    }
+    
+    .modal-footer {
+        padding: var(--spacing-lg);
+    }
+    
+    .contract-text h3 {
+        font-size: var(--fs-md);
+    }
+    
+    .contract-text h4 {
+        font-size: var(--fs-sm);
+    }
+    
+    .contract-text p {
+        font-size: var(--fs-sm);
     }
 }
