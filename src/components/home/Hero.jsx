@@ -5,7 +5,7 @@ import { useCustomAvailability } from '../../hooks/useCustomAvailability'
 import { adminSettings } from '../../services/adminSettings'
 
 function Hero() {
-    const { t } = useTranslation()
+    const { t, i18n } = useTranslation()
     const navigate = useNavigate()
     const { isDateBusy } = useCustomAvailability()
     const [propertyData, setPropertyData] = useState(adminSettings.getPropertyData())
@@ -104,14 +104,26 @@ function Hero() {
     const todayStr = today.toISOString().split('T')[0]
 
     const formatDate = (dateStr) => {
-        if (!dateStr) return 'Gün / Ay / Yıl'
+        if (!dateStr) return t('booking.selectDate') || 'Gün / Ay / Yıl'
         const date = new Date(dateStr)
-        return date.toLocaleDateString('tr-TR', { day: '2-digit', month: 'long', year: 'numeric' })
+        return date.toLocaleDateString(i18n.language, { day: '2-digit', month: 'long', year: 'numeric' })
     }
 
-    // Calendar helper functions
-    const monthNames = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık']
-    const dayNames = ['Pt', 'Sa', 'Ça', 'Pe', 'Cu', 'Ct', 'Pa']
+    // Calendar helper functions - language aware
+    const getDayNames = () => {
+        const days = []
+        const baseDate = new Date(2024, 0, 1) // Monday
+        for (let i = 0; i < 7; i++) {
+            const date = new Date(baseDate)
+            date.setDate(baseDate.getDate() + i)
+            days.push(date.toLocaleDateString(i18n.language, { weekday: 'short' }).slice(0, 2))
+        }
+        return days
+    }
+
+    const getMonthName = (date) => {
+        return date.toLocaleDateString(i18n.language, { month: 'long', year: 'numeric' })
+    }
 
     const renderCalendar = (currentMonth, setCurrentMonth, selectedDate, onSelect, minDateStr) => {
         const year = currentMonth.getFullYear()
@@ -121,16 +133,17 @@ function Hero() {
         const adjustedFirstDay = firstDay === 0 ? 6 : firstDay - 1
 
         const minDate = minDateStr ? new Date(minDateStr) : today
+        const dayNames = getDayNames()
 
         return (
             <div className="hero-calendar-dropdown">
                 <div className="hero-calendar-header">
                     <button type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); setCurrentMonth(new Date(year, month - 1, 1)) }}>◀</button>
-                    <span>{monthNames[month]} {year}</span>
+                    <span>{getMonthName(currentMonth)}</span>
                     <button type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); setCurrentMonth(new Date(year, month + 1, 1)) }}>▶</button>
                 </div>
                 <div className="hero-calendar-days-header">
-                    {dayNames.map(d => <span key={d}>{d}</span>)}
+                    {dayNames.map((d, i) => <span key={i}>{d}</span>)}
                 </div>
                 <div className="hero-calendar-grid">
                     {[...Array(adjustedFirstDay)].map((_, i) => <span key={`e-${i}`} className="hero-cal-day empty"></span>)}
@@ -190,12 +203,10 @@ function Hero() {
                             <label>{t('booking.checkIn')}</label>
                             <div 
                                 className="date-selector"
-                                onClick={(e) => {
-                                    e.preventDefault()
-                                    e.stopPropagation()
+                                onClick={() => {
                                     setShowCheckOutCalendar(false)
                                     setShowGuestPanel(false)
-                                    setShowCheckInCalendar(!showCheckInCalendar)
+                                    setShowCheckInCalendar(prev => !prev)
                                 }}
                             >
                                 <span className="date-text">{formatDate(bookingData.checkIn)}</span>
@@ -223,12 +234,10 @@ function Hero() {
                             <label>{t('booking.checkOut')}</label>
                             <div 
                                 className="date-selector"
-                                onClick={(e) => {
-                                    e.preventDefault()
-                                    e.stopPropagation()
+                                onClick={() => {
                                     setShowCheckInCalendar(false)
                                     setShowGuestPanel(false)
-                                    setShowCheckOutCalendar(!showCheckOutCalendar)
+                                    setShowCheckOutCalendar(prev => !prev)
                                 }}
                             >
                                 <span className="date-text">{formatDate(bookingData.checkOut)}</span>
@@ -249,7 +258,7 @@ function Hero() {
                         {/* Kişi Sayısı */}
                         <div className="bar-field guest-field-wrapper" ref={guestPanelRef}>
                             <label>{t('booking.guests')}</label>
-                            <div className="guest-trigger" onClick={() => { setShowCheckInCalendar(false); setShowCheckOutCalendar(false); setShowGuestPanel(!showGuestPanel) }}>
+                            <div className="guest-trigger" onClick={() => { setShowCheckInCalendar(false); setShowCheckOutCalendar(false); setShowGuestPanel(prev => !prev) }}>
                                 <span className="guest-text">{bookingData.adults + bookingData.children} Kişi ▼</span>
                             </div>
                             {showGuestPanel && (
