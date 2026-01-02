@@ -8,33 +8,52 @@ function PromotionsTab({
     newPromo,
     setNewPromo
 }) {
+    // Ensure promotions is always an array
+    const safePromotions = Array.isArray(promotions) ? promotions : []
+
     const handleAddPromo = (e) => {
         e.preventDefault()
-        const promo = {
-            id: Date.now(),
-            code: newPromo.code.toUpperCase(),
-            type: newPromo.type,
-            value: Number(newPromo.value),
-            status: newPromo.status
+        try {
+            const promo = {
+                code: newPromo.code.toUpperCase(),
+                type: newPromo.type,
+                value: Number(newPromo.value),
+                status: newPromo.status
+            }
+            adminSettings.addPromotion(promo)
+            // Refresh from localStorage
+            setPromotions(adminSettings.getPromotions())
+            setNewPromo({ code: '', type: 'amount', value: '', status: 'active' })
+        } catch (error) {
+            console.error('Error adding promo:', error)
+            alert('Promosyon eklenirken bir hata oluştu')
         }
-        setPromotions(adminSettings.addPromotion(promo))
-        setNewPromo({ code: '', type: 'amount', value: '', status: 'active' })
     }
 
     const handleEditPromo = (promo) => {
-        setNewPromo({
-            code: promo.code,
-            type: promo.type,
-            value: promo.value,
-            status: promo.status
-        })
-        // Delete old one first
-        setPromotions(adminSettings.deletePromotion(promo.id))
+        try {
+            setNewPromo({
+                code: promo.code,
+                type: promo.type,
+                value: promo.value,
+                status: promo.status
+            })
+            // Delete old one first
+            adminSettings.deletePromotion(promo.id)
+            setPromotions(adminSettings.getPromotions())
+        } catch (error) {
+            console.error('Error editing promo:', error)
+        }
     }
 
     const handleDeletePromo = (id) => {
         if (confirm('Bu promosyon kodunu silmek istediğinize emin misiniz?')) {
-            setPromotions(adminSettings.deletePromotion(id))
+            try {
+                adminSettings.deletePromotion(id)
+                setPromotions(adminSettings.getPromotions())
+            } catch (error) {
+                console.error('Error deleting promo:', error)
+            }
         }
     }
 
@@ -108,9 +127,9 @@ function PromotionsTab({
                             </tr>
                         </thead>
                         <tbody>
-                            {promotions.length === 0 ? (
+                            {safePromotions.length === 0 ? (
                                 <tr><td colSpan="4" style={{ padding: '20px', textAlign: 'center', color: '#888' }}>Kayıtlı promosyon kodu yok.</td></tr>
-                            ) : promotions.map(p => (
+                            ) : safePromotions.map(p => (
                                 <tr key={p.id} style={{ borderBottom: '1px solid #eee' }}>
                                     <td style={{ padding: '12px', fontWeight: 'bold', fontFamily: 'monospace', fontSize: '15px' }}>{p.code}</td>
                                     <td style={{ padding: '12px' }}>

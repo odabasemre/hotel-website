@@ -362,25 +362,31 @@ export const adminSettings = {
 
     addPromotion: (promo) => {
         const list = adminSettings.getPromotions();
-        if (list.find(p => p.code === promo.code)) return false;
+        if (list.find(p => p.code === promo.code)) return list;
         list.push({ ...promo, id: Date.now(), createdAt: new Date().toISOString() });
         localStorage.setItem(PROMOS_KEY, JSON.stringify(list));
-        return true;
+        return list;
     },
 
     deletePromotion: (id) => {
         const list = adminSettings.getPromotions();
         const filtered = list.filter(p => p.id !== id);
         localStorage.setItem(PROMOS_KEY, JSON.stringify(filtered));
+        return filtered;
     },
 
     updatePromotion: (id, updatedData) => {
         const list = adminSettings.getPromotions();
         const index = list.findIndex(p => p.id === id);
-        if (index === -1) return false;
+        if (index === -1) return list;
         list[index] = { ...list[index], ...updatedData };
         localStorage.setItem(PROMOS_KEY, JSON.stringify(list));
-        return true;
+        return list;
+    },
+
+    // Alias for backward compatibility
+    editPromotion: (id, updatedData) => {
+        return adminSettings.updatePromotion(id, updatedData);
     },
 
     validatePromotion: (code) => {

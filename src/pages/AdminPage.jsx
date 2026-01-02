@@ -147,7 +147,7 @@ function AdminPage() {
             value: Number(editPromo.value),
             status: editPromo.status
         }
-        setPromotions(adminSettings.editPromotion(editPromo.id, updated))
+        setPromotions(adminSettings.updatePromotion(editPromo.id, updated))
         setEditPromo({ ...editPromo, show: false })
     }
 
