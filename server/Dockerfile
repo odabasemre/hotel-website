@@ -13,7 +13,7 @@ RUN npm ci --only=production
 COPY src ./src
 
 # Uploads klasörü
-RUN mkdir -p /app/uploads/hero /app/uploads/services /app/uploads/rooms /app/uploads/about /app/uploads/gallery /app/uploads/general
+RUN mkdir -p /app/uploads/hero /app/uploads/services /app/uploads/rooms /app/uploads/about /app/uploads/gallery /app/uploads/activities /app/uploads/general
 
 # Port
 EXPOSE 5000

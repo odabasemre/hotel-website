@@ -1,7 +1,8 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import activitiesData from '../data/activitiesData'
+import { adminSettings } from '../services/adminSettings'
 import '../styles/pages/activity-detail-page.css'
 
 // Icons
@@ -45,10 +46,21 @@ function ActivityDetailPage() {
     const { id } = useParams()
     const { t } = useTranslation()
     const activity = activitiesData.find(a => a.id === id)
+    const [activityImage, setActivityImage] = useState(activity?.image || '')
 
     useEffect(() => {
         window.scrollTo(0, 0)
-    }, [])
+        // Load activity image from admin settings
+        if (activity) {
+            const propertyData = adminSettings.getPropertyData()
+            const adminImage = propertyData?.siteImages?.activities?.[activity.id]
+            if (adminImage) {
+                setActivityImage(adminImage)
+            } else {
+                setActivityImage(activity.image)
+            }
+        }
+    }, [activity])
 
     if (!activity) {
         return (
@@ -64,7 +76,7 @@ function ActivityDetailPage() {
     return (
         <div className="activity-detail-page">
             {/* Hero Section with Image */}
-            <div className="activity-detail-hero" style={{ backgroundImage: `url(${activity.image})` }}>
+            <div className="activity-detail-hero" style={{ backgroundImage: `url(${activityImage})` }}>
                 <div className="activity-detail-overlay"></div>
                 <div className="activity-detail-hero-content">
                     <Link to="/activities" className="back-button">

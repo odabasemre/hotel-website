@@ -11,14 +11,18 @@ const __dirname = path.dirname(__filename);
 
 const router = express.Router();
 
-// Upload klasörünü oluştur
-const uploadDir = path.join(__dirname, '../../../uploads');
+// Upload klasörünü oluştur - Docker için /app/uploads, local için ../../../uploads
+const uploadDir = process.env.NODE_ENV === 'production' 
+    ? '/app/uploads' 
+    : path.join(__dirname, '../../../uploads');
+
 const sectionsDir = {
     hero: path.join(uploadDir, 'hero'),
     services: path.join(uploadDir, 'services'),
     rooms: path.join(uploadDir, 'rooms'),
     about: path.join(uploadDir, 'about'),
     gallery: path.join(uploadDir, 'gallery'),
+    activities: path.join(uploadDir, 'activities'),
     general: path.join(uploadDir, 'general')
 };
 
@@ -32,8 +36,15 @@ Object.values(sectionsDir).forEach(dir => {
 // Multer konfigürasyonu
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        const section = req.body.section || req.query.section || 'general';
+        // Query string veya body'den section al
+        const section = req.query.section || req.body.section || 'general';
         const dir = sectionsDir[section] || sectionsDir.general;
+        
+        // Klasör yoksa oluştur
+        if (!fs.existsSync(dir)) {
+            fs.mkdirSync(dir, { recursive: true });
+        }
+        
         cb(null, dir);
     },
     filename: (req, file, cb) => {

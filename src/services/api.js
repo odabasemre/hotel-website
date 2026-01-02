@@ -125,7 +125,8 @@ export const uploadApi = {
         if (imageKey) formData.append('imageKey', imageKey);
 
         const token = localStorage.getItem('admin_token');
-        const response = await fetch(`${API_BASE_URL}/upload/single`, {
+        // Section'ı query string olarak da gönder (multer body'i geç işliyor)
+        const response = await fetch(`${API_BASE_URL}/upload/single?section=${encodeURIComponent(section)}`, {
             method: 'POST',
             headers: token ? { 'Authorization': `Bearer ${token}` } : {},
             body: formData,

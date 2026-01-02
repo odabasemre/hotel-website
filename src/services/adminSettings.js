@@ -581,8 +581,16 @@ export const adminSettings = {
         const updated = adminSettings.updatePropertyData(data);
         if (USE_API && updated) {
             try {
-                for (const [key, value] of Object.entries(data)) {
-                    await settingsApi.updatePropertyInfo(key, value);
+                // Only send complex objects to API, not primitive values
+                const apiData = {
+                    siteImages: data.siteImages,
+                    photos: data.photos,
+                    amenities: data.amenities
+                };
+                for (const [key, value] of Object.entries(apiData)) {
+                    if (value && typeof value === 'object') {
+                        await settingsApi.updatePropertyInfo(key, value);
+                    }
                 }
             } catch (e) {
                 console.warn('API update failed:', e);

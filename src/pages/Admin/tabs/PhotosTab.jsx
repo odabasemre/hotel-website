@@ -13,9 +13,16 @@ function PhotosTab({
     setShowConfirmPopup
 }) {
     const [uploading, setUploading] = useState(false)
+    const [notification, setNotification] = useState(null)
     
     // Get current images (pending or saved)
     const currentImages = pendingImages || propertyData.siteImages || {}
+
+    // Show notification
+    const showNotification = (message, type = 'success') => {
+        setNotification({ message, type })
+        setTimeout(() => setNotification(null), 3000)
+    }
 
     // Image upload handler - uploads to API immediately
     const handleImageUpload = async (file, section, key) => {
@@ -46,10 +53,10 @@ function PhotosTab({
             }
             setPendingImages(updatedImages)
             setHasImageChanges(true)
-            alert(`✅ ${file.name} yüklendi!`)
+            showNotification(`✅ ${file.name} yüklendi! Kaydetmeyi unutmayın.`, 'info')
         } catch (error) {
             console.error('Upload error:', error)
-            alert('❌ Fotoğraf yüklenirken hata oluştu. Lütfen tekrar deneyin.')
+            showNotification('❌ Fotoğraf yüklenirken hata oluştu.', 'error')
         } finally {
             setUploading(false)
         }
@@ -74,14 +81,10 @@ function PhotosTab({
             setHasImageChanges(false)
             setShowConfirmPopup(false)
             
-            // Force page reload to clear cache
-            alert('✅ Fotoğraflar başarıyla kaydedildi! Sayfa yenileniyor...')
-            setTimeout(() => {
-                window.location.reload()
-            }, 1000)
+            showNotification('✅ Fotoğraflar başarıyla kaydedildi!', 'success')
         } catch (error) {
             console.error('Save error:', error)
-            alert('❌ Kaydetme sırasında hata oluştu.')
+            showNotification('❌ Kaydetme sırasında hata oluştu.', 'error')
         } finally {
             setUploading(false)
         }
@@ -288,6 +291,37 @@ function PhotosTab({
                 </div>
             )}
 
+            {/* Notification Toast */}
+            {notification && (
+                <div style={{
+                    position: 'fixed',
+                    top: '20px',
+                    right: '20px',
+                    padding: '16px 24px',
+                    borderRadius: '12px',
+                    background: notification.type === 'success' ? '#22c55e' : 
+                               notification.type === 'error' ? '#ef4444' : '#3b82f6',
+                    color: 'white',
+                    fontWeight: 'bold',
+                    boxShadow: '0 10px 40px rgba(0,0,0,0.3)',
+                    zIndex: 10000,
+                    animation: 'slideIn 0.3s ease',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '10px',
+                    fontSize: '15px'
+                }}>
+                    {notification.message}
+                </div>
+            )}
+
+            <style>{`
+                @keyframes slideIn {
+                    from { transform: translateX(100%); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
+                }
+            `}</style>
+
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
                 <div>
                     <h2 className="page-title" style={{ marginBottom: '5px' }}>Site Fotoğraf Yönetimi</h2>
@@ -346,7 +380,7 @@ function PhotosTab({
                     <DropZone
                         section="hero"
                         imageKey="background"
-                        currentImage={propertyData.siteImages?.hero?.background || propertyData.heroImage}
+                        currentImage={currentImages?.hero?.background || propertyData.heroImage}
                         description="Ana sayfanın üst kısmında görünen arka plan görseli. Önerilen boyut: 1920x1080px"
                         size="large"
                     />
@@ -361,14 +395,14 @@ function PhotosTab({
                         <DropZone
                             section="services"
                             imageKey="image1"
-                            currentImage={propertyData.siteImages?.services?.image1}
+                            currentImage={currentImages?.services?.image1}
                             label="Sol Görsel"
                             description="Önerilen boyut: 800x600px"
                         />
                         <DropZone
                             section="services"
                             imageKey="image2"
-                            currentImage={propertyData.siteImages?.services?.image2}
+                            currentImage={currentImages?.services?.image2}
                             label="Sağ Görsel"
                             description="Önerilen boyut: 800x600px"
                         />
@@ -384,14 +418,14 @@ function PhotosTab({
                         Odalar sayfasındaki slider'da görünecek 8 adet fotoğraf.
                     </p>
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '15px' }}>
-                        <DropZone section="rooms" imageKey="slide1" currentImage={propertyData.siteImages?.rooms?.slide1} label="Oda 1" size="small" />
-                        <DropZone section="rooms" imageKey="slide2" currentImage={propertyData.siteImages?.rooms?.slide2} label="Oda 2" size="small" />
-                        <DropZone section="rooms" imageKey="slide3" currentImage={propertyData.siteImages?.rooms?.slide3} label="Oda 3" size="small" />
-                        <DropZone section="rooms" imageKey="slide4" currentImage={propertyData.siteImages?.rooms?.slide4} label="Oda 4" size="small" />
-                        <DropZone section="rooms" imageKey="slide5" currentImage={propertyData.siteImages?.rooms?.slide5} label="Oda 5" size="small" />
-                        <DropZone section="rooms" imageKey="slide6" currentImage={propertyData.siteImages?.rooms?.slide6} label="Oda 6" size="small" />
-                        <DropZone section="rooms" imageKey="slide7" currentImage={propertyData.siteImages?.rooms?.slide7} label="Oda 7" size="small" />
-                        <DropZone section="rooms" imageKey="slide8" currentImage={propertyData.siteImages?.rooms?.slide8} label="Oda 8" size="small" />
+                        <DropZone section="rooms" imageKey="slide1" currentImage={currentImages?.rooms?.slide1} label="Oda 1" size="small" />
+                        <DropZone section="rooms" imageKey="slide2" currentImage={currentImages?.rooms?.slide2} label="Oda 2" size="small" />
+                        <DropZone section="rooms" imageKey="slide3" currentImage={currentImages?.rooms?.slide3} label="Oda 3" size="small" />
+                        <DropZone section="rooms" imageKey="slide4" currentImage={currentImages?.rooms?.slide4} label="Oda 4" size="small" />
+                        <DropZone section="rooms" imageKey="slide5" currentImage={currentImages?.rooms?.slide5} label="Oda 5" size="small" />
+                        <DropZone section="rooms" imageKey="slide6" currentImage={currentImages?.rooms?.slide6} label="Oda 6" size="small" />
+                        <DropZone section="rooms" imageKey="slide7" currentImage={currentImages?.rooms?.slide7} label="Oda 7" size="small" />
+                        <DropZone section="rooms" imageKey="slide8" currentImage={currentImages?.rooms?.slide8} label="Oda 8" size="small" />
                     </div>
                 </div>
 
@@ -403,7 +437,7 @@ function PhotosTab({
                     <DropZone
                         section="about"
                         imageKey="image1"
-                        currentImage={propertyData.siteImages?.about?.image1}
+                        currentImage={currentImages?.about?.image1}
                         description="Hakkımızda bölümünde görünen ana fotoğraf. Önerilen boyut: 800x600px"
                     />
                 </div>
@@ -417,14 +451,122 @@ function PhotosTab({
                         Galeri sayfasında ve oda detaylarında görünecek fotoğraflar.
                     </p>
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '15px' }}>
-                        <DropZone section="gallery" imageKey="image1" currentImage={propertyData.siteImages?.gallery?.image1} label="Galeri 1" size="small" />
-                        <DropZone section="gallery" imageKey="image2" currentImage={propertyData.siteImages?.gallery?.image2} label="Galeri 2" size="small" />
-                        <DropZone section="gallery" imageKey="image3" currentImage={propertyData.siteImages?.gallery?.image3} label="Galeri 3" size="small" />
-                        <DropZone section="gallery" imageKey="image4" currentImage={propertyData.siteImages?.gallery?.image4} label="Galeri 4" size="small" />
-                        <DropZone section="gallery" imageKey="image5" currentImage={propertyData.siteImages?.gallery?.image5} label="Galeri 5" size="small" />
-                        <DropZone section="gallery" imageKey="image6" currentImage={propertyData.siteImages?.gallery?.image6} label="Galeri 6" size="small" />
-                        <DropZone section="gallery" imageKey="image7" currentImage={propertyData.siteImages?.gallery?.image7} label="Galeri 7" size="small" />
-                        <DropZone section="gallery" imageKey="image8" currentImage={propertyData.siteImages?.gallery?.image8} label="Galeri 8" size="small" />
+                        <DropZone section="gallery" imageKey="image1" currentImage={currentImages?.gallery?.image1} label="Galeri 1" size="small" />
+                        <DropZone section="gallery" imageKey="image2" currentImage={currentImages?.gallery?.image2} label="Galeri 2" size="small" />
+                        <DropZone section="gallery" imageKey="image3" currentImage={currentImages?.gallery?.image3} label="Galeri 3" size="small" />
+                        <DropZone section="gallery" imageKey="image4" currentImage={currentImages?.gallery?.image4} label="Galeri 4" size="small" />
+                        <DropZone section="gallery" imageKey="image5" currentImage={currentImages?.gallery?.image5} label="Galeri 5" size="small" />
+                        <DropZone section="gallery" imageKey="image6" currentImage={currentImages?.gallery?.image6} label="Galeri 6" size="small" />
+                        <DropZone section="gallery" imageKey="image7" currentImage={currentImages?.gallery?.image7} label="Galeri 7" size="small" />
+                        <DropZone section="gallery" imageKey="image8" currentImage={currentImages?.gallery?.image8} label="Galeri 8" size="small" />
+                    </div>
+                </div>
+
+                {/* Activities Section */}
+                <div style={{ padding: '25px', background: '#fef3c7', borderRadius: '12px', border: '1px solid #fcd34d' }}>
+                    <h3 style={{ fontSize: '18px', marginBottom: '8px', color: '#92400e' }}>
+                        🏔️ Aktiviteler Sayfası
+                    </h3>
+                    <p style={{ color: '#666', fontSize: '13px', marginBottom: '20px' }}>
+                        Aktiviteler sayfasında görünecek fotoğraflar. Her aktivite için bir fotoğraf yükleyebilirsiniz.
+                    </p>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px' }}>
+                        <DropZone 
+                            section="activities" 
+                            imageKey="ayder-kuzey-houses" 
+                            currentImage={currentImages?.activities?.['ayder-kuzey-houses']} 
+                            label="Ayder Kuzey Houses 😊" 
+                            description="Ana tesisimiz"
+                            size="small" 
+                        />
+                        <DropZone 
+                            section="activities" 
+                            imageKey="yedigoller" 
+                            currentImage={currentImages?.activities?.yedigoller} 
+                            label="Yedigöller Milli Parkı" 
+                            description="25 km mesafede"
+                            size="small" 
+                        />
+                        <DropZone 
+                            section="activities" 
+                            imageKey="firtina-deresi" 
+                            currentImage={currentImages?.activities?.['firtina-deresi']} 
+                            label="Fırtına Deresi" 
+                            description="25 km mesafede"
+                            size="small" 
+                        />
+                        <DropZone 
+                            section="activities" 
+                            imageKey="ayder-yaylasi" 
+                            currentImage={currentImages?.activities?.['ayder-yaylasi']} 
+                            label="Ayder Yaylası" 
+                            description="4 km mesafede"
+                            size="small" 
+                        />
+                        <DropZone 
+                            section="activities" 
+                            imageKey="huser-yaylasi" 
+                            currentImage={currentImages?.activities?.['huser-yaylasi']} 
+                            label="Huser Yaylası" 
+                            description="12 km mesafede"
+                            size="small" 
+                        />
+                        <DropZone 
+                            section="activities" 
+                            imageKey="zilkale" 
+                            currentImage={currentImages?.activities?.zilkale} 
+                            label="Zilkale" 
+                            description="15 km mesafede"
+                            size="small" 
+                        />
+                        <DropZone 
+                            section="activities" 
+                            imageKey="palovit-selalesi" 
+                            currentImage={currentImages?.activities?.['palovit-selalesi']} 
+                            label="Palovit Şelalesi" 
+                            description="18 km mesafede"
+                            size="small" 
+                        />
+                        <DropZone 
+                            section="activities" 
+                            imageKey="senyuva-koprusu" 
+                            currentImage={currentImages?.activities?.['senyuva-koprusu']} 
+                            label="Şenyuva Köprüsü" 
+                            description="22 km mesafede"
+                            size="small" 
+                        />
+                        <DropZone 
+                            section="activities" 
+                            imageKey="samistal-yaylasi" 
+                            currentImage={currentImages?.activities?.['samistal-yaylasi']} 
+                            label="Samistal Yaylası" 
+                            description="15 km mesafede"
+                            size="small" 
+                        />
+                        <DropZone 
+                            section="activities" 
+                            imageKey="kavrun-yaylasi" 
+                            currentImage={currentImages?.activities?.['kavrun-yaylasi']} 
+                            label="Kavrun Yaylası" 
+                            description="8 km mesafede"
+                            size="small" 
+                        />
+                        <DropZone 
+                            section="activities" 
+                            imageKey="pokut-yaylasi" 
+                            currentImage={currentImages?.activities?.['pokut-yaylasi']} 
+                            label="Pokut Yaylası" 
+                            description="12 km mesafede"
+                            size="small" 
+                        />
+                        <DropZone 
+                            section="activities" 
+                            imageKey="tar-deresi" 
+                            currentImage={currentImages?.activities?.['tar-deresi']} 
+                            label="Tar Deresi" 
+                            description="10 km mesafede"
+                            size="small" 
+                        />
                     </div>
                 </div>
             </div>

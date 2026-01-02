@@ -1,7 +1,8 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import activitiesData from '../data/activitiesData'
+import { adminSettings } from '../services/adminSettings'
 import '../styles/pages/activities-page.css'
 
 // Icons
@@ -21,10 +22,22 @@ const ArrowRightIcon = () => (
 
 function ActivitiesPage() {
     const { t } = useTranslation()
+    const [activityImages, setActivityImages] = useState({})
 
     useEffect(() => {
         window.scrollTo(0, 0)
+        // Load activity images from admin settings
+        const propertyData = adminSettings.getPropertyData()
+        if (propertyData?.siteImages?.activities) {
+            setActivityImages(propertyData.siteImages.activities)
+        }
     }, [])
+
+    // Get activity image - prefer admin uploaded image, fallback to default
+    const getActivityImage = (activity) => {
+        const adminImage = activityImages[activity.id]
+        return adminImage || activity.image
+    }
 
     return (
         <div className="activities-page">
@@ -78,7 +91,7 @@ function ActivitiesPage() {
                         >
                             {/* Image */}
                             <div className="activity-card-image">
-                                <img src={activity.image} alt={activity.name} />
+                                <img src={getActivityImage(activity)} alt={activity.name} />
                                 <div className="activity-card-badge">
                                     <MapPinIcon />
                                     <span>{activity.distance} km</span>
