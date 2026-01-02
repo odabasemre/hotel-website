@@ -1,7 +1,7 @@
 import express from 'express';
 import pool from '../database/db.js';
 import { v4 as uuidv4 } from 'uuid';
-import { sendBookingNotification } from '../utils/emailService.js';
+import { sendBookingNotification, sendCustomerConfirmation } from '../utils/emailService.js';
 
 const router = express.Router();
 
@@ -126,14 +126,26 @@ router.post('/', async (req, res) => {
             console.error('⚠️ Kontenjan güncelleme hatası:', inventoryError.message);
         }
 
-        // Rezervasyon bildirimi mailini gönder
+        // Rezervasyon bildirimi mailini gönder (Admin'e)
         try {
-            console.log('📧 Mail gönderimi başlatılıyor...');
+            console.log('📧 Admin mail gönderimi başlatılıyor...');
             const mailResult = await sendBookingNotification(booking);
-            console.log('✅ Rezervasyon maili gönderildi:', bookingId, mailResult);
+            console.log('✅ Admin bildirimi gönderildi:', bookingId, mailResult);
         } catch (emailError) {
-            console.error('⚠️ Mail gönderme hatası (rezervasyon kaydedildi):', emailError.message);
-            console.error('Detaylı hata:', emailError);
+            console.error('⚠️ Admin mail gönderme hatası:', emailError.message);
+        }
+
+        // Müşteriye onay maili gönder
+        try {
+            console.log('📧 Müşteri onay maili gönderimi başlatılıyor...');
+            const customerMailResult = await sendCustomerConfirmation({
+                ...booking,
+                adults: req.body.adults || guests,
+                children: req.body.children || 0
+            });
+            console.log('✅ Müşteri onay maili gönderildi:', bookingId, customerMailResult);
+        } catch (emailError) {
+            console.error('⚠️ Müşteri mail gönderme hatası:', emailError.message);
             // Mail hatasında bile rezervasyon başarılı sayılır
         }
 
