@@ -116,20 +116,21 @@ function InventoryTab({
                                 {timelineDays.map(day => {
                                     const dStr = formatDate(day)
                                     const data = adminSettings.getCalculatedDayData(dStr)
+                                    const isAutoSoldOut = data.isSoldOut && !data.closed
                                     return (
-                                        <td key={dStr} className={`data-cell ${data.closed ? 'status-closed' : 'status-open'}`}>
+                                        <td key={dStr} className={`data-cell ${data.closed ? 'status-closed' : (isAutoSoldOut ? 'status-soldout' : 'status-open')}`}>
                                             <select
                                                 className="cell-select"
                                                 value={data.closed ? "true" : "false"}
-                                                onChange={(e) => handleValueChange(dStr, 'closed', e.target.value)}
+                                                onChange={(e) => handleValueChange(dStr, 'closed', e.target.value === 'true')}
                                                 style={{
-                                                    color: data.isSoldOut ? '#fff' : (data.closed ? '#d4111e' : '#2d4a3e'),
-                                                    background: data.isSoldOut ? '#d4111e' : 'transparent',
+                                                    color: isAutoSoldOut ? '#fff' : (data.closed ? '#d4111e' : '#2d4a3e'),
+                                                    background: isAutoSoldOut ? '#f59e0b' : 'transparent',
                                                     height: '100%',
                                                     width: '100%'
                                                 }}
                                             >
-                                                <option value="false">Açık</option>
+                                                <option value="false">{isAutoSoldOut ? 'Dolu' : 'Açık'}</option>
                                                 <option value="true">Kapalı</option>
                                             </select>
                                         </td>
@@ -145,25 +146,26 @@ function InventoryTab({
                                 {timelineDays.map(day => {
                                     const dStr = formatDate(day)
                                     const data = adminSettings.getCalculatedDayData(dStr)
+                                    const isAutoSoldOut = data.effectiveInventory === 0 && data.activeBookings > 0
                                     return (
-                                        <td key={dStr} className={`data-cell ${data.isSoldOut ? 'cell-sold-out' : ''}`} style={{ position: 'relative' }}>
+                                        <td key={dStr} className={`data-cell ${isAutoSoldOut ? 'cell-sold-out' : ''}`} style={{ position: 'relative' }}>
                                             <select
                                                 className="cell-select"
                                                 value={data.rawInventory}
-                                                onChange={(e) => handleValueChange(dStr, 'inventory', e.target.value)}
+                                                onChange={(e) => handleValueChange(dStr, 'inventory', Number(e.target.value))}
                                                 style={{
-                                                    color: data.isSoldOut ? 'white' : 'inherit',
+                                                    color: isAutoSoldOut ? 'white' : 'inherit',
                                                     fontWeight: 'bold',
                                                     height: '100%',
                                                     width: '100%',
-                                                    paddingTop: data.isSoldOut ? '10px' : '0'
+                                                    paddingTop: isAutoSoldOut ? '10px' : '0'
                                                 }}
                                             >
-                                                <option value="0">0</option>
-                                                <option value="1">1</option>
-                                                <option value="2">2</option>
+                                                {[0, 1, 2, 3, 4, 5].map(num => (
+                                                    <option key={num} value={num}>{num}</option>
+                                                ))}
                                             </select>
-                                            {data.isSoldOut && (
+                                            {isAutoSoldOut && (
                                                 <div style={{
                                                     position: 'absolute',
                                                     top: '4px',
@@ -175,7 +177,7 @@ function InventoryTab({
                                                     textTransform: 'uppercase',
                                                     pointerEvents: 'none'
                                                 }}>
-                                                    Tükendi
+                                                    {data.activeBookings} Rez
                                                 </div>
                                             )}
                                         </td>

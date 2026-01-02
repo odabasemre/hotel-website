@@ -67,32 +67,56 @@
         "available": "Müsait"
     },
     "services": {
-        "title": "Lüks & Konfor",
-        "subtitle": "Hizmetlerimiz ve Olanaklarımız",
-        "description": "Sofistike odalarımızda en iyi lüks otellerin konsepti ve hizmetini sunuyoruz. Muhteşem manzaralı döşenmiş terasın keyfini çıkarma imkanı ile.",
-        "spa": {
-            "title": "Spa & Wellness",
-            "description": "Premium spa uygulamalarımızla rahatlayın ve yenilenin"
+        "title": "Olanaklarımız",
+        "subtitle": "Konforunuz için özenle hazırlanmış tüm detaylar",
+        "description": "Doğanın kalbinde modern konfor. Tüm ihtiyaçlarınız için özenle hazırlanmış olanaklar.",
+        "riverView": {
+            "title": "Nehir Manzarası",
+            "description": "Huzurlu nehir manzarası eşliğinde dinlenin"
         },
-        "restaurant": {
-            "title": "Fine Dining",
-            "description": "Dünya standartlarında şeflerimizden eşsiz lezzetler deneyimleyin"
+        "balcony": {
+            "title": "Özel Balkon",
+            "description": "Doğayla iç içe özel balkon keyfi"
         },
-        "pool": {
-            "title": "Yüzme Havuzu",
-            "description": "Panoramik manzaralı muhteşem sonsuzluk havuzumuzun keyfini çıkarın"
+        "kitchen": {
+            "title": "Tam Donanımlı Mutfak",
+            "description": "İhtiyacınız olan her şey mutfağınızda"
+        },
+        "fireplace": {
+            "title": "Şömine",
+            "description": "Sıcak bir atmosferde keyifli akşamlar"
         },
         "wifi": {
-            "title": "Ücretsiz WiFi",
-            "description": "Otel genelinde yüksek hızlı internet ile bağlantıda kalın"
+            "title": "Yüksek Hızlı WiFi",
+            "description": "Kesintisiz internet bağlantısı"
+        },
+        "tv": {
+            "title": "Akıllı TV",
+            "description": "Netflix ve YouTube dahil eğlence seçenekleri"
+        },
+        "hairdryer": {
+            "title": "Saç Kurutma Makinesi",
+            "description": "Tüm odalarda mevcut"
+        },
+        "towels": {
+            "title": "Havlu ve Çarşaf",
+            "description": "Temiz ve kaliteli tekstil ürünleri"
         },
         "parking": {
             "title": "Ücretsiz Otopark",
-            "description": "Tüm misafirlerimiz için ücretsiz güvenli otopark"
+            "description": "Güvenli ve geniş park alanı"
         },
-        "concierge": {
-            "title": "7/24 Concierge",
-            "description": "Özel ekibimiz size yardımcı olmak için her zaman hazır"
+        "bar": {
+            "title": "İçecek Barı",
+            "description": "Sıcak ve soğuk içecek seçenekleri"
+        },
+        "reception": {
+            "title": "7/24 Resepsiyon",
+            "description": "Her an hizmetinizde"
+        },
+        "insulation": {
+            "title": "Ses & Isı Yalıtımı",
+            "description": "Sessiz ve konforlu ortam"
         }
     },
     "room": {

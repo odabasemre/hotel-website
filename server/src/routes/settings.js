@@ -200,7 +200,10 @@ router.put('/pricing/:date', async (req, res) => {
         
         const result = await pool.query(
             `INSERT INTO pricing (date, price, is_available, notes) VALUES ($1, $2, $3, $4)
-             ON CONFLICT (date) DO UPDATE SET price = $2, is_available = $3, notes = $4
+             ON CONFLICT (date) DO UPDATE SET 
+               price = COALESCE($2, pricing.price), 
+               is_available = COALESCE($3, pricing.is_available), 
+               notes = COALESCE($4, pricing.notes)
              RETURNING *`,
             [date, price, isAvailable !== false, notes]
         );

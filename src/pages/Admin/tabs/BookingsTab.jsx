@@ -91,12 +91,13 @@ function BookingsTab({
                         <th style={{ padding: '12px' }}>Çıkış</th>
                         <th style={{ padding: '12px' }}>Tutar</th>
                         <th style={{ padding: '12px' }}>Durum</th>
+                        <th style={{ padding: '12px' }}>İşlem Tarihi</th>
                         <th style={{ padding: '12px' }}>İşlem</th>
                     </tr>
                 </thead>
                 <tbody>
                     {filteredBookings.length === 0 ? (
-                        <tr><td colSpan="10" style={{ padding: '20px', textAlign: 'center', color: '#888' }}>
+                        <tr><td colSpan="11" style={{ padding: '20px', textAlign: 'center', color: '#888' }}>
                             {searchQuery ? 'Arama kriterlerine uygun rezervasyon bulunamadı.' : 'Henüz rezervasyon yok.'}
                         </td></tr>
                     ) : filteredBookings.map(b => {
@@ -127,6 +128,17 @@ function BookingsTab({
                                 <td style={{ padding: '12px' }}>{new Date(b.checkOut).toLocaleDateString()}</td>
                                 <td style={{ padding: '12px', fontWeight: 'bold' }}>{b.totalPrice?.toLocaleString()} ₺</td>
                                 <td style={{ padding: '12px' }}><span style={{ background: '#e6f4ea', color: '#1e8e3e', padding: '4px 8px', borderRadius: '12px', fontSize: '12px' }}>Onaylandı</span></td>
+                                <td style={{ padding: '12px', fontSize: '13px', color: '#666' }}>
+                                    {b.createdAt || b.created_at 
+                                        ? new Date(b.createdAt || b.created_at).toLocaleString('tr-TR', { 
+                                            day: '2-digit', 
+                                            month: '2-digit', 
+                                            year: 'numeric',
+                                            hour: '2-digit',
+                                            minute: '2-digit'
+                                        })
+                                        : '-'}
+                                </td>
                                 <td style={{ padding: '12px' }}>
                                     <button
                                         style={{ color: '#d93025', background: 'none', border: 'none', cursor: 'pointer', fontWeight: '600' }}

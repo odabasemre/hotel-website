@@ -1,58 +1,100 @@
 import { useTranslation } from 'react-i18next'
 import { adminSettings } from '../../services/adminSettings'
 
-// Service Icons
-const SpaIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-        <path d="M12 8v4" />
-        <path d="M12 16h.01" />
+// Modern Amenity Icons
+const RiverViewIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M2 12c2-2 4-3 6-3s4 1 6 3 4 3 6 3" />
+        <path d="M2 17c2-2 4-3 6-3s4 1 6 3 4 3 6 3" />
+        <path d="M2 7c2-2 4-3 6-3s4 1 6 3 4 3 6 3" />
     </svg>
 )
 
-const RestaurantIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M18 8h1a4 4 0 0 1 0 8h-1" />
-        <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z" />
-        <line x1="6" y1="1" x2="6" y2="4" />
-        <line x1="10" y1="1" x2="10" y2="4" />
-        <line x1="14" y1="1" x2="14" y2="4" />
+const BalconyIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="3" y="3" width="18" height="18" rx="2" />
+        <path d="M3 12h18" />
+        <path d="M8 12v9" />
+        <path d="M16 12v9" />
+        <path d="M12 3v9" />
     </svg>
 )
 
-const PoolIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M2 12h20" />
-        <path d="M2 17c.96-.31 2.04-.31 3 0 1.92.62 3.08.62 5 0 .96-.31 2.04-.31 3 0 1.92.62 3.08.62 5 0 .96-.31 2.04-.31 3 0" />
-        <path d="M9 12V6" />
-        <path d="M15 12V6" />
-        <circle cx="9" cy="4" r="2" />
-        <circle cx="15" cy="4" r="2" />
+const KitchenIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2" />
+        <path d="M7 2v20" />
+        <path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7" />
     </svg>
 )
 
 const WifiIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
         <path d="M5 12.55a11 11 0 0 1 14.08 0" />
         <path d="M1.42 9a16 16 0 0 1 21.16 0" />
         <path d="M8.53 16.11a6 6 0 0 1 6.95 0" />
-        <line x1="12" y1="20" x2="12.01" y2="20" />
+        <circle cx="12" cy="20" r="1" fill="currentColor" />
+    </svg>
+)
+
+const TvIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="2" y="4" width="20" height="14" rx="2" />
+        <path d="M8 21h8" />
+        <path d="M12 18v3" />
+    </svg>
+)
+
+const HairdryerIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M3 10h4" />
+        <circle cx="12" cy="10" r="5" />
+        <path d="M17 10h4" />
+        <path d="M12 15v6" />
+        <path d="M9 21h6" />
+    </svg>
+)
+
+const TowelIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M4 4h16v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4z" />
+        <path d="M4 10h16v10H4z" />
+        <path d="M8 10v10" />
+        <path d="M16 10v10" />
     </svg>
 )
 
 const ParkingIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
         <rect x="3" y="3" width="18" height="18" rx="2" />
         <path d="M9 17V7h4a3 3 0 0 1 0 6H9" />
     </svg>
 )
 
-const ConciergeIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M12 2v20" />
-        <path d="m8 10 4-6 4 6" />
-        <path d="M8 10v8a4 4 0 0 0 8 0v-8" />
-        <path d="M2 14h20" />
+const BarIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M8 22h8" />
+        <path d="M12 11v11" />
+        <path d="m19 3-7 8-7-8h14z" />
+    </svg>
+)
+
+const ReceptionIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="12" r="10" />
+        <path d="M12 6v6l4 2" />
+    </svg>
+)
+
+const InsulationIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M3 12h4l3-9 4 18 3-9h4" />
+    </svg>
+)
+
+const FireplaceIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 12c2-2.96 0-7-1-8 0 3.038-1.773 4.741-3 6-1.226 1.26-2 3.24-2 5a6 6 0 1 0 12 0c0-1.532-1.056-3.94-2-5-1.786 3-2.791 3-4 2z" />
     </svg>
 )
 
@@ -73,13 +115,19 @@ function Services() {
         }
     }
 
-    const services = [
-        { key: 'spa', icon: <SpaIcon /> },
-        { key: 'restaurant', icon: <RestaurantIcon /> },
-        { key: 'pool', icon: <PoolIcon /> },
-        { key: 'wifi', icon: <WifiIcon /> },
-        { key: 'parking', icon: <ParkingIcon /> },
-        { key: 'concierge', icon: <ConciergeIcon /> },
+    const amenities = [
+        { key: 'riverView', icon: <RiverViewIcon />, title: 'Nehir Manzarası', description: 'Huzurlu nehir manzarası eşliğinde dinlenin' },
+        { key: 'balcony', icon: <BalconyIcon />, title: 'Özel Balkon', description: 'Doğayla iç içe özel balkon keyfi' },
+        { key: 'kitchen', icon: <KitchenIcon />, title: 'Tam Donanımlı Mutfak', description: 'İhtiyacınız olan her şey mutfağınızda' },
+        { key: 'fireplace', icon: <FireplaceIcon />, title: 'Şömine', description: 'Sıcak bir atmosferde keyifli akşamlar' },
+        { key: 'wifi', icon: <WifiIcon />, title: 'Yüksek Hızlı WiFi', description: 'Kesintisiz internet bağlantısı' },
+        { key: 'tv', icon: <TvIcon />, title: 'Akıllı TV', description: 'Netflix ve YouTube dahil eğlence seçenekleri' },
+        { key: 'hairdryer', icon: <HairdryerIcon />, title: 'Saç Kurutma Makinesi', description: 'Tüm odalarda mevcut' },
+        { key: 'towels', icon: <TowelIcon />, title: 'Havlu ve Çarşaf', description: 'Temiz ve kaliteli tekstil ürünleri' },
+        { key: 'parking', icon: <ParkingIcon />, title: 'Ücretsiz Otopark', description: 'Güvenli ve geniş park alanı' },
+        { key: 'bar', icon: <BarIcon />, title: 'İçecek Barı', description: 'Sıcak ve soğuk içecek seçenekleri' },
+        { key: 'reception', icon: <ReceptionIcon />, title: '7/24 Resepsiyon', description: 'Her an hizmetinizde' },
+        { key: 'insulation', icon: <InsulationIcon />, title: 'Ses & Isı Yalıtımı', description: 'Sessiz ve konforlu ortam' },
     ]
 
     // Get images from admin settings or use defaults
@@ -89,42 +137,27 @@ function Services() {
     return (
         <section className="services section">
             <div className="container">
-                {/* Top Content - Image + Text + Image */}
-                <div className="services-content">
-                    <div className="services-image">
-                        <img
-                            src={servicesImage1}
-                            alt="Hotel pool view"
-                        />
-                    </div>
-
-                    <div className="services-text">
-                        <h2 style={getTextStyle('services', 'title')}>
-                            {siteTexts.services?.title || t('services.title')}
-                        </h2>
-                        <h3 style={getTextStyle('services', 'subtitle')}>
-                            {siteTexts.services?.subtitle || t('services.subtitle')}
-                        </h3>
-                        <p>{propertyData.description || t('services.description')}</p>
-                    </div>
-
-                    <div className="services-image">
-                        <img
-                            src={servicesImage2}
-                            alt="Hotel room"
-                        />
-                    </div>
+                {/* Section Header */}
+                <div className="services-header">
+                    <h2 style={getTextStyle('services', 'title')}>
+                        {siteTexts.services?.title || 'Olanaklarımız'}
+                    </h2>
+                    <p className="services-subtitle" style={getTextStyle('services', 'subtitle')}>
+                        {siteTexts.services?.subtitle || 'Konforunuz için özenle hazırlanmış tüm detaylar'}
+                    </p>
                 </div>
 
-                {/* Services Grid */}
-                <div className="services-grid">
-                    {services.map((service) => (
-                        <div className="service-card" key={service.key}>
-                            <div className="service-icon">
-                                {service.icon}
+                {/* Modern Amenities Grid */}
+                <div className="amenities-grid">
+                    {amenities.map((amenity) => (
+                        <div className="amenity-card" key={amenity.key}>
+                            <div className="amenity-icon">
+                                {amenity.icon}
                             </div>
-                            <h4>{t(`services.${service.key}.title`)}</h4>
-                            <p>{t(`services.${service.key}.description`)}</p>
+                            <div className="amenity-content">
+                                <h4>{amenity.title}</h4>
+                                <p>{amenity.description}</p>
+                            </div>
                         </div>
                     ))}
                 </div>

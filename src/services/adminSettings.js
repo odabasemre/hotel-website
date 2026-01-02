@@ -199,6 +199,48 @@ export const adminSettings = {
         if (!settings.dailyData) settings.dailyData = {};
         settings.dailyData[dateStr] = { ...settings.dailyData[dateStr], ...data };
         adminSettings.saveSettings(settings);
+        
+        // API'ye de kaydet
+        if (USE_API) {
+            settingsApi.updatePricing(dateStr, {
+                price: settings.dailyData[dateStr].price,
+                isAvailable: !settings.dailyData[dateStr].closed,
+                inventory: settings.dailyData[dateStr].inventory
+            }).catch(e => console.warn('API pricing update failed:', e));
+        }
+    },
+
+    // setDayData alias for updateDayData
+    setDayData: (dateStr, field, value) => {
+        const data = {};
+        if (field === 'price') data.price = Number(value);
+        else if (field === 'inventory') data.inventory = Number(value);
+        else if (field === 'closed') data.closed = value;
+        adminSettings.updateDayData(dateStr, data);
+    },
+
+    // Toplu güncelleme
+    applyBulkUpdate: ({ startDate, endDate, price, inventory, closed }) => {
+        if (!startDate || !endDate) return;
+        
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        const current = new Date(start);
+        
+        while (current <= end) {
+            const dateStr = current.toISOString().split('T')[0];
+            const updateData = {};
+            
+            if (price !== null && price !== undefined) updateData.price = price;
+            if (inventory !== null && inventory !== undefined) updateData.inventory = inventory;
+            if (closed !== null && closed !== undefined) updateData.closed = closed;
+            
+            if (Object.keys(updateData).length > 0) {
+                adminSettings.updateDayData(dateStr, updateData);
+            }
+            
+            current.setDate(current.getDate() + 1);
+        }
     },
 
     getCalculatedDayData: (dateStr) => {
@@ -207,9 +249,13 @@ export const adminSettings = {
 
         const checkDate = new Date(dateStr).getTime();
         const activeBookings = bookings.filter(b => {
-            const start = new Date(b.checkIn).getTime();
-            const end = new Date(b.checkOut).getTime();
-            return checkDate >= start && checkDate < end;
+            // Hem camelCase hem snake_case destekle
+            const checkIn = b.checkIn || b.check_in;
+            const checkOut = b.checkOut || b.check_out;
+            if (!checkIn || !checkOut) return false;
+            const start = new Date(checkIn).getTime();
+            const end = new Date(checkOut).getTime();
+            return checkDate >= start && checkDate < end && b.status !== 'cancelled';
         }).length;
 
         const effectiveInventory = Math.max(0, rawData.inventory - activeBookings);
@@ -218,8 +264,9 @@ export const adminSettings = {
             ...rawData,
             rawInventory: rawData.inventory,
             effectiveInventory: effectiveInventory,
+            activeBookings: activeBookings,
             isSoldOut: effectiveInventory === 0,
-            closed: rawData.closed || effectiveInventory === 0
+            closed: rawData.closed
         };
     },
 
@@ -274,9 +321,30 @@ export const adminSettings = {
         if (USE_API) {
             try {
                 const data = await bookingsApi.getAll();
+                // snake_case'den camelCase'e dönüştür
+                const normalizedData = data.map(booking => ({
+                    id: booking.id,
+                    bookingId: booking.booking_id || booking.bookingId,
+                    firstName: booking.guest_name?.split(' ').slice(0, -1).join(' ') || booking.firstName,
+                    lastName: booking.guest_name?.split(' ').slice(-1)[0] || booking.lastName,
+                    name: booking.guest_name || booking.name,
+                    email: booking.guest_email || booking.email,
+                    phone: booking.guest_phone || booking.phone,
+                    checkIn: booking.check_in || booking.checkIn,
+                    checkOut: booking.check_out || booking.checkOut,
+                    guests: booking.guests,
+                    roomType: booking.room_type || booking.roomType,
+                    totalPrice: booking.total_price || booking.totalPrice,
+                    currency: booking.currency,
+                    status: booking.status,
+                    notes: booking.notes,
+                    createdAt: booking.created_at || booking.createdAt,
+                    updatedAt: booking.updated_at || booking.updatedAt,
+                    roomNumber: booking.roomNumber || 1
+                }));
                 // localStorage'a da kaydet
-                localStorage.setItem(BOOKINGS_KEY, JSON.stringify(data));
-                return data;
+                localStorage.setItem(BOOKINGS_KEY, JSON.stringify(normalizedData));
+                return normalizedData;
             } catch (e) {
                 console.warn('API error, falling back to localStorage:', e);
                 return adminSettings.getBookings();

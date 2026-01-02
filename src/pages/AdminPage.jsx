@@ -163,12 +163,21 @@ function AdminPage() {
 
     // === Effects ===
     useEffect(() => {
-        setSettings(adminSettings.getSettings())
-        setBookings(adminSettings.getBookings())
-        setPromotions(adminSettings.getPromotions())
-        setPricing(adminSettings.getPricing())
-        setPropertyData(adminSettings.getPropertyData())
-        setSiteTexts(adminSettings.getSiteTexts())
+        const loadData = async () => {
+            setSettings(adminSettings.getSettings())
+            // API'den rezervasyonları çek
+            try {
+                const bookingsData = await adminSettings.getBookingsAsync()
+                setBookings(bookingsData)
+            } catch (e) {
+                setBookings(adminSettings.getBookings())
+            }
+            setPromotions(adminSettings.getPromotions())
+            setPricing(adminSettings.getPricing())
+            setPropertyData(adminSettings.getPropertyData())
+            setSiteTexts(adminSettings.getSiteTexts())
+        }
+        loadData()
     }, [activeTab])
 
     // === Render Login ===

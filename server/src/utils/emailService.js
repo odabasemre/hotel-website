@@ -16,26 +16,28 @@ export const sendBookingNotification = async (bookingData) => {
     try {
         const transporter = createTransporter();
         
-        const { 
-            booking_id, 
-            guest_name, 
-            guest_email, 
-            guest_phone, 
-            check_in, 
-            check_out, 
-            guests, 
-            room_type, 
-            total_price, 
-            currency,
-            notes 
-        } = bookingData;
+        // Hem snake_case (DB) hem camelCase (frontend) formatlarını destekle
+        const booking_id = bookingData.booking_id || bookingData.bookingId;
+        const guest_name = bookingData.guest_name || bookingData.guestName;
+        const guest_email = bookingData.guest_email || bookingData.guestEmail;
+        const guest_phone = bookingData.guest_phone || bookingData.guestPhone;
+        const check_in = bookingData.check_in || bookingData.checkIn;
+        const check_out = bookingData.check_out || bookingData.checkOut;
+        const guests = bookingData.guests;
+        const room_type = bookingData.room_type || bookingData.roomType;
+        const total_price = bookingData.total_price || bookingData.totalPrice;
+        const currency = bookingData.currency || 'TRY';
+        const notes = bookingData.notes;
+        const created_at = bookingData.created_at || bookingData.createdAt || new Date();
 
         const checkInDate = new Date(check_in).toLocaleDateString('tr-TR');
         const checkOutDate = new Date(check_out).toLocaleDateString('tr-TR');
+        const createdAtDate = new Date(created_at).toLocaleString('tr-TR');
 
         const mailOptions = {
             from: process.env.EMAIL_USER || 'ayderkuzeyhouses@gmail.com',
-            to: 'odabasemre0215@gmail.com',
+            to: process.env.EMAIL_ADMIN || 'odabasemre0215@gmail.com',
+            cc: process.env.EMAIL_CC || undefined,
             subject: `🏨 Yeni Rezervasyon - ${booking_id}`,
             text: `
 🎉 YENİ REZERVASYON ALINDI!
@@ -55,6 +57,7 @@ Oda Tipi: ${room_type}
 
 TOPLAM TUTAR: ${total_price} ${currency}
 
+İşlem Tarihi: ${createdAtDate}
 ${notes ? `Notlar: ${notes}\n` : ''}
 📌 Not: Misafiri en kısa sürede arayarak rezervasyonu onaylayabilirsiniz.
 
@@ -107,6 +110,10 @@ Bu mail Ayder Kuzey Houses rezervasyon sistemi tarafından otomatik olarak gönd
                                 <td style="padding: 8px 0; color: #2d5a4a; font-weight: bold; font-size: 18px;">
                                     ${total_price} ${currency}
                                 </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 8px 0; font-weight: bold; color: #555;">İşlem Tarihi:</td>
+                                <td style="padding: 8px 0; color: #666; font-size: 13px;">${createdAtDate}</td>
                             </tr>
                             ${notes ? `
                             <tr>
