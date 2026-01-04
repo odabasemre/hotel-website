@@ -170,15 +170,6 @@ function ActivityDetailPage() {
                             </div>
                         </div>
 
-                        {/* CTA Card */}
-                        <div className="cta-card">
-                            <h3>{t('activities.contactForDetails')}</h3>
-                            <p>{t('activities.infoCard1Text')}</p>
-                            <Link to="/contact" className="cta-button">
-                                {t('nav.contact')}
-                            </Link>
-                        </div>
-
                         {/* Booking Card */}
                         <div className="booking-reminder-card">
                             <h3>🏡 {t('nav.rooms')}</h3>

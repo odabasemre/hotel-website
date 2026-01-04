@@ -415,17 +415,38 @@ function PhotosTab({
                         🛏️ Odalar Sayfası
                     </h3>
                     <p style={{ color: '#666', fontSize: '13px', marginBottom: '20px' }}>
-                        Odalar sayfasındaki slider'da görünecek 8 adet fotoğraf.
+                        Odalar sayfasındaki slider'da görünecek fotoğraflar (sınırsız).
                     </p>
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '15px' }}>
-                        <DropZone section="rooms" imageKey="slide1" currentImage={currentImages?.rooms?.slide1} label="Oda 1" size="small" />
-                        <DropZone section="rooms" imageKey="slide2" currentImage={currentImages?.rooms?.slide2} label="Oda 2" size="small" />
-                        <DropZone section="rooms" imageKey="slide3" currentImage={currentImages?.rooms?.slide3} label="Oda 3" size="small" />
-                        <DropZone section="rooms" imageKey="slide4" currentImage={currentImages?.rooms?.slide4} label="Oda 4" size="small" />
-                        <DropZone section="rooms" imageKey="slide5" currentImage={currentImages?.rooms?.slide5} label="Oda 5" size="small" />
-                        <DropZone section="rooms" imageKey="slide6" currentImage={currentImages?.rooms?.slide6} label="Oda 6" size="small" />
-                        <DropZone section="rooms" imageKey="slide7" currentImage={currentImages?.rooms?.slide7} label="Oda 7" size="small" />
-                        <DropZone section="rooms" imageKey="slide8" currentImage={currentImages?.rooms?.slide8} label="Oda 8" size="small" />
+                        {(() => {
+                            // Get all existing room slides
+                            const existingSlides = Object.keys(currentImages?.rooms || {})
+                                .filter(key => key.startsWith('slide'))
+                                .sort((a, b) => {
+                                    const numA = parseInt(a.replace('slide', ''))
+                                    const numB = parseInt(b.replace('slide', ''))
+                                    return numA - numB
+                                })
+                            
+                            // Always show at least 8 slots
+                            const maxSlide = Math.max(8, existingSlides.length + 1)
+                            const slots = []
+                            
+                            for (let i = 1; i <= maxSlide; i++) {
+                                const key = `slide${i}`
+                                slots.push(
+                                    <DropZone 
+                                        key={key}
+                                        section="rooms" 
+                                        imageKey={key}
+                                        currentImage={currentImages?.rooms?.[key]} 
+                                        label={`Oda ${i}`}
+                                        size="small" 
+                                    />
+                                )
+                            }
+                            return slots
+                        })()}
                     </div>
                 </div>
 

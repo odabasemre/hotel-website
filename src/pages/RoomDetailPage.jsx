@@ -7,29 +7,142 @@ import CustomPhoneInput from '../components/CustomPhoneInput'
 import roomData from '../data/roomsData'
 import '../styles/pages/room-detail-page.css'
 
-// Icons
-const ChevronLeftIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <polyline points="15 18 9 12 15 6" />
-    </svg>
-)
-const ChevronRightIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <polyline points="9 18 15 12 9 6" />
-    </svg>
-)
-const CreditCardIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
-        <line x1="1" y1="10" x2="23" y2="10"></line>
-    </svg>
-)
+// SVG Icons
+const Icons = {
+    ChevronLeft: () => (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="15 18 9 12 15 6" />
+        </svg>
+    ),
+    ChevronRight: () => (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="9 18 15 12 9 6" />
+        </svg>
+    ),
+    Users: () => (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+            <circle cx="9" cy="7" r="4" />
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+        </svg>
+    ),
+    Bed: () => (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M2 4v16" /><path d="M2 8h18a2 2 0 0 1 2 2v10" />
+            <path d="M2 17h20" /><path d="M6 8v9" />
+        </svg>
+    ),
+    Bath: () => (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M4 12h16a1 1 0 0 1 1 1v3a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4v-3a1 1 0 0 1 1-1z" />
+            <path d="M6 12V5a2 2 0 0 1 2-2h3v2.25" />
+            <path d="M4 21h16" />
+        </svg>
+    ),
+    Maximize: () => (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M8 3H5a2 2 0 0 0-2 2v3" />
+            <path d="M21 8V5a2 2 0 0 0-2-2h-3" />
+            <path d="M3 16v3a2 2 0 0 0 2 2h3" />
+            <path d="M16 21h3a2 2 0 0 0 2-2v-3" />
+        </svg>
+    ),
+    Calendar: () => (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <rect x="3" y="4" width="18" height="18" rx="2" />
+            <path d="M16 2v4" /><path d="M8 2v4" /><path d="M3 10h18" />
+        </svg>
+    ),
+    CreditCard: () => (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <rect x="1" y="4" width="22" height="16" rx="2" />
+            <line x1="1" y1="10" x2="23" y2="10" />
+        </svg>
+    ),
+    Check: () => (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+            <polyline points="20 6 9 17 4 12" />
+        </svg>
+    ),
+    Mountain: () => (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="m8 3 4 8 5-5 5 15H2L8 3z" />
+        </svg>
+    ),
+    Wifi: () => (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M5 12.55a11 11 0 0 1 14.08 0" />
+            <path d="M1.42 9a16 16 0 0 1 21.16 0" />
+            <path d="M8.53 16.11a6 6 0 0 1 6.95 0" />
+            <circle cx="12" cy="20" r="1" />
+        </svg>
+    ),
+    Tv: () => (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <rect x="2" y="7" width="20" height="15" rx="2" />
+            <polyline points="17 2 12 7 7 2" />
+        </svg>
+    ),
+    Flame: () => (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z" />
+        </svg>
+    ),
+    Utensils: () => (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2" />
+            <path d="M7 2v20" />
+            <path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3zm0 0v7" />
+        </svg>
+    ),
+    Car: () => (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2" />
+            <circle cx="7" cy="17" r="2" /><circle cx="17" cy="17" r="2" />
+        </svg>
+    ),
+    Sunset: () => (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M12 10V2" /><path d="m4.93 10.93 1.41 1.41" />
+            <path d="M2 18h2" /><path d="M20 18h2" />
+            <path d="m19.07 10.93-1.41 1.41" /><path d="M22 22H2" />
+            <path d="m8 6 4-4 4 4" /><path d="M16 18a4 4 0 0 0-8 0" />
+        </svg>
+    ),
+    Wind: () => (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M17.7 7.7a2.5 2.5 0 1 1 1.8 4.3H2" />
+            <path d="M9.6 4.6A2 2 0 1 1 11 8H2" />
+            <path d="M12.6 19.4A2 2 0 1 0 14 16H2" />
+        </svg>
+    ),
+    Shirt: () => (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z" />
+        </svg>
+    )
+}
+
+// Feature icon mapping
+const featureIconMap = {
+    riverView: Icons.Mountain,
+    privateBalcony: Icons.Sunset,
+    kitchen: Icons.Utensils,
+    heating: Icons.Flame,
+    wifi: Icons.Wifi,
+    tv: Icons.Tv,
+    hairDryer: Icons.Wind,
+    towels: Icons.Shirt,
+    parking: Icons.Car
+}
 
 function RoomDetailPage() {
     const { t, i18n } = useTranslation()
     const navigate = useNavigate()
     const location = useLocation()
 
+    // States
     const [currentDate, setCurrentDate] = useState(new Date())
     const [checkIn, setCheckIn] = useState(null)
     const [checkOut, setCheckOut] = useState(null)
@@ -39,17 +152,11 @@ function RoomDetailPage() {
     const [nameError, setNameError] = useState('')
     const [dateError, setDateError] = useState('')
     const [isPhoneValid, setIsPhoneValid] = useState(false)
-
-    // Room gallery state
     const [currentImageIndex, setCurrentImageIndex] = useState(0)
     const [propertyData, setPropertyData] = useState(adminSettings.getPropertyData())
-
-    // Promo Code State
     const [promoCode, setPromoCode] = useState('')
     const [appliedDiscount, setAppliedDiscount] = useState(null)
     const [promoError, setPromoError] = useState('')
-
-    // Guest Flow State
     const [isGuestConfirmed, setIsGuestConfirmed] = useState(!!location.state?.preSelect)
     const [isGuestLocked, setIsGuestLocked] = useState(!!location.state?.preSelect)
 
@@ -62,158 +169,117 @@ function RoomDetailPage() {
         loadData()
     }, [])
 
-    const { isDateBusy, isDateAlmostFull, getPriceForDate, settings } = useCustomAvailability();
+    const { isDateBusy, isDateAlmostFull, getPriceForDate } = useCustomAvailability()
 
-    // Get room images from API or use defaults
+    // Get room images
     const rooms = propertyData?.siteImages?.rooms || {}
-    const roomImages = [
-        rooms.slide1,
-        rooms.slide2,
-        rooms.slide3,
-        rooms.slide4,
-        rooms.slide5,
-        rooms.slide6,
-        rooms.slide7,
-        rooms.slide8
-    ].filter(Boolean)
+    const roomImages = Object.keys(rooms)
+        .filter(key => key.startsWith('slide') && rooms[key])
+        .sort((a, b) => parseInt(a.replace('slide', '')) - parseInt(b.replace('slide', '')))
+        .map(key => rooms[key])
 
-    // Room features with icons
+    // Room features
     const featuresList = roomData?.features ? [
-        { key: 'riverView', icon: '🏞️' },
-        { key: 'privateBalcony', icon: '🌅' },
-        { key: 'kitchen', icon: '🍳' },
-        { key: 'heating', icon: '🔥' },
-        { key: 'wifi', icon: '📶' },
-        { key: 'tv', icon: '📺' },
-        { key: 'hairDryer', icon: '💨' },
-        { key: 'towels', icon: '🧺' },
-        { key: 'parking', icon: '🅿️' }
-    ].filter(feature => roomData.features.includes(feature.key)) : []
+        'riverView', 'privateBalcony', 'kitchen', 'heating', 'wifi', 'tv', 'hairDryer', 'towels', 'parking'
+    ].filter(key => roomData.features.includes(key)) : []
 
-    // Homepage'den gelen veriyi işle
+    // Process homepage preselect data
     useEffect(() => {
         if (location.state?.preSelect) {
-            const { checkIn: pIn, checkOut: pOut, guests: pGuests } = location.state.preSelect;
+            const { checkIn: pIn, checkOut: pOut } = location.state.preSelect
             if (pIn) {
-                const cin = new Date(pIn);
-                setCheckIn(cin);
-                setCurrentDate(cin);
+                const cin = new Date(pIn)
+                setCheckIn(cin)
+                setCurrentDate(cin)
             }
-            if (pOut) setCheckOut(new Date(pOut));
-            if (location.state.preSelect.adults) setAdults(Number(location.state.preSelect.adults));
-            if (location.state.preSelect.children !== undefined) setChildren(Number(location.state.preSelect.children));
-
-            setIsGuestConfirmed(true);
-            setIsGuestLocked(true);
+            if (pOut) setCheckOut(new Date(pOut))
+            if (location.state.preSelect.adults) setAdults(Number(location.state.preSelect.adults))
+            if (location.state.preSelect.children !== undefined) setChildren(Number(location.state.preSelect.children))
+            setIsGuestConfirmed(true)
+            setIsGuestLocked(true)
         }
-        window.scrollTo(0, 0);
-    }, [location.state]);
+        window.scrollTo(0, 0)
+    }, [location.state])
 
-    // Toplam tutar hesabı (İndirimsiz)
+    // Price calculations
     const calculateRawTotal = () => {
-        if (!checkIn || !checkOut) return 0;
-        let total = 0;
-        let temp = new Date(checkIn);
+        if (!checkIn || !checkOut) return 0
+        let total = 0
+        let temp = new Date(checkIn)
         while (temp < checkOut) {
-            total += getPriceForDate(temp, adults, children);
-            temp.setDate(temp.getDate() + 1);
+            total += getPriceForDate(temp, adults, children)
+            temp.setDate(temp.getDate() + 1)
         }
-        return total;
+        return total
     }
 
-    // İndirimli toplam tutar
     const calculateFinalTotal = () => {
-        const rawTotal = calculateRawTotal();
-        if (!appliedDiscount) return rawTotal;
-        return Math.max(0, rawTotal - appliedDiscount.amount);
+        const rawTotal = calculateRawTotal()
+        if (!appliedDiscount) return rawTotal
+        return Math.max(0, rawTotal - appliedDiscount.amount)
     }
 
-    // Promosyon Uygulama
     const handleApplyPromo = () => {
-        setPromoError('');
-        setAppliedDiscount(null);
+        setPromoError('')
+        setAppliedDiscount(null)
+        if (!promoCode.trim()) return
 
-        if (!promoCode.trim()) return;
-
-        const promo = adminSettings.validatePromotion(promoCode.toUpperCase().trim());
-
+        const promo = adminSettings.validatePromotion(promoCode.toUpperCase().trim())
         if (!promo) {
-            setPromoError(t('booking.invalidPromo') || 'Geçersiz kupon kodu');
-            return;
+            setPromoError(t('booking.invalidPromo') || 'Geçersiz kupon kodu')
+            return
         }
 
-        const rawTotal = calculateRawTotal();
+        const rawTotal = calculateRawTotal()
         if (rawTotal === 0) {
-            setPromoError('Lütfen önce tarih seçiniz');
-            return;
+            setPromoError('Lütfen önce tarih seçiniz')
+            return
         }
 
-        let discountAmount = 0;
-        if (promo.type === 'amount') {
-            discountAmount = promo.value;
-        } else if (promo.type === 'percent') {
-            discountAmount = (rawTotal * promo.value) / 100;
-        }
-
-        setAppliedDiscount({
-            code: promo.code,
-            amount: discountAmount,
-            type: promo.type,
-            value: promo.value
-        });
+        let discountAmount = promo.type === 'amount' ? promo.value : (rawTotal * promo.value) / 100
+        setAppliedDiscount({ code: promo.code, amount: discountAmount, type: promo.type, value: promo.value })
     }
 
+    // Calendar navigation
     const nextMonth = () => {
-        const next = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1);
-        if (next <= new Date(2026, 9, 1)) setCurrentDate(next);
+        const next = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1)
+        if (next <= new Date(2026, 9, 1)) setCurrentDate(next)
     }
+
     const prevMonth = () => {
-        const prev = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
-        if (prev >= new Date()) setCurrentDate(prev);
+        const prev = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1)
+        if (prev >= new Date()) setCurrentDate(prev)
     }
 
     const handleDateClick = (day) => {
         const selectedDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day)
-        
-        const today = new Date(); today.setHours(0, 0, 0, 0);
-        if (selectedDate < today) return;
+        const today = new Date()
+        today.setHours(0, 0, 0, 0)
+        if (selectedDate < today) return
 
-        // Giriş tarihi seçimi veya yeni seçim başlatma
         if (!checkIn || (checkIn && checkOut)) {
-            // Giriş tarihi olarak dolu gün seçilemez
-            if (isDateBusy(selectedDate)) return;
-            setCheckIn(selectedDate); 
-            setCheckOut(null);
-            setAppliedDiscount(null);
-        } 
-        // Çıkış tarihi seçimi
-        else if (selectedDate > checkIn) {
-            // Çıkış tarihi olarak dolu gün SEÇİLEBİLİR (o gün çıkış yapılacak)
-            // Ancak aradaki günler dolu olmamalı
-            let hasConflictInBetween = false;
-            let temp = new Date(checkIn);
-            temp.setDate(temp.getDate() + 1); // Giriş gününden sonraki gün
+            if (isDateBusy(selectedDate)) return
+            setCheckIn(selectedDate)
+            setCheckOut(null)
+            setAppliedDiscount(null)
+        } else if (selectedDate > checkIn) {
+            let hasConflict = false
+            let temp = new Date(checkIn)
+            temp.setDate(temp.getDate() + 1)
             while (temp < selectedDate) {
-                if (isDateBusy(temp)) { 
-                    hasConflictInBetween = true; 
-                    break; 
-                }
-                temp.setDate(temp.getDate() + 1);
+                if (isDateBusy(temp)) { hasConflict = true; break }
+                temp.setDate(temp.getDate() + 1)
             }
-            
-            if (hasConflictInBetween) {
-                alert('Seçtiğiniz tarihler arasında dolu günler bulunmaktadır.');
-                return;
+            if (hasConflict) {
+                alert('Seçtiğiniz tarihler arasında dolu günler bulunmaktadır.')
+                return
             }
-            
-            setCheckOut(selectedDate);
-            setAppliedDiscount(null);
-        } 
-        // Giriş tarihinden önce bir tarih seçildi - yeni giriş tarihi olarak ata
-        else {
-            if (isDateBusy(selectedDate)) return;
-            setCheckIn(selectedDate);
-            setAppliedDiscount(null);
+            setCheckOut(selectedDate)
+            setAppliedDiscount(null)
+        } else {
+            if (isDateBusy(selectedDate)) return
+            setCheckIn(selectedDate)
+            setAppliedDiscount(null)
         }
     }
 
@@ -227,52 +293,44 @@ function RoomDetailPage() {
     const days = [...Array(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate()).keys()].map(i => i + 1)
     const emptyDays = [...Array(new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).getDay()).keys()]
 
-    // Name/Surname input handler: Only letters
+    // Form handlers
     const handleNameChange = (e) => {
-        const { name, value } = e.target;
+        const { name, value } = e.target
         if (/[^a-zA-ZğüşıöçĞÜŞİÖÇ\s.]/.test(value)) {
-            setNameError("İsim/Soyisimde özel karakter olamaz.");
-            return;
+            setNameError("İsim/Soyisimde özel karakter olamaz.")
+            return
         }
-        setNameError("");
-        setFormData(prev => ({ ...prev, [name]: value }));
-    }
-
-    const handlePhoneChange = (val) => {
-        setFormData(prev => ({ ...prev, phone: val }));
+        setNameError("")
+        setFormData(prev => ({ ...prev, [name]: value }))
     }
 
     const handleSubmit = (e) => {
-        e.preventDefault();
-        setNameError("");
-        setDateError("");
+        e.preventDefault()
+        setNameError("")
+        setDateError("")
 
-        const fName = formData.firstName.trim();
-        const lName = formData.lastName.trim();
-
-        if (fName.length < 2 || lName.length < 2) {
-            setNameError("Ad ve Soyad en az 2 karakter olmalıdır.");
-            return;
+        if (formData.firstName.trim().length < 2 || formData.lastName.trim().length < 2) {
+            setNameError("Ad ve Soyad en az 2 karakter olmalıdır.")
+            return
         }
 
-
-        if (!isPhoneValid) return;
+        if (!isPhoneValid) return
 
         if (!isGuestConfirmed) {
-            setDateError("Lütfen önce kişi sayısını onaylayın.");
-            return;
+            setDateError("Lütfen önce kişi sayısını onaylayın.")
+            return
         }
 
         if (!checkIn || !checkOut) {
-            setDateError(t('booking.selectDatesError'));
-            return;
+            setDateError(t('booking.selectDatesError'))
+            return
         }
 
         navigate('/checkout', {
             state: {
                 bookingData: {
                     ...formData,
-                    name: `${formData.firstName} ${formData.lastName}`, // Combine for backward compatibility
+                    name: `${formData.firstName} ${formData.lastName}`,
                     checkIn: checkIn.toISOString(),
                     checkOut: checkOut.toISOString(),
                     adults,
@@ -285,47 +343,48 @@ function RoomDetailPage() {
         })
     }
 
+    const nightCount = checkIn && checkOut ? Math.ceil((checkOut - checkIn) / (1000 * 60 * 60 * 24)) : 0
+
     return (
-        <div className="room-detail-page">
-            {/* Room Hero Section with Gallery */}
-            <section className="room-hero-section">
-                <div className="room-gallery-container">
+        <div className="rdp">
+            {/* Hero Gallery */}
+            <section className="rdp-hero">
+                <div className="rdp-gallery">
                     {roomImages.length > 0 && (
                         <>
-                            <div className="main-image-wrapper">
-                                <img 
-                                    src={roomImages[currentImageIndex]} 
-                                    alt={`${t('rooms.roomName')} - ${currentImageIndex + 1}`}
-                                    className="main-room-image"
-                                />
-                                <div className="exclusive-badge">EXCLUSIVE</div>
+                            <div className="rdp-main-image">
+                                <img src={roomImages[currentImageIndex]} alt={t('rooms.roomName')} />
+                                <div className="rdp-image-overlay" />
+                                
+                                <div className="rdp-hero-content">
+                                    <span className="rdp-badge">Premium Konaklama</span>
+                                    <h1 className="rdp-hero-title">{t('rooms.roomName')}</h1>
+                                    <p className="rdp-hero-subtitle">{t('rooms.subtitle')}</p>
+                                </div>
+
                                 {roomImages.length > 1 && (
                                     <>
-                                        <button 
-                                            className="gallery-nav prev" 
-                                            onClick={() => setCurrentImageIndex((currentImageIndex - 1 + roomImages.length) % roomImages.length)}
-                                        >
-                                            <ChevronLeftIcon />
+                                        <button className="rdp-nav rdp-nav-prev" onClick={() => setCurrentImageIndex((currentImageIndex - 1 + roomImages.length) % roomImages.length)}>
+                                            <Icons.ChevronLeft />
                                         </button>
-                                        <button 
-                                            className="gallery-nav next" 
-                                            onClick={() => setCurrentImageIndex((currentImageIndex + 1) % roomImages.length)}
-                                        >
-                                            <ChevronRightIcon />
+                                        <button className="rdp-nav rdp-nav-next" onClick={() => setCurrentImageIndex((currentImageIndex + 1) % roomImages.length)}>
+                                            <Icons.ChevronRight />
                                         </button>
+                                        <div className="rdp-counter">{currentImageIndex + 1} / {roomImages.length}</div>
                                     </>
                                 )}
                             </div>
+
                             {roomImages.length > 1 && (
-                                <div className="thumbnail-strip">
+                                <div className="rdp-thumbnails">
                                     {roomImages.map((img, idx) => (
-                                        <img 
+                                        <button
                                             key={idx}
-                                            src={img} 
-                                            alt={`Thumbnail ${idx + 1}`}
-                                            className={`thumbnail ${idx === currentImageIndex ? 'active' : ''}`}
+                                            className={`rdp-thumb ${idx === currentImageIndex ? 'active' : ''}`}
                                             onClick={() => setCurrentImageIndex(idx)}
-                                        />
+                                        >
+                                            <img src={img} alt={`View ${idx + 1}`} />
+                                        </button>
                                     ))}
                                 </div>
                             )}
@@ -334,580 +393,264 @@ function RoomDetailPage() {
                 </div>
             </section>
 
-            {/* Room Info Section */}
-            <section className="room-info-section">
-                <div className="container">
-                    <div className="room-info-grid">
-                        <div className="room-info-main">
-                            <p className="room-subtitle">{t('rooms.subtitle') || 'Konfor Zarafetfile Buluşuyor'}</p>
-                            <h1 className="room-title">{t('rooms.roomName')}</h1>
-                            <p className="room-description">{t('rooms.fullDescription')}</p>
-                            
-                            {/* Room Stats */}
-                            <div className="room-stats-inline">
-                                <div className="stat-badge">
-                                    <span className="stat-icon">📏</span>
-                                    <span className="stat-label">{t('rooms.size')}</span>
-                                    <span className="stat-value">{roomData.size}m²</span>
-                                </div>
-                                <div className="stat-badge">
-                                    <span className="stat-icon">🛏️</span>
-                                    <span className="stat-label">{t('rooms.bed')}</span>
-                                    <span className="stat-value">{roomData.bedrooms}</span>
-                                </div>
-                                <div className="stat-badge">
-                                    <span className="stat-icon">👁️</span>
-                                    <span className="stat-label">{t('rooms.view')}</span>
-                                    <span className="stat-value">{t('rooms.features.riverView')}</span>
-                                </div>
-                                <div className="stat-badge">
-                                    <span className="stat-icon">🚿</span>
-                                    <span className="stat-label">{t('rooms.bathroom')}</span>
-                                    <span className="stat-value">{roomData.bathrooms}</span>
-                                </div>
-                                <div className="stat-badge">
-                                    <span className="stat-icon">🍷</span>
-                                    <span className="stat-label">{t('rooms.minibar')}</span>
-                                    <span className="stat-value">✓</span>
-                                </div>
-                                <div className="stat-badge">
-                                    <span className="stat-icon">❄️</span>
-                                    <span className="stat-label">{t('rooms.ac')}</span>
-                                    <span className="stat-value">✓</span>
-                                </div>
+            {/* Quick Stats Bar */}
+            <section className="rdp-stats-bar">
+                <div className="rdp-container">
+                    <div className="rdp-stats">
+                        <div className="rdp-stat">
+                            <Icons.Maximize />
+                            <div>
+                                <span className="rdp-stat-value">{roomData.size} m²</span>
+                                <span className="rdp-stat-label">{t('rooms.area')}</span>
                             </div>
                         </div>
-                    </div>
-
-                    {/* Room Features */}
-                    <div className="room-features-detail">
-                        <h3 className="features-title">{t('rooms.amenities')}</h3>
-                        <div className="features-grid-detail">
-                            {featuresList.map((feature) => (
-                                <div className="feature-item-detail" key={feature.key}>
-                                    <span className="feature-icon">{feature.icon}</span>
-                                    <span className="feature-text">{t(`rooms.features.${feature.key}`)}</span>
-                                </div>
-                            ))}
+                        <div className="rdp-stat">
+                            <Icons.Bed />
+                            <div>
+                                <span className="rdp-stat-value">{roomData.bedrooms}</span>
+                                <span className="rdp-stat-label">{t('rooms.bedrooms')}</span>
+                            </div>
+                        </div>
+                        <div className="rdp-stat">
+                            <Icons.Bath />
+                            <div>
+                                <span className="rdp-stat-value">{roomData.bathrooms}</span>
+                                <span className="rdp-stat-label">{t('rooms.bathrooms')}</span>
+                            </div>
+                        </div>
+                        <div className="rdp-stat">
+                            <Icons.Users />
+                            <div>
+                                <span className="rdp-stat-value">{roomData.capacity}</span>
+                                <span className="rdp-stat-label">{t('rooms.guests')}</span>
+                            </div>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <div className="container">
-                <div className="booking-container">
-                    <div className="booking-header">
-                        <Link to="/rooms" className="back-link"><ChevronLeftIcon /> {t('rooms.backToRooms')}</Link>
-                        <h1>{t('booking.title')}</h1>
-                        <p>{t('booking.subtitle')}</p>
-                    </div>
-
-                    <div className="booking-grid">
-                        <div className={`calendar-section ${!isGuestConfirmed ? 'calendar-locked' : ''}`}>
-                            {/* Calendar Section */}
-                            <div className="calendar-header" style={{ opacity: isGuestConfirmed ? 1 : 0.4, pointerEvents: isGuestConfirmed ? 'auto' : 'none' }}>
-                                <button type="button" onClick={prevMonth}><ChevronLeftIcon /></button>
-                                <span>{currentDate.toLocaleString(i18n.language, { month: 'long', year: 'numeric' })}</span>
-                                <button type="button" onClick={nextMonth}><ChevronRightIcon /></button>
+            {/* Main Content */}
+            <main className="rdp-main">
+                <div className="rdp-container">
+                    <div className="rdp-layout">
+                        {/* Left: Info */}
+                        <div className="rdp-info">
+                            <div className="rdp-section">
+                                <h2 className="rdp-section-title">Hakkında</h2>
+                                <p className="rdp-description">{t('rooms.fullDescription')}</p>
                             </div>
-                            <div className="calendar-grid detailed">
-                                {['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz'].map(day => <div key={day} className="calendar-day-name">{day}</div>)}
-                                {emptyDays.map(i => <div key={`empty-${i}`} className="calendar-day empty"></div>)}
-                                {days.map(day => {
-                                    const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
-                                    const today = new Date(); today.setHours(0, 0, 0, 0);
-                                    const isPast = date < today;
-                                    const isBusy = isDateBusy(date);
-                                    const isAlmostFull = isDateAlmostFull(date);
-                                    const price = getPriceForDate(date, adults, children);
-                                    
-                                    // Çıkış tarihi olarak dolu gün seçilebilir (checkIn seçiliyse ve checkOut seçili değilse)
-                                    const canSelectAsCheckout = checkIn && !checkOut && date > checkIn && isBusy;
-                                    const isClickable = !isPast && isGuestConfirmed && (!isBusy || canSelectAsCheckout);
-                                    
-                                    let className = `calendar-day ${isDateSelected(day) ? 'selected' : ''} ${isBusy && !canSelectAsCheckout ? 'busy' : ''} ${canSelectAsCheckout ? 'checkout-available' : ''} ${isAlmostFull ? 'almost-full' : ''} ${isPast ? 'past-date' : ''}`;
 
-                                    return (
-                                        <div
-                                            key={day}
-                                            className={className}
-                                            onClick={() => isClickable && handleDateClick(day)}
-                                            style={isPast || (!isClickable && !canSelectAsCheckout) ? { cursor: 'default', opacity: isPast ? 0.5 : 1 } : { cursor: 'pointer' }}
-                                        >
-                                            {isAlmostFull && !isBusy && !isPast && isGuestConfirmed && <span className="day-status almost-full-label">DOLMAK ÜZERE !</span>}
-                                            <span className="day-num">{day}</span>
-                                            {!isBusy && !isPast && isGuestConfirmed && !canSelectAsCheckout && <span className="day-price">{price.toLocaleString()}₺</span>}
-                                            {isBusy && !isPast && isGuestConfirmed && !canSelectAsCheckout && <span className="day-price busy-label">DOLU</span>}
-                                        </div>
-                                    )
-                                })}
+                            <div className="rdp-section">
+                                <h2 className="rdp-section-title">{t('rooms.amenities')}</h2>
+                                <div className="rdp-features">
+                                    {featuresList.map((key) => {
+                                        const IconComponent = featureIconMap[key] || Icons.Check
+                                        return (
+                                            <div className="rdp-feature" key={key}>
+                                                <div className="rdp-feature-icon">
+                                                    <IconComponent />
+                                                </div>
+                                                <span>{t(`rooms.features.${key}`)}</span>
+                                            </div>
+                                        )
+                                    })}
+                                </div>
                             </div>
                         </div>
 
-                        <div className="booking-form-section">
-                            {/* Guest Selection Card - Above Summary */}
-                            <div className="guest-selection-card-floating" style={{
-                                position: 'relative',
-                                zIndex: isGuestConfirmed ? 1 : 10,
-                                marginBottom: '24px',
-                                background: isGuestConfirmed 
-                                    ? 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)' 
-                                    : 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
-                                backdropFilter: 'blur(10px)',
-                                border: isGuestConfirmed ? '2px solid #cbd5e1' : '3px solid #1a362d',
-                                borderRadius: '20px',
-                                padding: '28px',
-                                boxShadow: isGuestConfirmed 
-                                    ? '0 4px 12px rgba(0,0,0,0.08)' 
-                                    : '0 12px 40px rgba(26, 54, 45, 0.25), 0 0 0 1px rgba(26, 54, 45, 0.1)',
-                                transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-                                transform: isGuestConfirmed ? 'scale(0.98)' : 'scale(1)'
-                            }}>
-                                <h3 style={{ 
-                                    fontSize: '17px', 
-                                    fontWeight: '800', 
-                                    color: isGuestConfirmed ? '#475569' : '#1a362d',
-                                    marginBottom: '18px',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '10px',
-                                    letterSpacing: '-0.3px'
-                                }}>
-                                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{
-                                        filter: isGuestConfirmed ? 'none' : 'drop-shadow(0 2px 4px rgba(26, 54, 45, 0.2))'
-                                    }}>
-                                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-                                        <circle cx="9" cy="7" r="4" />
-                                        <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-                                        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                                    </svg>
-                                    Kişi Sayısı Seçimi
-                                </h3>
-                                
-                                {!isGuestConfirmed ? (
-                                    <>
-                                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '18px', marginBottom: '24px' }}>
-                                            <div>
-                                                <label style={{ 
-                                                    fontSize: '14px', 
-                                                    color: '#1e293b', 
-                                                    marginBottom: '10px', 
-                                                    display: 'block', 
-                                                    fontWeight: '600',
-                                                    letterSpacing: '-0.2px'
-                                                }}>
-                                                    Yetişkin <span style={{color: '#94a3b8', fontWeight: '500'}}>(Maks 6)</span>
-                                                </label>
-                                                <div style={{ 
-                                                    display: 'flex', 
-                                                    alignItems: 'center', 
-                                                    justifyContent: 'space-between',
-                                                    background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
-                                                    border: '2px solid #e2e8f0',
-                                                    borderRadius: '14px',
-                                                    padding: '14px 18px',
-                                                    boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
-                                                    transition: 'all 0.3s ease'
-                                                }}>
-                                                    <button type="button" onClick={() => setAdults(Math.max(1, adults - 1))} disabled={adults <= 1} style={{
-                                                        width: '42px',
-                                                        height: '42px',
-                                                        borderRadius: '10px',
-                                                        border: 'none',
-                                                        background: adults <= 1 ? '#e2e8f0' : 'linear-gradient(135deg, #1a362d 0%, #2d5a4a 100%)',
-                                                        color: adults <= 1 ? '#94a3b8' : 'white',
-                                                        fontSize: '22px',
-                                                        fontWeight: '600',
-                                                        cursor: adults <= 1 ? 'not-allowed' : 'pointer',
-                                                        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                                                        boxShadow: adults <= 1 ? 'none' : '0 4px 12px rgba(26, 54, 45, 0.25)',
-                                                        transform: adults <= 1 ? 'none' : 'translateY(0)'
-                                                    }}
-                                                    onMouseEnter={(e) => {
-                                                        if (adults > 1) {
-                                                            e.target.style.transform = 'translateY(-2px)';
-                                                            e.target.style.boxShadow = '0 6px 16px rgba(26, 54, 45, 0.35)';
-                                                        }
-                                                    }}
-                                                    onMouseLeave={(e) => {
-                                                        if (adults > 1) {
-                                                            e.target.style.transform = 'translateY(0)';
-                                                            e.target.style.boxShadow = '0 4px 12px rgba(26, 54, 45, 0.25)';
-                                                        }
-                                                    }}
-                                                    >−</button>
-                                                    <span style={{ 
-                                                        fontWeight: '800', 
-                                                        fontSize: '24px', 
-                                                        color: '#1a362d',
-                                                        textShadow: '0 1px 2px rgba(0,0,0,0.1)'
-                                                    }}>{adults}</span>
-                                                    <button type="button" onClick={() => (adults + children < 8) && adults < 6 && setAdults(adults + 1)} disabled={adults >= 6 || (adults + children >= 8)} style={{
-                                                        width: '42px',
-                                                        height: '42px',
-                                                        borderRadius: '10px',
-                                                        border: 'none',
-                                                        background: (adults >= 6 || adults + children >= 8) ? '#e2e8f0' : 'linear-gradient(135deg, #1a362d 0%, #2d5a4a 100%)',
-                                                        color: (adults >= 6 || adults + children >= 8) ? '#94a3b8' : 'white',
-                                                        fontSize: '22px',
-                                                        fontWeight: '600',
-                                                        cursor: (adults >= 6 || adults + children >= 8) ? 'not-allowed' : 'pointer',
-                                                        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                                                        boxShadow: (adults >= 6 || adults + children >= 8) ? 'none' : '0 4px 12px rgba(26, 54, 45, 0.25)',
-                                                        transform: (adults >= 6 || adults + children >= 8) ? 'none' : 'translateY(0)'
-                                                    }}
-                                                    onMouseEnter={(e) => {
-                                                        if (adults < 6 && adults + children < 8) {
-                                                            e.target.style.transform = 'translateY(-2px)';
-                                                            e.target.style.boxShadow = '0 6px 16px rgba(26, 54, 45, 0.35)';
-                                                        }
-                                                    }}
-                                                    onMouseLeave={(e) => {
-                                                        if (adults < 6 && adults + children < 8) {
-                                                            e.target.style.transform = 'translateY(0)';
-                                                            e.target.style.boxShadow = '0 4px 12px rgba(26, 54, 45, 0.25)';
-                                                        }
-                                                    }}
-                                                    >+</button>
-                                                </div>
-                                            </div>
-                                            <div>
-                                                <label style={{ 
-                                                    fontSize: '14px', 
-                                                    color: '#1e293b', 
-                                                    marginBottom: '10px', 
-                                                    display: 'block', 
-                                                    fontWeight: '600',
-                                                    letterSpacing: '-0.2px'
-                                                }}>
-                                                    Çocuk <span style={{color: '#94a3b8', fontWeight: '500'}}>(Maks 3)</span>
-                                                </label>
-                                                <div style={{ 
-                                                    display: 'flex', 
-                                                    alignItems: 'center', 
-                                                    justifyContent: 'space-between',
-                                                    background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
-                                                    border: '2px solid #e2e8f0',
-                                                    borderRadius: '14px',
-                                                    padding: '14px 18px',
-                                                    boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
-                                                    transition: 'all 0.3s ease'
-                                                }}>
-                                                    <button type="button" onClick={() => setChildren(Math.max(0, children - 1))} disabled={children <= 0} style={{
-                                                        width: '42px',
-                                                        height: '42px',
-                                                        borderRadius: '10px',
-                                                        border: 'none',
-                                                        background: children <= 0 ? '#e2e8f0' : 'linear-gradient(135deg, #1a362d 0%, #2d5a4a 100%)',
-                                                        color: children <= 0 ? '#94a3b8' : 'white',
-                                                        fontSize: '22px',
-                                                        fontWeight: '600',
-                                                        cursor: children <= 0 ? 'not-allowed' : 'pointer',
-                                                        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                                                        boxShadow: children <= 0 ? 'none' : '0 4px 12px rgba(26, 54, 45, 0.25)',
-                                                        transform: children <= 0 ? 'none' : 'translateY(0)'
-                                                    }}
-                                                    onMouseEnter={(e) => {
-                                                        if (children > 0) {
-                                                            e.target.style.transform = 'translateY(-2px)';
-                                                            e.target.style.boxShadow = '0 6px 16px rgba(26, 54, 45, 0.35)';
-                                                        }
-                                                    }}
-                                                    onMouseLeave={(e) => {
-                                                        if (children > 0) {
-                                                            e.target.style.transform = 'translateY(0)';
-                                                            e.target.style.boxShadow = '0 4px 12px rgba(26, 54, 45, 0.25)';
-                                                        }
-                                                    }}
-                                                    >−</button>
-                                                    <span style={{ 
-                                                        fontWeight: '800', 
-                                                        fontSize: '24px', 
-                                                        color: '#1a362d',
-                                                        textShadow: '0 1px 2px rgba(0,0,0,0.1)'
-                                                    }}>{children}</span>
-                                                    <button type="button" onClick={() => (adults + children < 8) && children < 3 && setChildren(children + 1)} disabled={children >= 3 || (adults + children >= 8)} style={{
-                                                        width: '42px',
-                                                        height: '42px',
-                                                        borderRadius: '10px',
-                                                        border: 'none',
-                                                        background: (children >= 3 || adults + children >= 8) ? '#e2e8f0' : 'linear-gradient(135deg, #1a362d 0%, #2d5a4a 100%)',
-                                                        color: (children >= 3 || adults + children >= 8) ? '#94a3b8' : 'white',
-                                                        fontSize: '22px',
-                                                        fontWeight: '600',
-                                                        cursor: (children >= 3 || adults + children >= 8) ? 'not-allowed' : 'pointer',
-                                                        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                                                        boxShadow: (children >= 3 || adults + children >= 8) ? 'none' : '0 4px 12px rgba(26, 54, 45, 0.25)',
-                                                        transform: (children >= 3 || adults + children >= 8) ? 'none' : 'translateY(0)'
-                                                    }}
-                                                    onMouseEnter={(e) => {
-                                                        if (children < 3 && adults + children < 8) {
-                                                            e.target.style.transform = 'translateY(-2px)';
-                                                            e.target.style.boxShadow = '0 6px 16px rgba(26, 54, 45, 0.35)';
-                                                        }
-                                                    }}
-                                                    onMouseLeave={(e) => {
-                                                        if (children < 3 && adults + children < 8) {
-                                                            e.target.style.transform = 'translateY(0)';
-                                                            e.target.style.boxShadow = '0 4px 12px rgba(26, 54, 45, 0.25)';
-                                                        }
-                                                    }}
-                                                    >+</button>
-                                                </div>
-                                            </div>
+                        {/* Right: Booking */}
+                        <div className="rdp-booking">
+                            <div className="rdp-booking-card">
+                                <div className="rdp-booking-header">
+                                    <div>
+                                        <span className="rdp-price-label">Gecelik fiyatlar</span>
+                                        <div className="rdp-price">
+                                            <span className="rdp-price-amount">{getPriceForDate(new Date(), 2, 0).toLocaleString()}₺</span>
+                                            <span className="rdp-price-suffix">'den başlayan</span>
                                         </div>
-                                        
-                                        {(adults + children >= 8) && (
-                                            <p style={{ 
-                                                color: '#ea580c', 
-                                                fontSize: '13px', 
-                                                marginBottom: '18px', 
-                                                fontWeight: '600', 
-                                                display: 'flex', 
-                                                alignItems: 'center', 
-                                                gap: '8px',
-                                                background: 'linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%)',
-                                                padding: '12px 16px',
-                                                borderRadius: '10px',
-                                                border: '1px solid #fed7aa'
-                                            }}>
-                                                <span style={{ fontSize: '16px' }}>⚠️</span>
-                                                Maksimum kapasite (8 kişi) dolmuştur.
-                                            </p>
-                                        )}
-                                        
-                                        <button
-                                            type="button"
-                                            onClick={() => {
-                                                setIsGuestConfirmed(true);
-                                                setIsGuestLocked(true);
-                                            }}
-                                            style={{
-                                                width: '100%',
-                                                padding: '18px',
-                                                background: 'linear-gradient(135deg, #1a362d 0%, #2d5a4a 100%)',
-                                                color: 'white',
-                                                border: 'none',
-                                                borderRadius: '14px',
-                                                fontSize: '16px',
-                                                fontWeight: '700',
-                                                cursor: 'pointer',
-                                                transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-                                                boxShadow: '0 8px 20px rgba(26, 54, 45, 0.3)',
-                                                position: 'relative',
-                                                overflow: 'hidden',
-                                                letterSpacing: '0.3px'
-                                            }}
-                                            onMouseEnter={(e) => {
-                                                e.target.style.transform = 'translateY(-3px)';
-                                                e.target.style.boxShadow = '0 12px 28px rgba(26, 54, 45, 0.4)';
-                                            }}
-                                            onMouseLeave={(e) => {
-                                                e.target.style.transform = 'translateY(0)';
-                                                e.target.style.boxShadow = '0 8px 20px rgba(26, 54, 45, 0.3)';
-                                            }}
-                                        >
-                                            <span style={{ position: 'relative', zIndex: 1 }}>
-                                                Kişi Sayısını Onayla ve Devam Et →
-                                            </span>
-                                        </button>
-                                    </>
-                                ) : (
-                                    <div style={{ 
-                                        display: 'flex', 
-                                        alignItems: 'center', 
-                                        justifyContent: 'space-between',
-                                        padding: '12px 16px',
-                                        background: 'linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%)',
-                                        borderRadius: '12px',
-                                        border: '1px solid #86efac'
-                                    }}>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                            <div style={{ 
-                                                width: '32px', 
-                                                height: '32px', 
-                                                borderRadius: '50%', 
-                                                background: '#22c55e',
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                justifyContent: 'center',
-                                                color: 'white',
-                                                fontSize: '16px'
-                                            }}>✓</div>
-                                            <div>
-                                                <div style={{ fontSize: '14px', fontWeight: '600', color: '#1a362d' }}>
-                                                    {adults} Yetişkin{children > 0 ? `, ${children} Çocuk` : ''}
+                                    </div>
+                                </div>
+
+                                {/* Guest Selection */}
+                                <div className={`rdp-guest-section ${isGuestConfirmed ? 'confirmed' : ''}`}>
+                                    <div className="rdp-guest-header">
+                                        <Icons.Users />
+                                        <span>Misafir Sayısı</span>
+                                    </div>
+
+                                    {!isGuestConfirmed ? (
+                                        <>
+                                            <div className="rdp-guest-controls">
+                                                <div className="rdp-guest-control">
+                                                    <label>Yetişkin</label>
+                                                    <div className="rdp-counter-control">
+                                                        <button onClick={() => setAdults(Math.max(1, adults - 1))} disabled={adults <= 1}>−</button>
+                                                        <span>{adults}</span>
+                                                        <button onClick={() => adults + children < 8 && adults < 6 && setAdults(adults + 1)} disabled={adults >= 6 || adults + children >= 8}>+</button>
+                                                    </div>
                                                 </div>
-                                                <div style={{ fontSize: '12px', color: '#64748b' }}>
-                                                    {location.state?.preSelect ? 'Ana sayfadan seçildi' : 'Seçim onaylandı'}
+                                                <div className="rdp-guest-control">
+                                                    <label>Çocuk</label>
+                                                    <div className="rdp-counter-control">
+                                                        <button onClick={() => setChildren(Math.max(0, children - 1))} disabled={children <= 0}>−</button>
+                                                        <span>{children}</span>
+                                                        <button onClick={() => adults + children < 8 && children < 3 && setChildren(children + 1)} disabled={children >= 3 || adults + children >= 8}>+</button>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        {!location.state?.preSelect && (
-                                            <button
-                                                type="button"
-                                                onClick={() => {
-                                                    setIsGuestConfirmed(false);
-                                                    setIsGuestLocked(false);
-                                                    setCheckIn(null);
-                                                    setCheckOut(null);
-                                                }}
-                                                style={{
-                                                    padding: '6px 12px',
-                                                    background: 'white',
-                                                    color: '#64748b',
-                                                    border: '1px solid #e2e8f0',
-                                                    borderRadius: '8px',
-                                                    fontSize: '12px',
-                                                    fontWeight: '500',
-                                                    cursor: 'pointer',
-                                                    transition: 'all 0.2s'
-                                                }}
-                                                onMouseEnter={(e) => {
-                                                    e.target.style.background = '#f8fafc';
-                                                    e.target.style.borderColor = '#cbd5e1';
-                                                }}
-                                                onMouseLeave={(e) => {
-                                                    e.target.style.background = 'white';
-                                                    e.target.style.borderColor = '#e2e8f0';
-                                                }}
-                                            >
-                                                Değiştir
+                                            {adults + children >= 8 && (
+                                                <p className="rdp-warning">Maksimum kapasite (8 kişi) dolmuştur.</p>
+                                            )}
+                                            <button className="rdp-btn rdp-btn-primary" onClick={() => { setIsGuestConfirmed(true); setIsGuestLocked(true) }}>
+                                                Onayla ve Devam Et
                                             </button>
-                                        )}
-                                    </div>
-                                )}
-                            </div>
+                                        </>
+                                    ) : (
+                                        <div className="rdp-guest-confirmed">
+                                            <div className="rdp-guest-info">
+                                                <div className="rdp-check-icon"><Icons.Check /></div>
+                                                <span>{adults} Yetişkin{children > 0 ? `, ${children} Çocuk` : ''}</span>
+                                            </div>
+                                            {!location.state?.preSelect && (
+                                                <button className="rdp-btn-link" onClick={() => { setIsGuestConfirmed(false); setIsGuestLocked(false); setCheckIn(null); setCheckOut(null) }}>
+                                                    Değiştir
+                                                </button>
+                                            )}
+                                        </div>
+                                    )}
+                                </div>
 
-                            <form onSubmit={handleSubmit} className="booking-form">
-                                <div className="reservation-summary-card">
-                                    <h3>Rezervasyon Özeti</h3>
-                                    <div className="summary-row">
-                                        <span>Giriş - Çıkış:</span>
-                                        <strong>{checkIn ? checkIn.toLocaleDateString('tr') : ' Seçiniz'} - {checkOut ? checkOut.toLocaleDateString('tr') : ' Seçiniz'}</strong>
+                                {/* Calendar */}
+                                <div className={`rdp-calendar-section ${!isGuestConfirmed ? 'locked' : ''}`}>
+                                    <div className="rdp-calendar-header">
+                                        <button onClick={prevMonth}><Icons.ChevronLeft /></button>
+                                        <span>{currentDate.toLocaleString(i18n.language, { month: 'long', year: 'numeric' })}</span>
+                                        <button onClick={nextMonth}><Icons.ChevronRight /></button>
                                     </div>
 
-                                    {/* Promosyon Kodu Alanı */}
-                                    <div className="promo-code-section" style={{ margin: '15px 0', padding: '10px 0', borderTop: '1px dashed #eee', borderBottom: '1px dashed #eee' }}>
-                                        <div style={{ display: 'flex', gap: '10px' }}>
+                                    <div className="rdp-calendar">
+                                        {['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz'].map(d => (
+                                            <div key={d} className="rdp-cal-day-name">{d}</div>
+                                        ))}
+                                        {emptyDays.map(i => <div key={`e-${i}`} className="rdp-cal-day empty" />)}
+                                        {days.map(day => {
+                                            const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), day)
+                                            const today = new Date(); today.setHours(0, 0, 0, 0)
+                                            const isPast = date < today
+                                            const isBusy = isDateBusy(date)
+                                            const isAlmostFull = isDateAlmostFull(date)
+                                            const price = getPriceForDate(date, adults, children)
+                                            const canSelectAsCheckout = checkIn && !checkOut && date > checkIn && isBusy
+                                            const isClickable = !isPast && isGuestConfirmed && (!isBusy || canSelectAsCheckout)
+
+                                            return (
+                                                <div
+                                                    key={day}
+                                                    className={`rdp-cal-day ${isDateSelected(day) ? 'selected' : ''} ${isBusy && !canSelectAsCheckout ? 'busy' : ''} ${isAlmostFull ? 'almost' : ''} ${isPast ? 'past' : ''}`}
+                                                    onClick={() => isClickable && handleDateClick(day)}
+                                                >
+                                                    <span className="rdp-cal-num">{day}</span>
+                                                    {!isBusy && !isPast && isGuestConfirmed && (
+                                                        <span className="rdp-cal-price">{Math.round(price / 1000)}k</span>
+                                                    )}
+                                                    {isBusy && !isPast && <span className="rdp-cal-busy">Dolu</span>}
+                                                </div>
+                                            )
+                                        })}
+                                    </div>
+                                </div>
+
+                                {/* Summary */}
+                                {checkIn && checkOut && (
+                                    <div className="rdp-summary">
+                                        <div className="rdp-summary-row">
+                                            <span><Icons.Calendar /> Giriş</span>
+                                            <strong>{checkIn.toLocaleDateString('tr-TR', { day: 'numeric', month: 'short' })}</strong>
+                                        </div>
+                                        <div className="rdp-summary-row">
+                                            <span><Icons.Calendar /> Çıkış</span>
+                                            <strong>{checkOut.toLocaleDateString('tr-TR', { day: 'numeric', month: 'short' })}</strong>
+                                        </div>
+                                        <div className="rdp-summary-row">
+                                            <span>{nightCount} gece</span>
+                                            <strong>{calculateRawTotal().toLocaleString()}₺</strong>
+                                        </div>
+
+                                        {/* Promo Code */}
+                                        <div className="rdp-promo">
                                             <input
                                                 type="text"
-                                                placeholder="İndirim Kodu / Promosyon"
+                                                placeholder="İndirim kodu"
                                                 value={promoCode}
                                                 onChange={(e) => setPromoCode(e.target.value)}
-                                                style={{
-                                                    flex: 1,
-                                                    padding: '8px 12px',
-                                                    border: promoError ? '1px solid #ff4d4d' : '1px solid #ddd',
-                                                    borderRadius: '6px',
-                                                    fontSize: '14px'
-                                                }}
                                             />
-                                            <button
-                                                type="button"
-                                                onClick={handleApplyPromo}
-                                                style={{
-                                                    background: '#333',
-                                                    color: 'white',
-                                                    border: 'none',
-                                                    borderRadius: '6px',
-                                                    padding: '0 15px',
-                                                    cursor: 'pointer',
-                                                    fontSize: '13px',
-                                                    fontWeight: '600'
-                                                }}
-                                            >
-                                                Uygula
-                                            </button>
+                                            <button onClick={handleApplyPromo}>Uygula</button>
                                         </div>
-                                        {promoError && <div style={{ color: '#ff4d4d', fontSize: '12px', marginTop: '5px' }}>{promoError}</div>}
+                                        {promoError && <p className="rdp-error">{promoError}</p>}
                                         {appliedDiscount && (
-                                            <div style={{ color: '#008234', fontSize: '13px', marginTop: '5px', display: 'flex', justifyContent: 'space-between' }}>
-                                                <span>✓ Kod uygulandı ({appliedDiscount.code})</span>
-                                                <span>-{appliedDiscount.amount.toLocaleString()} TL</span>
+                                            <div className="rdp-discount">
+                                                <span>✓ {appliedDiscount.code}</span>
+                                                <span>-{appliedDiscount.amount.toLocaleString()}₺</span>
                                             </div>
                                         )}
-                                    </div>
 
-                                    <div className="summary-row total">
-                                        <span>Toplam Tutar:</span>
-                                        <strong>{calculateFinalTotal().toLocaleString()} TL</strong>
-                                    </div>
-                                    {appliedDiscount && calculateRawTotal() > 0 && (
-                                        <div style={{ textAlign: 'right', fontSize: '12px', color: '#999', textDecoration: 'line-through' }}>
-                                            {calculateRawTotal().toLocaleString()} TL
-                                        </div>
-                                    )}
-
-                                    {dateError && (
-                                        <div style={{ marginTop: '10px', padding: '10px', borderRadius: '8px', background: 'rgba(255, 77, 77, 0.1)', color: '#ff4d4d', fontSize: '0.9rem', textAlign: 'center' }}>
-                                            {dateError}
-                                        </div>
-                                    )}
-                                </div>
-
-                                <div className="form-group">
-                                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
-                                        <div>
-                                            <label style={{ marginBottom: '5px', display: 'block' }}>{t('booking.name') || 'Ad'}</label>
-                                            <input
-                                                type="text"
-                                                name="firstName"
-                                                value={formData.firstName}
-                                                onChange={handleNameChange}
-                                                required
-                                                placeholder="Adınız"
-                                                className={nameError ? 'input-error' : ''}
-                                            />
-                                        </div>
-                                        <div>
-                                            <label style={{ marginBottom: '5px', display: 'block' }}>Soyad</label>
-                                            <input
-                                                type="text"
-                                                name="lastName"
-                                                value={formData.lastName}
-                                                onChange={handleNameChange}
-                                                required
-                                                placeholder="Soyadınız"
-                                                className={nameError ? 'input-error' : ''}
-                                            />
+                                        <div className="rdp-total">
+                                            <span>Toplam</span>
+                                            <div>
+                                                <strong>{calculateFinalTotal().toLocaleString()}₺</strong>
+                                                {appliedDiscount && <del>{calculateRawTotal().toLocaleString()}₺</del>}
+                                            </div>
                                         </div>
                                     </div>
-                                    {nameError && (
-                                        <small style={{ display: 'block', marginTop: '5px', fontSize: '0.85rem', color: '#ff4d4d', fontWeight: '500' }}>
-                                            {nameError}
-                                        </small>
-                                    )}
-                                </div>
-                                <div className="form-group">
-                                    <label>E-mail</label>
-                                    <input
-                                        type="email"
-                                        value={formData.email}
-                                        onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-                                        required
-                                        placeholder="ornek@email.com"
-                                    />
-                                </div>
-                                <div className="form-group">
-                                    <label>{t('booking.phone')}</label>
-                                    <CustomPhoneInput
-                                        value={formData.phone}
-                                        onChange={handlePhoneChange}
-                                        onValidation={setIsPhoneValid}
-                                        placeholder={t('booking.phonePlaceholder')}
-                                    />
-                                </div>
-                                <button type="submit" className="submit-booking-btn">
-                                    <span className="icon"><CreditCardIcon /></span>
-                                    {t('booking.submitPayment')}
-                                </button>
-                            </form>
+                                )}
+
+                                {/* Booking Form */}
+                                <form className="rdp-form" onSubmit={handleSubmit}>
+                                    <div className="rdp-form-row">
+                                        <div className="rdp-form-group">
+                                            <label>Ad</label>
+                                            <input type="text" name="firstName" value={formData.firstName} onChange={handleNameChange} placeholder="Adınız" required />
+                                        </div>
+                                        <div className="rdp-form-group">
+                                            <label>Soyad</label>
+                                            <input type="text" name="lastName" value={formData.lastName} onChange={handleNameChange} placeholder="Soyadınız" required />
+                                        </div>
+                                    </div>
+                                    {nameError && <p className="rdp-error">{nameError}</p>}
+
+                                    <div className="rdp-form-group">
+                                        <label>E-posta</label>
+                                        <input type="email" value={formData.email} onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))} placeholder="ornek@email.com" required />
+                                    </div>
+
+                                    <div className="rdp-form-group">
+                                        <label>Telefon</label>
+                                        <CustomPhoneInput
+                                            value={formData.phone}
+                                            onChange={(val) => setFormData(prev => ({ ...prev, phone: val }))}
+                                            onValidation={setIsPhoneValid}
+                                            placeholder={t('booking.phonePlaceholder')}
+                                        />
+                                    </div>
+
+                                    {dateError && <p className="rdp-error">{dateError}</p>}
+
+                                    <button type="submit" className="rdp-btn rdp-btn-submit">
+                                        <Icons.CreditCard />
+                                        {t('booking.submitPayment')}
+                                    </button>
+                                </form>
+                            </div>
+
+                            <Link to="/rooms" className="rdp-back">
+                                <Icons.ChevronLeft />
+                                {t('rooms.backToRooms')}
+                            </Link>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div >
+            </main>
+        </div>
     )
 }
 
