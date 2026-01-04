@@ -4,6 +4,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useCustomAvailability } from '../hooks/useCustomAvailability'
 import { adminSettings } from '../services/adminSettings'
 import CustomPhoneInput from '../components/CustomPhoneInput'
+import roomData from '../data/roomsData'
 import '../styles/pages/room-detail-page.css'
 
 // Icons
@@ -39,6 +40,10 @@ function RoomDetailPage() {
     const [dateError, setDateError] = useState('')
     const [isPhoneValid, setIsPhoneValid] = useState(false)
 
+    // Room gallery state
+    const [currentImageIndex, setCurrentImageIndex] = useState(0)
+    const [propertyData, setPropertyData] = useState(adminSettings.getPropertyData())
+
     // Promo Code State
     const [promoCode, setPromoCode] = useState('')
     const [appliedDiscount, setAppliedDiscount] = useState(null)
@@ -48,7 +53,42 @@ function RoomDetailPage() {
     const [isGuestConfirmed, setIsGuestConfirmed] = useState(!!location.state?.preSelect)
     const [isGuestLocked, setIsGuestLocked] = useState(!!location.state?.preSelect)
 
+    // Load property data
+    useEffect(() => {
+        const loadData = async () => {
+            const data = await adminSettings.getPropertyDataAsync()
+            setPropertyData(data)
+        }
+        loadData()
+    }, [])
+
     const { isDateBusy, isDateAlmostFull, getPriceForDate, settings } = useCustomAvailability();
+
+    // Get room images from API or use defaults
+    const rooms = propertyData?.siteImages?.rooms || {}
+    const roomImages = [
+        rooms.slide1,
+        rooms.slide2,
+        rooms.slide3,
+        rooms.slide4,
+        rooms.slide5,
+        rooms.slide6,
+        rooms.slide7,
+        rooms.slide8
+    ].filter(Boolean)
+
+    // Room features with icons
+    const featuresList = roomData?.features ? [
+        { key: 'riverView', icon: '🏞️' },
+        { key: 'privateBalcony', icon: '🌅' },
+        { key: 'kitchen', icon: '🍳' },
+        { key: 'heating', icon: '🔥' },
+        { key: 'wifi', icon: '📶' },
+        { key: 'tv', icon: '📺' },
+        { key: 'hairDryer', icon: '💨' },
+        { key: 'towels', icon: '🧺' },
+        { key: 'parking', icon: '🅿️' }
+    ].filter(feature => roomData.features.includes(feature.key)) : []
 
     // Homepage'den gelen veriyi işle
     useEffect(() => {
@@ -247,6 +287,113 @@ function RoomDetailPage() {
 
     return (
         <div className="room-detail-page">
+            {/* Room Hero Section with Gallery */}
+            <section className="room-hero-section">
+                <div className="room-gallery-container">
+                    {roomImages.length > 0 && (
+                        <>
+                            <div className="main-image-wrapper">
+                                <img 
+                                    src={roomImages[currentImageIndex]} 
+                                    alt={`${t('rooms.roomName')} - ${currentImageIndex + 1}`}
+                                    className="main-room-image"
+                                />
+                                <div className="exclusive-badge">EXCLUSIVE</div>
+                                {roomImages.length > 1 && (
+                                    <>
+                                        <button 
+                                            className="gallery-nav prev" 
+                                            onClick={() => setCurrentImageIndex((currentImageIndex - 1 + roomImages.length) % roomImages.length)}
+                                        >
+                                            <ChevronLeftIcon />
+                                        </button>
+                                        <button 
+                                            className="gallery-nav next" 
+                                            onClick={() => setCurrentImageIndex((currentImageIndex + 1) % roomImages.length)}
+                                        >
+                                            <ChevronRightIcon />
+                                        </button>
+                                    </>
+                                )}
+                            </div>
+                            {roomImages.length > 1 && (
+                                <div className="thumbnail-strip">
+                                    {roomImages.map((img, idx) => (
+                                        <img 
+                                            key={idx}
+                                            src={img} 
+                                            alt={`Thumbnail ${idx + 1}`}
+                                            className={`thumbnail ${idx === currentImageIndex ? 'active' : ''}`}
+                                            onClick={() => setCurrentImageIndex(idx)}
+                                        />
+                                    ))}
+                                </div>
+                            )}
+                        </>
+                    )}
+                </div>
+            </section>
+
+            {/* Room Info Section */}
+            <section className="room-info-section">
+                <div className="container">
+                    <div className="room-info-grid">
+                        <div className="room-info-main">
+                            <p className="room-subtitle">{t('rooms.subtitle') || 'Konfor Zarafetfile Buluşuyor'}</p>
+                            <h1 className="room-title">{t('rooms.roomName')}</h1>
+                            <p className="room-description">{t('rooms.fullDescription')}</p>
+                            
+                            {/* Room Stats */}
+                            <div className="room-stats-inline">
+                                <div className="stat-badge">
+                                    <span className="stat-icon">📏</span>
+                                    <span className="stat-label">{t('rooms.size')}</span>
+                                    <span className="stat-value">{roomData.size}m²</span>
+                                </div>
+                                <div className="stat-badge">
+                                    <span className="stat-icon">🛏️</span>
+                                    <span className="stat-label">{t('rooms.bed')}</span>
+                                    <span className="stat-value">{roomData.bedrooms}</span>
+                                </div>
+                                <div className="stat-badge">
+                                    <span className="stat-icon">👁️</span>
+                                    <span className="stat-label">{t('rooms.view')}</span>
+                                    <span className="stat-value">{t('rooms.features.riverView')}</span>
+                                </div>
+                                <div className="stat-badge">
+                                    <span className="stat-icon">🚿</span>
+                                    <span className="stat-label">{t('rooms.bathroom')}</span>
+                                    <span className="stat-value">{roomData.bathrooms}</span>
+                                </div>
+                                <div className="stat-badge">
+                                    <span className="stat-icon">🍷</span>
+                                    <span className="stat-label">{t('rooms.minibar')}</span>
+                                    <span className="stat-value">✓</span>
+                                </div>
+                                <div className="stat-badge">
+                                    <span className="stat-icon">❄️</span>
+                                    <span className="stat-label">{t('rooms.ac')}</span>
+                                    <span className="stat-value">✓</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Room Features */}
+                    <div className="room-features-detail">
+                        <h3 className="features-title">{t('rooms.amenities')}</h3>
+                        <div className="features-grid-detail">
+                            {featuresList.map((feature) => (
+                                <div className="feature-item-detail" key={feature.key}>
+                                    <span className="feature-icon">{feature.icon}</span>
+                                    <span className="feature-text">{t(`rooms.features.${feature.key}`)}</span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             <div className="container">
                 <div className="booking-container">
                     <div className="booking-header">

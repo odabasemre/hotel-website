@@ -7,15 +7,12 @@ import './About.css'
 function About() {
     const { t } = useTranslation()
     const [propertyData, setPropertyData] = useState(adminSettings.getPropertyData())
-    const [siteTexts, setSiteTexts] = useState(adminSettings.getSiteTexts())
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const property = await adminSettings.getPropertyDataAsync()
-                const texts = await adminSettings.getSiteTextsAsync()
                 setPropertyData(property)
-                setSiteTexts(texts)
             } catch (error) {
                 console.error('Error fetching data:', error)
             }
@@ -43,9 +40,9 @@ function About() {
 
                     {/* Text Content */}
                     <div className="about-text">
-                        <p className="section-subtitle">{siteTexts.about?.subtitle || t('about.subtitle')}</p>
-                        <h2 className="section-title">{siteTexts.about?.title || t('about.storyTitle')}</h2>
-                        <p className="about-description">{siteTexts.about?.description || t('about.description')}</p>
+                        <p className="section-subtitle">{t('about.subtitle')}</p>
+                        <h2 className="section-title">{t('about.storyTitle')}</h2>
+                        <p className="about-description">{t('about.description')}</p>
 
                         {/* CTA Button */}
                         <Link to="/about" className="about-cta-btn">

@@ -61,15 +61,12 @@ const ConciergeIcon = () => (
 function Services() {
     const { t } = useTranslation()
     const [propertyData, setPropertyData] = useState(adminSettings.getPropertyData())
-    const [siteTexts, setSiteTexts] = useState(adminSettings.getSiteTexts())
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const property = await adminSettings.getPropertyDataAsync()
-                const texts = await adminSettings.getSiteTextsAsync()
                 setPropertyData(property)
-                setSiteTexts(texts)
             } catch (error) {
                 console.error('Error fetching data:', error)
             }
@@ -109,9 +106,9 @@ function Services() {
                     </div>
 
                     <div className="services-text">
-                        <h2>{siteTexts.services?.title || t('services.title')}</h2>
-                        <h3>{siteTexts.services?.subtitle || t('services.subtitle')}</h3>
-                        <p>{propertyData.description || t('services.description')}</p>
+                        <h2>{t('services.title')}</h2>
+                        <h3>{t('services.subtitle')}</h3>
+                        <p>{t('services.description')}</p>
                     </div>
 
                     <div className="services-image">

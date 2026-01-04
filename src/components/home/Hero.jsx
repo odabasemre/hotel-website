@@ -9,7 +9,6 @@ function Hero() {
     const navigate = useNavigate()
     const { isDateBusy } = useCustomAvailability()
     const [propertyData, setPropertyData] = useState(adminSettings.getPropertyData())
-    const siteTexts = adminSettings.getSiteTexts()
 
     // Calendar states
     const [showCheckInCalendar, setShowCheckInCalendar] = useState(false)
@@ -17,19 +16,13 @@ function Hero() {
     const [checkInMonth, setCheckInMonth] = useState(new Date())
     const [checkOutMonth, setCheckOutMonth] = useState(new Date())
 
-    const getTextStyle = (section, field) => {
-        const styles = siteTexts[section]?.[`${field}Style`] || {}
-        return {
-            fontSize: styles.fontSize ? `${styles.fontSize}px` : undefined,
-            fontWeight: styles.fontWeight || undefined,
-            fontStyle: styles.fontStyle || undefined,
-            textAlign: styles.textAlign || undefined,
-            fontFamily: styles.fontFamily || undefined
-        }
-    }
-
     useEffect(() => {
-        setPropertyData(adminSettings.getPropertyData())
+        // Load property data from API
+        const loadData = async () => {
+            const data = await adminSettings.getPropertyDataAsync()
+            setPropertyData(data)
+        }
+        loadData()
     }, [])
 
     const [bookingData, setBookingData] = useState({
@@ -188,11 +181,11 @@ function Hero() {
 
             <div className="hero-center-content">
                 <div className="hero-text-block">
-                    <h1 className="hero-title-premium" style={getTextStyle('hero', 'title')}>
-                        {siteTexts.hero?.title || t('hero.title')}
+                    <h1 className="hero-title-premium">
+                        {t('hero.title')}
                     </h1>
-                    <p className="hero-subtitle-premium" style={getTextStyle('hero', 'subtitle')}>
-                        {siteTexts.hero?.subtitle || t('hero.subtitle')}
+                    <p className="hero-subtitle-premium">
+                        {t('hero.subtitle')}
                     </p>
                 </div>
 

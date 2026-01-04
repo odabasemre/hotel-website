@@ -1,7 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import usePlaceDetails from '../../../hooks/usePlaceDetails'
-import { adminSettings } from '@services'
 import './Footer.css'
 
 // Icons
@@ -42,19 +41,6 @@ const InstagramIcon = () => (
 function Footer() {
     const { t } = useTranslation()
     const { address, phone, email, loading } = usePlaceDetails()
-    const siteTexts = adminSettings.getSiteTexts()
-
-    // Helper function to get text styles
-    const getTextStyle = (section, field) => {
-        const styles = siteTexts[section]?.[`${field}Style`] || {}
-        return {
-            fontSize: styles.fontSize ? `${styles.fontSize}px` : undefined,
-            fontWeight: styles.fontWeight || undefined,
-            fontStyle: styles.fontStyle || undefined,
-            textAlign: styles.textAlign || undefined,
-            fontFamily: styles.fontFamily || undefined
-        }
-    }
 
     const quickLinks = [
         { to: '/', label: t('nav.home') },
@@ -63,11 +49,6 @@ function Footer() {
         { to: '/gallery', label: t('nav.gallery') },
         { to: '/contact', label: t('nav.contact') },
     ]
-
-    // Use admin texts if available, otherwise fall back to hook data
-    const displayAddress = siteTexts.contact?.address || address
-    const displayPhone = siteTexts.contact?.phone || phone
-    const displayEmail = siteTexts.contact?.email || email
 
     return (
         <footer className="footer">
@@ -78,8 +59,8 @@ function Footer() {
                         <div className="footer-logo">
                             <span className="footer-logo-text">Ayder Kuzey Houses</span>
                         </div>
-                        <p className="footer-description" style={getTextStyle('footer', 'description')}>
-                            {siteTexts.footer?.description || t('footer.description')}
+                        <p className="footer-description">
+                            {t('footer.description')}
                         </p>
                         <div className="footer-social">
                             <a href="https://www.instagram.com/ayderkuzey/" className="footer-social-link" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
@@ -113,7 +94,7 @@ function Footer() {
                                 <MapPinIcon />
                             </div>
                             <p className="footer-contact-text">
-                                {loading && !siteTexts.contact?.address ? t('common.loading') : displayAddress}
+                                {loading ? t('common.loading') : address}
                             </p>
                         </div>
                         <div className="footer-contact-item">
@@ -121,7 +102,7 @@ function Footer() {
                                 <PhoneIcon />
                             </div>
                             <p className="footer-contact-text">
-                                {loading && !siteTexts.contact?.phone ? t('common.loading') : displayPhone}
+                                {loading ? t('common.loading') : phone}
                             </p>
                         </div>
                         <div className="footer-contact-item">
@@ -129,7 +110,7 @@ function Footer() {
                                 <MailIcon />
                             </div>
                             <p className="footer-contact-text">
-                                {displayEmail}
+                                {email}
                             </p>
                         </div>
                     </div>
@@ -140,7 +121,7 @@ function Footer() {
                 <div className="footer-bottom">
                     <div className="footer-bottom-content">
                         <p className="footer-copyright">
-                            {siteTexts.footer?.copyright || t('footer.copyright')}
+                            {t('footer.copyright')}
                         </p>
                         <div className="footer-bottom-links">
                             <a href="#" className="footer-bottom-link">Privacy Policy</a>

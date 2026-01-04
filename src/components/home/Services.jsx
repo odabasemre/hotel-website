@@ -101,33 +101,20 @@ const FireplaceIcon = () => (
 function Services() {
     const { t } = useTranslation()
     const propertyData = adminSettings.getPropertyData()
-    const siteTexts = adminSettings.getSiteTexts()
-
-    // Helper function to get text styles
-    const getTextStyle = (section, field) => {
-        const styles = siteTexts[section]?.[`${field}Style`] || {}
-        return {
-            fontSize: styles.fontSize ? `${styles.fontSize}px` : undefined,
-            fontWeight: styles.fontWeight || undefined,
-            fontStyle: styles.fontStyle || undefined,
-            textAlign: styles.textAlign || undefined,
-            fontFamily: styles.fontFamily || undefined
-        }
-    }
 
     const amenities = [
-        { key: 'riverView', icon: <RiverViewIcon />, title: 'Nehir Manzarası', description: 'Huzurlu nehir manzarası eşliğinde dinlenin' },
-        { key: 'balcony', icon: <BalconyIcon />, title: 'Özel Balkon', description: 'Doğayla iç içe özel balkon keyfi' },
-        { key: 'kitchen', icon: <KitchenIcon />, title: 'Tam Donanımlı Mutfak', description: 'İhtiyacınız olan her şey mutfağınızda' },
-        { key: 'fireplace', icon: <FireplaceIcon />, title: 'Şömine', description: 'Sıcak bir atmosferde keyifli akşamlar' },
-        { key: 'wifi', icon: <WifiIcon />, title: 'Yüksek Hızlı WiFi', description: 'Kesintisiz internet bağlantısı' },
-        { key: 'tv', icon: <TvIcon />, title: 'Akıllı TV', description: 'Netflix ve YouTube dahil eğlence seçenekleri' },
-        { key: 'hairdryer', icon: <HairdryerIcon />, title: 'Saç Kurutma Makinesi', description: 'Tüm odalarda mevcut' },
-        { key: 'towels', icon: <TowelIcon />, title: 'Havlu ve Çarşaf', description: 'Temiz ve kaliteli tekstil ürünleri' },
-        { key: 'parking', icon: <ParkingIcon />, title: 'Ücretsiz Otopark', description: 'Güvenli ve geniş park alanı' },
-        { key: 'bar', icon: <BarIcon />, title: 'İçecek Barı', description: 'Sıcak ve soğuk içecek seçenekleri' },
-        { key: 'reception', icon: <ReceptionIcon />, title: '7/24 Resepsiyon', description: 'Her an hizmetinizde' },
-        { key: 'insulation', icon: <InsulationIcon />, title: 'Ses & Isı Yalıtımı', description: 'Sessiz ve konforlu ortam' },
+        { key: 'riverView', icon: <RiverViewIcon /> },
+        { key: 'balcony', icon: <BalconyIcon /> },
+        { key: 'kitchen', icon: <KitchenIcon /> },
+        { key: 'fireplace', icon: <FireplaceIcon /> },
+        { key: 'wifi', icon: <WifiIcon /> },
+        { key: 'tv', icon: <TvIcon /> },
+        { key: 'hairdryer', icon: <HairdryerIcon /> },
+        { key: 'towels', icon: <TowelIcon /> },
+        { key: 'parking', icon: <ParkingIcon /> },
+        { key: 'bar', icon: <BarIcon /> },
+        { key: 'reception', icon: <ReceptionIcon /> },
+        { key: 'insulation', icon: <InsulationIcon /> },
     ]
 
     // Get images from admin settings or use defaults
@@ -139,11 +126,11 @@ function Services() {
             <div className="container">
                 {/* Section Header */}
                 <div className="services-header">
-                    <h2 style={getTextStyle('services', 'title')}>
-                        {siteTexts.services?.title || 'Olanaklarımız'}
+                    <h2>
+                        {t('services.title')}
                     </h2>
-                    <p className="services-subtitle" style={getTextStyle('services', 'subtitle')}>
-                        {siteTexts.services?.subtitle || 'Konforunuz için özenle hazırlanmış tüm detaylar'}
+                    <p className="services-subtitle">
+                        {t('services.subtitle')}
                     </p>
                 </div>
 
@@ -155,8 +142,8 @@ function Services() {
                                 {amenity.icon}
                             </div>
                             <div className="amenity-content">
-                                <h4>{amenity.title}</h4>
-                                <p>{amenity.description}</p>
+                                <h4>{t(`services.${amenity.key}.title`)}</h4>
+                                <p>{t(`services.${amenity.key}.description`)}</p>
                             </div>
                         </div>
                     ))}

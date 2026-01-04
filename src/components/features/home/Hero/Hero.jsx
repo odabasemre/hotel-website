@@ -6,11 +6,10 @@ import { adminSettings } from '@services'
 import './Hero.css'
 
 function Hero() {
-    const { t, i18n } = useTranslation()
+    const { t } = useTranslation()
     const navigate = useNavigate()
     const { isDateBusy } = useCustomAvailability()
     const [propertyData, setPropertyData] = useState(adminSettings.getPropertyData())
-    const [siteTexts, setSiteTexts] = useState(adminSettings.getSiteTexts())
 
     // Calendar states
     const [showCheckInCalendar, setShowCheckInCalendar] = useState(false)
@@ -23,16 +22,10 @@ function Hero() {
     const guestPanelRef = useRef(null)
 
     useEffect(() => {
-        // Fetch data silently - fallback to localStorage on error
         const fetchData = async () => {
             try {
                 const property = await adminSettings.getPropertyDataAsync()
                 if (property) setPropertyData(property)
-            } catch (e) { /* Silent fallback */ }
-            
-            try {
-                const texts = await adminSettings.getSiteTextsAsync()
-                if (texts) setSiteTexts(texts)
             } catch (e) { /* Silent fallback */ }
         }
         fetchData()
@@ -201,8 +194,8 @@ function Hero() {
 
             <div className="hero-center-content">
                 <div className="hero-text-block">
-                    <h1 className="hero-title-premium">{siteTexts.hero?.title || t('hero.title')}</h1>
-                    <p className="hero-subtitle-premium">{siteTexts.hero?.subtitle || t('hero.subtitle')}</p>
+                    <h1 className="hero-title-premium">{t('hero.title')}</h1>
+                    <p className="hero-subtitle-premium">{t('hero.subtitle')}</p>
                 </div>
 
                 <div className="booking-bar-container">

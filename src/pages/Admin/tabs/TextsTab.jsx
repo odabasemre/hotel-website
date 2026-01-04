@@ -1,494 +1,437 @@
-import React, { useState } from 'react'
-import { adminSettings } from '../../../services/adminSettings'
+import React, { useState, useEffect, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import { HomeIcon } from '../components/Icons'
 
-function TextsTab({ siteTexts, setSiteTexts }) {
-    const [activeField, setActiveField] = useState(null)
+const LANGUAGES = [
+    { code: 'tr', name: 'Türkçe', flag: '🇹🇷' },
+    { code: 'en', name: 'English', flag: '🇬🇧' },
+    { code: 'ar', name: 'العربية', flag: '🇸🇦' },
+    { code: 'fr', name: 'Français', flag: '🇫🇷' }
+]
 
-    const handleUpdate = (section, field, value) => {
-        const updated = {
-            ...siteTexts,
-            [section]: { ...siteTexts[section], [field]: value }
-        }
-        setSiteTexts(adminSettings.updateSiteTexts(updated))
+// Editable text fields configuration
+const TEXT_FIELDS = {
+    hero: {
+        title: 'Ana Sayfa Başlığı',
+        fields: [
+            { key: 'hero.title', label: 'Ana Başlık', multiline: false },
+            { key: 'hero.subtitle', label: 'Alt Başlık', multiline: false },
+            { key: 'hero.cta', label: 'Buton Metni', multiline: false }
+        ]
+    },
+    about: {
+        title: 'Hakkımızda',
+        fields: [
+            { key: 'about.title', label: 'Başlık', multiline: false },
+            { key: 'about.subtitle', label: 'Alt Başlık', multiline: false },
+            { key: 'about.description', label: 'Açıklama', multiline: true },
+            { key: 'about.mission', label: 'Misyon', multiline: true }
+        ]
+    },
+    services: {
+        title: 'Hizmetler',
+        fields: [
+            { key: 'services.title', label: 'Başlık', multiline: false },
+            { key: 'services.subtitle', label: 'Alt Başlık', multiline: false },
+            { key: 'services.description', label: 'Açıklama', multiline: true }
+        ]
+    },
+    rooms: {
+        title: 'Odalar',
+        fields: [
+            { key: 'rooms.title', label: 'Başlık', multiline: false },
+            { key: 'rooms.subtitle', label: 'Alt Başlık', multiline: false },
+            { key: 'rooms.shortDescription', label: 'Kısa Açıklama', multiline: true },
+            { key: 'rooms.fullDescription', label: 'Detaylı Açıklama', multiline: true }
+        ]
+    },
+    footer: {
+        title: 'Alt Bilgi',
+        fields: [
+            { key: 'footer.description', label: 'Açıklama', multiline: true },
+            { key: 'footer.copyright', label: 'Telif Hakkı', multiline: false }
+        ]
+    },
+    contact: {
+        title: 'İletişim',
+        fields: [
+            { key: 'contact.title', label: 'Başlık', multiline: false },
+            { key: 'contact.subtitle', label: 'Alt Başlık', multiline: false }
+        ]
     }
+}
 
-    const handleStyleUpdate = (section, field, styleKey, value) => {
-        const currentStyles = siteTexts[section]?.[`${field}Style`] || {}
-        const updated = {
-            ...siteTexts,
-            [section]: { 
-                ...siteTexts[section], 
-                [`${field}Style`]: { ...currentStyles, [styleKey]: value }
+// Debounce hook
+function useDebounce(value, delay) {
+    const [debouncedValue, setDebouncedValue] = useState(value)
+    useEffect(() => {
+        const handler = setTimeout(() => setDebouncedValue(value), delay)
+        return () => clearTimeout(handler)
+    }, [value, delay])
+    return debouncedValue
+}
+
+// Text Input Component
+const TextInput = React.memo(function TextInput({ id, label, initialValue, multiline, onChange }) {
+    const [value, setValue] = useState(initialValue || '')
+    const isFirst = useRef(true)
+    const debouncedValue = useDebounce(value, 400)
+    
+    useEffect(() => {
+        setValue(initialValue || '')
+    }, [initialValue])
+    
+    useEffect(() => {
+        if (isFirst.current) {
+            isFirst.current = false
+            return
+        }
+        onChange(debouncedValue)
+    }, [debouncedValue, onChange])
+    
+    const inputStyle = {
+        width: '100%',
+        padding: '12px 16px',
+        borderRadius: '8px',
+        border: '2px solid #e2e8f0',
+        fontSize: '14px',
+        fontFamily: 'inherit',
+        outline: 'none',
+        background: 'white',
+        boxSizing: 'border-box',
+        transition: 'border-color 0.2s'
+    }
+    
+    return (
+        <div style={{ marginBottom: '16px' }}>
+            <label htmlFor={id} style={{ 
+                display: 'block', fontWeight: '600', fontSize: '13px', 
+                color: '#374151', marginBottom: '6px' 
+            }}>
+                {label}
+            </label>
+            {multiline ? (
+                <textarea
+                    id={id}
+                    rows={4}
+                    value={value}
+                    onChange={(e) => setValue(e.target.value)}
+                    placeholder={label}
+                    style={{ ...inputStyle, resize: 'vertical', minHeight: '100px' }}
+                    onFocus={(e) => e.target.style.borderColor = '#1a362d'}
+                    onBlur={(e) => e.target.style.borderColor = '#e2e8f0'}
+                />
+            ) : (
+                <input
+                    id={id}
+                    type="text"
+                    value={value}
+                    onChange={(e) => setValue(e.target.value)}
+                    placeholder={label}
+                    style={inputStyle}
+                    onFocus={(e) => e.target.style.borderColor = '#1a362d'}
+                    onBlur={(e) => e.target.style.borderColor = '#e2e8f0'}
+                />
+            )}
+        </div>
+    )
+})
+
+// Section Card
+function SectionCard({ icon, title, color, children }) {
+    return (
+        <div style={{ background: '#f9fafb', borderRadius: '12px', border: '1px solid #e5e7eb', overflow: 'hidden' }}>
+            <div style={{ padding: '16px 20px', borderBottom: '1px solid #e5e7eb', background: 'white', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <span style={{ fontSize: '20px', width: '36px', height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: `${color}15`, borderRadius: '8px', color: color }}>
+                    {icon}
+                </span>
+                <h3 style={{ margin: 0, fontSize: '16px', fontWeight: '700', color: '#1f2937' }}>{title}</h3>
+            </div>
+            <div style={{ padding: '20px' }}>{children}</div>
+        </div>
+    )
+}
+
+function TextsTab() {
+    const { t, i18n } = useTranslation()
+    const [selectedLang, setSelectedLang] = useState(i18n.language || 'tr')
+    const [translations, setTranslations] = useState({})
+    const [originalTranslations, setOriginalTranslations] = useState({})
+    const [loading, setLoading] = useState(true)
+    const [saving, setSaving] = useState(false)
+    const [hasChanges, setHasChanges] = useState(false)
+    const [saveStatus, setSaveStatus] = useState(null)
+    const handlersRef = useRef({})
+    
+    // Load translations for selected language
+    useEffect(() => {
+        const loadTranslations = async () => {
+            setLoading(true)
+            try {
+                // First try to get from database via API
+                let data = null
+                try {
+                    const dbResponse = await fetch(`/api/settings/translations/${selectedLang}`)
+                    if (dbResponse.ok) {
+                        data = await dbResponse.json()
+                    }
+                } catch (e) {
+                    console.log('DB fetch failed, falling back to static file')
+                }
+                
+                // Fallback to static translation file
+                if (!data) {
+                    const fileResponse = await fetch(`/locales/${selectedLang}/translation.json`)
+                    if (fileResponse.ok) {
+                        data = await fileResponse.json()
+                    }
+                }
+                
+                if (data) {
+                    setTranslations(data)
+                    setOriginalTranslations(JSON.parse(JSON.stringify(data)))
+                }
+            } catch (error) {
+                console.error('Error loading translations:', error)
+            }
+            setLoading(false)
+        }
+        loadTranslations()
+        handlersRef.current = {}
+    }, [selectedLang])
+    
+    // Get nested value from object using dot notation
+    const getValue = (obj, path) => {
+        return path.split('.').reduce((acc, part) => acc && acc[part], obj) || ''
+    }
+    
+    // Set nested value in object using dot notation
+    const setValue = (obj, path, value) => {
+        const parts = path.split('.')
+        const newObj = JSON.parse(JSON.stringify(obj))
+        let current = newObj
+        for (let i = 0; i < parts.length - 1; i++) {
+            if (!current[parts[i]]) current[parts[i]] = {}
+            current = current[parts[i]]
+        }
+        current[parts[parts.length - 1]] = value
+        return newObj
+    }
+    
+    // Update handler with stable reference
+    const getFieldHandler = (key) => {
+        if (!handlersRef.current[key]) {
+            handlersRef.current[key] = (value) => {
+                setTranslations(prev => setValue(prev, key, value))
+                setHasChanges(true)
+                setSaveStatus(null)
             }
         }
-        setSiteTexts(adminSettings.updateSiteTexts(updated))
+        return handlersRef.current[key]
     }
-
-    const getStyle = (section, field, styleKey) => {
-        return siteTexts[section]?.[`${field}Style`]?.[styleKey] || ''
-    }
-
-    // Text Toolbar Component
-    const TextToolbar = ({ section, field }) => {
-        const isActive = activeField === `${section}-${field}`
-        const fontSize = getStyle(section, field, 'fontSize') || '16'
-        const fontWeight = getStyle(section, field, 'fontWeight') || 'normal'
-        const fontStyle = getStyle(section, field, 'fontStyle') || 'normal'
-        const textAlign = getStyle(section, field, 'textAlign') || 'left'
-        const fontFamily = getStyle(section, field, 'fontFamily') || 'inherit'
-
-        if (!isActive) return null
-
-        return (
-            <div style={{ 
-                display: 'grid',
-                gridTemplateColumns: '1fr',
-                gap: '15px', 
-                marginBottom: '15px', 
-                padding: '20px',
-                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                borderRadius: '12px',
-                boxShadow: '0 4px 15px rgba(0,0,0,0.1)'
-            }}>
-                {/* Row 1: Font Family (Full Width) */}
-                <div style={{ 
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    gap: '10px',
-                    background: 'rgba(255,255,255,0.95)',
-                    padding: '12px 15px',
-                    borderRadius: '8px'
-                }}>
-                    <span style={{ fontSize: '13px', fontWeight: '600', color: '#333', minWidth: '90px' }}>📝 Yazı Tipi:</span>
-                    <select
-                        value={fontFamily}
-                        onChange={(e) => handleStyleUpdate(section, field, 'fontFamily', e.target.value)}
-                        style={{ 
-                            flex: 1,
-                            padding: '8px 12px', 
-                            borderRadius: '6px', 
-                            border: '2px solid #e2e8f0', 
-                            fontSize: '13px',
-                            fontFamily: fontFamily !== 'inherit' ? fontFamily : undefined,
-                            cursor: 'pointer',
-                            transition: 'all 0.2s'
-                        }}
-                    >
-                        <option value="inherit">Varsayılan</option>
-                        <option value="Arial, sans-serif" style={{ fontFamily: 'Arial' }}>Arial</option>
-                        <option value="'Calibri', sans-serif" style={{ fontFamily: 'Calibri' }}>Calibri</option>
-                        <option value="'Helvetica Neue', Helvetica, sans-serif" style={{ fontFamily: 'Helvetica' }}>Helvetica</option>
-                        <option value="'Times New Roman', Times, serif" style={{ fontFamily: 'Times New Roman' }}>Times New Roman</option>
-                        <option value="Georgia, serif" style={{ fontFamily: 'Georgia' }}>Georgia</option>
-                        <option value="'Courier New', Courier, monospace" style={{ fontFamily: 'Courier New' }}>Courier New</option>
-                        <option value="Verdana, sans-serif" style={{ fontFamily: 'Verdana' }}>Verdana</option>
-                        <option value="'Trebuchet MS', sans-serif" style={{ fontFamily: 'Trebuchet MS' }}>Trebuchet MS</option>
-                        <option value="'Comic Sans MS', cursive" style={{ fontFamily: 'Comic Sans MS' }}>Comic Sans MS</option>
-                        <option value="Impact, sans-serif" style={{ fontFamily: 'Impact' }}>Impact</option>
-                        <option value="'Lucida Sans', sans-serif" style={{ fontFamily: 'Lucida Sans' }}>Lucida Sans</option>
-                        <option value="Tahoma, sans-serif" style={{ fontFamily: 'Tahoma' }}>Tahoma</option>
-                        <option value="'Palatino Linotype', serif" style={{ fontFamily: 'Palatino' }}>Palatino</option>
-                        <option value="Garamond, serif" style={{ fontFamily: 'Garamond' }}>Garamond</option>
-                        <option value="'Book Antiqua', serif" style={{ fontFamily: 'Book Antiqua' }}>Book Antiqua</option>
-                        <option value="'Arial Black', sans-serif" style={{ fontFamily: 'Arial Black' }}>Arial Black</option>
-                        <option value="'MS Sans Serif', sans-serif">MS Sans Serif</option>
-                        <option value="'Century Gothic', sans-serif" style={{ fontFamily: 'Century Gothic' }}>Century Gothic</option>
-                        <option value="'Gill Sans', sans-serif" style={{ fontFamily: 'Gill Sans' }}>Gill Sans</option>
-                        <option value="Candara, sans-serif" style={{ fontFamily: 'Candara' }}>Candara</option>
-                        <option value="Consolas, monospace" style={{ fontFamily: 'Consolas' }}>Consolas</option>
-                        <option value="Monaco, monospace" style={{ fontFamily: 'Monaco' }}>Monaco</option>
-                        <option value="'Lucida Console', monospace" style={{ fontFamily: 'Lucida Console' }}>Lucida Console</option>
-                        <option value="'Segoe UI', sans-serif" style={{ fontFamily: 'Segoe UI' }}>Segoe UI</option>
-                        <option value="Rockwell, serif" style={{ fontFamily: 'Rockwell' }}>Rockwell</option>
-                        <option value="'Franklin Gothic Medium', sans-serif">Franklin Gothic</option>
-                        <option value="'Copperplate Gothic', sans-serif">Copperplate</option>
-                        <option value="Papyrus, cursive" style={{ fontFamily: 'Papyrus' }}>Papyrus</option>
-                        <option value="'Brush Script MT', cursive">Brush Script</option>
-                    </select>
-                </div>
-
-                {/* Row 2: Controls */}
-                <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: '200px 1fr auto',
-                    gap: '15px',
-                    alignItems: 'center'
-                }}>
-                    {/* Font Size */}
-                    <div style={{ 
-                        display: 'flex', 
-                        alignItems: 'center', 
-                        gap: '10px',
-                        background: 'rgba(255,255,255,0.95)',
-                        padding: '10px 15px',
-                        borderRadius: '8px'
-                    }}>
-                        <span style={{ fontSize: '13px', fontWeight: '600', color: '#333', minWidth: '45px' }}>📏 Boyut:</span>
-                        <select
-                            value={fontSize}
-                            onChange={(e) => handleStyleUpdate(section, field, 'fontSize', e.target.value)}
-                            style={{ 
-                                padding: '6px 10px', 
-                                borderRadius: '6px', 
-                                border: '2px solid #e2e8f0', 
-                                fontSize: '13px',
-                                cursor: 'pointer',
-                                flex: 1
-                            }}
-                        >
-                            <option value="10">10px</option>
-                            <option value="12">12px</option>
-                            <option value="14">14px</option>
-                            <option value="16">16px</option>
-                            <option value="18">18px</option>
-                            <option value="20">20px</option>
-                            <option value="22">22px</option>
-                            <option value="24">24px</option>
-                            <option value="28">28px</option>
-                            <option value="32">32px</option>
-                            <option value="36">36px</option>
-                            <option value="42">42px</option>
-                            <option value="48">48px</option>
-                            <option value="56">56px</option>
-                            <option value="64">64px</option>
-                            <option value="72">72px</option>
-                        </select>
-                    </div>
-
-                    {/* Style Buttons */}
-                    <div style={{ 
-                        display: 'flex', 
-                        gap: '10px',
-                        background: 'rgba(255,255,255,0.95)',
-                        padding: '10px 15px',
-                        borderRadius: '8px',
-                        justifyContent: 'center'
-                    }}>
-                        <button
-                            type="button"
-                            onClick={() => handleStyleUpdate(section, field, 'fontWeight', fontWeight === 'bold' ? 'normal' : 'bold')}
-                            style={{
-                                padding: '8px 16px',
-                                borderRadius: '6px',
-                                border: 'none',
-                                background: fontWeight === 'bold' ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : '#f1f5f9',
-                                color: fontWeight === 'bold' ? '#fff' : '#333',
-                                fontWeight: 'bold',
-                                cursor: 'pointer',
-                                fontSize: '15px',
-                                transition: 'all 0.3s',
-                                boxShadow: fontWeight === 'bold' ? '0 4px 10px rgba(102, 126, 234, 0.4)' : 'none'
-                            }}
-                            title="Kalın"
-                        >
-                            B
-                        </button>
-
-                        <button
-                            type="button"
-                            onClick={() => handleStyleUpdate(section, field, 'fontStyle', fontStyle === 'italic' ? 'normal' : 'italic')}
-                            style={{
-                                padding: '8px 16px',
-                                borderRadius: '6px',
-                                border: 'none',
-                                background: fontStyle === 'italic' ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : '#f1f5f9',
-                                color: fontStyle === 'italic' ? '#fff' : '#333',
-                                fontStyle: 'italic',
-                                cursor: 'pointer',
-                                fontSize: '15px',
-                                transition: 'all 0.3s',
-                                boxShadow: fontStyle === 'italic' ? '0 4px 10px rgba(102, 126, 234, 0.4)' : 'none'
-                            }}
-                            title="İtalik"
-                        >
-                            I
-                        </button>
-                    </div>
-
-                    {/* Text Align */}
-                    <div style={{ 
-                        display: 'flex', 
-                        gap: '0',
-                        background: 'rgba(255,255,255,0.95)',
-                        padding: '10px 15px',
-                        borderRadius: '8px'
-                    }}>
-                        <button
-                            type="button"
-                            onClick={() => handleStyleUpdate(section, field, 'textAlign', 'left')}
-                            style={{
-                                padding: '8px 14px',
-                                borderRadius: '6px 0 0 6px',
-                                border: 'none',
-                                background: textAlign === 'left' ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : '#f1f5f9',
-                                color: textAlign === 'left' ? '#fff' : '#333',
-                                cursor: 'pointer',
-                                fontSize: '14px',
-                                transition: 'all 0.3s',
-                                boxShadow: textAlign === 'left' ? '0 4px 10px rgba(102, 126, 234, 0.4)' : 'none'
-                            }}
-                            title="Sola Hizala"
-                        >
-                            ⬅
-                        </button>
-                        <button
-                            type="button"
-                            onClick={() => handleStyleUpdate(section, field, 'textAlign', 'center')}
-                            style={{
-                                padding: '8px 14px',
-                                border: 'none',
-                                background: textAlign === 'center' ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : '#f1f5f9',
-                                color: textAlign === 'center' ? '#fff' : '#333',
-                                cursor: 'pointer',
-                                fontSize: '14px',
-                                transition: 'all 0.3s',
-                                boxShadow: textAlign === 'center' ? '0 4px 10px rgba(102, 126, 234, 0.4)' : 'none'
-                            }}
-                            title="Ortala"
-                        >
-                            ↕
-                        </button>
-                        <button
-                            type="button"
-                            onClick={() => handleStyleUpdate(section, field, 'textAlign', 'right')}
-                            style={{
-                                padding: '8px 14px',
-                                borderRadius: '0 6px 6px 0',
-                                border: 'none',
-                                background: textAlign === 'right' ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : '#f1f5f9',
-                                color: textAlign === 'right' ? '#fff' : '#333',
-                                cursor: 'pointer',
-                                fontSize: '14px',
-                                transition: 'all 0.3s',
-                                boxShadow: textAlign === 'right' ? '0 4px 10px rgba(102, 126, 234, 0.4)' : 'none'
-                            }}
-                            title="Sağa Hizala"
-                        >
-                            ➡
-                        </button>
-                    </div>
-                </div>
-            </div>
-        )
-    }
-
-    // Enhanced Input with style toggle
-    const StyledInput = ({ section, field, placeholder, value, multiline = false }) => {
-        const fieldId = `${section}-${field}`
-        const styles = siteTexts[section]?.[`${field}Style`] || {}
+    
+    // Save translations
+    const handleSave = async () => {
+        setSaving(true)
+        setSaveStatus(null)
         
-        const inputStyle = {
-            fontSize: `${styles.fontSize || 16}px`,
-            fontWeight: styles.fontWeight || 'normal',
-            fontStyle: styles.fontStyle || 'normal',
-            textAlign: styles.textAlign || 'left',
-            fontFamily: styles.fontFamily || 'inherit'
+        try {
+            const response = await fetch(`/api/settings/translations/${selectedLang}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(translations)
+            })
+            
+            if (response.ok) {
+                setSaveStatus('success')
+                setHasChanges(false)
+                setOriginalTranslations(JSON.parse(JSON.stringify(translations)))
+                
+                // Update i18next resources - replace the entire bundle
+                i18n.addResourceBundle(selectedLang, 'translation', translations, true, true)
+                
+                // Force re-render of components using t() function
+                if (selectedLang === i18n.language) {
+                    // Change language to trigger re-render, then change back
+                    const currentLang = i18n.language
+                    await i18n.changeLanguage(currentLang === 'tr' ? 'en' : 'tr')
+                    await i18n.changeLanguage(currentLang)
+                }
+            } else {
+                setSaveStatus('error')
+            }
+        } catch (error) {
+            console.error('Save error:', error)
+            setSaveStatus('error')
         }
-
-        return (
-            <div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-                    <label style={{ fontWeight: '600', fontSize: '14px', color: '#1a202c' }}>{placeholder}</label>
-                    <button
-                        type="button"
-                        onClick={() => setActiveField(activeField === fieldId ? null : fieldId)}
-                        style={{
-                            padding: '8px 16px',
-                            borderRadius: '8px',
-                            border: 'none',
-                            background: activeField === fieldId 
-                                ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' 
-                                : 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
-                            color: '#fff',
-                            cursor: 'pointer',
-                            fontSize: '12px',
-                            fontWeight: '600',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '6px',
-                            transition: 'all 0.3s',
-                            boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-                            transform: activeField === fieldId ? 'scale(1.05)' : 'scale(1)'
-                        }}
-                    >
-                        <span style={{ fontSize: '14px' }}>✨</span> 
-                        {activeField === fieldId ? 'Stili Gizle' : 'Stil Düzenle'}
-                    </button>
-                </div>
-                <TextToolbar section={section} field={field} />
-                {multiline ? (
-                    <textarea
-                        className="form-control"
-                        rows="4"
-                        value={value || ''}
-                        onChange={(e) => handleUpdate(section, field, e.target.value)}
-                        placeholder={placeholder}
-                        style={{
-                            ...inputStyle,
-                            width: '100%',
-                            padding: '12px',
-                            borderRadius: '8px',
-                            border: '2px solid #e2e8f0',
-                            transition: 'all 0.2s',
-                            resize: 'vertical'
-                        }}
-                        onFocus={(e) => e.target.style.borderColor = '#667eea'}
-                        onBlur={(e) => e.target.style.borderColor = '#e2e8f0'}
-                    />
-                ) : (
-                    <input
-                        type="text"
-                        className="form-control"
-                        value={value || ''}
-                        onChange={(e) => handleUpdate(section, field, e.target.value)}
-                        placeholder={placeholder}
-                        style={{
-                            ...inputStyle,
-                            width: '100%',
-                            padding: '12px',
-                            borderRadius: '8px',
-                            border: '2px solid #e2e8f0',
-                            transition: 'all 0.2s'
-                        }}
-                        onFocus={(e) => e.target.style.borderColor = '#667eea'}
-                        onBlur={(e) => e.target.style.borderColor = '#e2e8f0'}
-                    />
-                )}
-            </div>
-        )
+        
+        setSaving(false)
+    }
+    
+    // Language change handler
+    const handleLanguageChange = (langCode) => {
+        if (langCode !== selectedLang) {
+            if (hasChanges) {
+                if (!confirm('Kaydedilmemiş değişiklikler var. Devam etmek istiyor musunuz?')) {
+                    return
+                }
+            }
+            setSelectedLang(langCode)
+            setHasChanges(false)
+            setSaveStatus(null)
+        }
+    }
+    
+    const sectionIcons = {
+        hero: <HomeIcon />,
+        about: 'ℹ️',
+        services: '🛎️',
+        rooms: '🛏️',
+        footer: '📝',
+        contact: '📞'
+    }
+    
+    const sectionColors = {
+        hero: '#1a362d',
+        about: '#0369a1',
+        services: '#7c3aed',
+        rooms: '#dc2626',
+        footer: '#059669',
+        contact: '#0891b2'
     }
 
     return (
-        <section className="texts-section" style={{ background: 'white', padding: '30px', borderRadius: '12px', border: '1px solid #ddd' }}>
-            <h2 className="page-title">Site Yazıları Yönetimi</h2>
-            <p style={{ color: '#666', marginBottom: '30px' }}>
-                Web sitenizin farklı bölümlerindeki yazıları buradan düzenleyebilirsiniz. "Stil" butonuna tıklayarak yazı boyutu ve stilini ayarlayabilirsiniz.
-            </p>
-
-            <div style={{ display: 'grid', gap: '30px' }}>
-                {/* Hero Section */}
-                <div style={{ padding: '25px', background: '#f8fafc', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
-                    <h3 style={{ fontSize: '18px', marginBottom: '20px', color: '#1a362d', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                        <HomeIcon /> Ana Sayfa (Hero)
-                    </h3>
-                    <div className="form-group" style={{ marginBottom: '15px' }}>
-                        <StyledInput section="hero" field="title" placeholder="Başlık" value={siteTexts.hero?.title} />
-                    </div>
-                    <div className="form-group" style={{ marginBottom: '15px' }}>
-                        <StyledInput section="hero" field="subtitle" placeholder="Alt Başlık" value={siteTexts.hero?.subtitle} />
-                    </div>
-                    <div className="form-group">
-                        <StyledInput section="hero" field="description" placeholder="Açıklama" value={siteTexts.hero?.description} multiline />
-                    </div>
-                </div>
-
-                {/* About Section */}
-                <div style={{ padding: '25px', background: '#f8fafc', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
-                    <h3 style={{ fontSize: '18px', marginBottom: '20px', color: '#1a362d' }}>
-                        ℹ️ Hakkımızda Bölümü
-                    </h3>
-                    <div className="form-group" style={{ marginBottom: '15px' }}>
-                        <StyledInput section="about" field="title" placeholder="Başlık" value={siteTexts.about?.title} />
-                    </div>
-                    <div className="form-group" style={{ marginBottom: '15px' }}>
-                        <StyledInput section="about" field="subtitle" placeholder="Alt Başlık" value={siteTexts.about?.subtitle} />
-                    </div>
-                    <div className="form-group">
-                        <StyledInput section="about" field="description" placeholder="Açıklama" value={siteTexts.about?.description} multiline />
-                    </div>
-                </div>
-
-                {/* Services Section */}
-                <div style={{ padding: '25px', background: '#f8fafc', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
-                    <h3 style={{ fontSize: '18px', marginBottom: '20px', color: '#1a362d' }}>
-                        🛎️ Hizmetler Bölümü
-                    </h3>
-                    <div className="form-group" style={{ marginBottom: '15px' }}>
-                        <StyledInput section="services" field="title" placeholder="Başlık" value={siteTexts.services?.title} />
-                    </div>
-                    <div className="form-group">
-                        <StyledInput section="services" field="subtitle" placeholder="Alt Başlık" value={siteTexts.services?.subtitle} />
-                    </div>
-                </div>
-
-                {/* Rooms Section */}
-                <div style={{ padding: '25px', background: '#f8fafc', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
-                    <h3 style={{ fontSize: '18px', marginBottom: '20px', color: '#1a362d' }}>
-                        🛏️ Odalar Bölümü
-                    </h3>
-                    <div className="form-group" style={{ marginBottom: '15px' }}>
-                        <StyledInput section="rooms" field="title" placeholder="Başlık" value={siteTexts.rooms?.title} />
-                    </div>
-                    <div className="form-group" style={{ marginBottom: '15px' }}>
-                        <StyledInput section="rooms" field="subtitle" placeholder="Alt Başlık" value={siteTexts.rooms?.subtitle} />
-                    </div>
-                    <div className="form-group">
-                        <StyledInput section="rooms" field="description" placeholder="Açıklama" value={siteTexts.rooms?.description} multiline />
-                    </div>
-                </div>
-
-                {/* Contact Section */}
-                <div style={{ padding: '25px', background: '#f8fafc', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
-                    <h3 style={{ fontSize: '18px', marginBottom: '20px', color: '#1a362d' }}>
-                        📞 İletişim Bilgileri
-                    </h3>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
-                        <div className="form-group">
-                            <label style={{ fontWeight: 'bold', marginBottom: '8px', display: 'block' }}>Telefon</label>
-                            <input
-                                type="text"
-                                className="form-control"
-                                value={siteTexts.contact?.phone || ''}
-                                onChange={(e) => handleUpdate('contact', 'phone', e.target.value)}
-                            />
-                        </div>
-                        <div className="form-group">
-                            <label style={{ fontWeight: 'bold', marginBottom: '8px', display: 'block' }}>E-posta</label>
-                            <input
-                                type="email"
-                                className="form-control"
-                                value={siteTexts.contact?.email || ''}
-                                onChange={(e) => handleUpdate('contact', 'email', e.target.value)}
-                            />
-                        </div>
-                    </div>
-                    <div className="form-group" style={{ marginTop: '15px' }}>
-                        <label style={{ fontWeight: 'bold', marginBottom: '8px', display: 'block' }}>Adres</label>
-                        <textarea
-                            className="form-control"
-                            rows="2"
-                            value={siteTexts.contact?.address || ''}
-                            onChange={(e) => handleUpdate('contact', 'address', e.target.value)}
-                        />
-                    </div>
-                </div>
-
-                {/* Footer Section */}
-                <div style={{ padding: '25px', background: '#f8fafc', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
-                    <h3 style={{ fontSize: '18px', marginBottom: '20px', color: '#1a362d' }}>
-                        📝 Alt Bilgi (Footer)
-                    </h3>
-                    <div className="form-group" style={{ marginBottom: '15px' }}>
-                        <StyledInput section="footer" field="description" placeholder="Açıklama" value={siteTexts.footer?.description} multiline />
-                    </div>
-                    <div className="form-group">
-                        <label style={{ fontWeight: 'bold', marginBottom: '8px', display: 'block' }}>Telif Hakkı Metni</label>
-                        <input
-                            type="text"
-                            className="form-control"
-                            value={siteTexts.footer?.copyright || ''}
-                            onChange={(e) => handleUpdate('footer', 'copyright', e.target.value)}
-                        />
-                    </div>
-                </div>
+        <div style={{ background: 'white', borderRadius: '16px', boxShadow: '0 4px 20px rgba(0,0,0,0.08)', overflow: 'hidden' }}>
+            {/* Header */}
+            <div style={{ padding: '24px 30px', borderBottom: '1px solid #e5e7eb', background: 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)' }}>
+                <h2 style={{ margin: 0, fontSize: '22px', fontWeight: '700', color: '#1a362d', marginBottom: '6px' }}>
+                    📝 Site Yazıları Yönetimi
+                </h2>
+                <p style={{ margin: 0, color: '#6b7280', fontSize: '14px' }}>
+                    Dil dosyalarındaki çevirileri düzenleyin - değişiklikler anında yansır
+                </p>
             </div>
-
-            <div style={{ marginTop: '30px', padding: '20px', background: '#e8f5e9', borderRadius: '10px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <span style={{ fontSize: '24px' }}>✅</span>
-                <span style={{ color: '#2e7d32', fontWeight: '500' }}>Değişiklikler otomatik olarak kaydedilmektedir.</span>
+            
+            {/* Language Tabs */}
+            <div style={{ display: 'flex', borderBottom: '1px solid #e5e7eb', background: '#fafafa' }}>
+                {LANGUAGES.map((lang) => (
+                    <button
+                        key={lang.code}
+                        type="button"
+                        onClick={() => handleLanguageChange(lang.code)}
+                        style={{
+                            flex: 1,
+                            padding: '16px 20px',
+                            border: 'none',
+                            borderBottom: selectedLang === lang.code ? '3px solid #1a362d' : '3px solid transparent',
+                            background: selectedLang === lang.code ? 'white' : 'transparent',
+                            color: selectedLang === lang.code ? '#1a362d' : '#6b7280',
+                            cursor: 'pointer',
+                            fontSize: '14px',
+                            fontWeight: selectedLang === lang.code ? '700' : '500',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            gap: '8px',
+                            transition: 'all 0.2s'
+                        }}
+                    >
+                        <span style={{ fontSize: '20px' }}>{lang.flag}</span>
+                        {lang.name}
+                    </button>
+                ))}
             </div>
-        </section>
+            
+            {/* Content */}
+            <div style={{ padding: '30px' }}>
+                {loading ? (
+                    <div style={{ textAlign: 'center', padding: '60px 20px', color: '#6b7280' }}>
+                        <div style={{ fontSize: '40px', marginBottom: '16px' }}>⏳</div>
+                        <p style={{ margin: 0, fontSize: '16px' }}>
+                            {LANGUAGES.find(l => l.code === selectedLang)?.name} çevirileri yükleniyor...
+                        </p>
+                    </div>
+                ) : (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+                        {Object.entries(TEXT_FIELDS).map(([sectionKey, section]) => (
+                            <SectionCard 
+                                key={sectionKey}
+                                icon={sectionIcons[sectionKey]} 
+                                title={section.title} 
+                                color={sectionColors[sectionKey]}
+                            >
+                                {section.fields.map((field) => (
+                                    <TextInput
+                                        key={`${field.key}-${selectedLang}`}
+                                        id={`${field.key}-${selectedLang}`}
+                                        label={field.label}
+                                        initialValue={getValue(translations, field.key)}
+                                        multiline={field.multiline}
+                                        onChange={getFieldHandler(field.key)}
+                                    />
+                                ))}
+                            </SectionCard>
+                        ))}
+                    </div>
+                )}
+            </div>
+            
+            {/* Save Bar */}
+            <div style={{
+                padding: '20px 30px',
+                borderTop: '1px solid #e5e7eb',
+                background: hasChanges ? '#fef3c7' : '#f0fdf4',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                position: 'sticky',
+                bottom: 0
+            }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <span style={{ fontSize: '24px' }}>
+                        {hasChanges ? '⚠️' : saveStatus === 'success' ? '✅' : '💡'}
+                    </span>
+                    <div>
+                        <p style={{ margin: 0, fontWeight: '600', color: hasChanges ? '#92400e' : '#166534', fontSize: '14px' }}>
+                            {hasChanges 
+                                ? 'Kaydedilmemiş değişiklikler var'
+                                : saveStatus === 'success'
+                                    ? 'Çeviriler başarıyla kaydedildi!'
+                                    : `${LANGUAGES.find(l => l.code === selectedLang)?.name} çevirileri düzenleniyor`
+                            }
+                        </p>
+                        {hasChanges && (
+                            <p style={{ margin: 0, fontSize: '12px', color: '#b45309', marginTop: '2px' }}>
+                                Değişiklikler dil dosyasına kaydedilecek
+                            </p>
+                        )}
+                    </div>
+                </div>
+                
+                <button
+                    type="button"
+                    onClick={handleSave}
+                    disabled={saving || !hasChanges}
+                    style={{
+                        padding: '14px 32px',
+                        borderRadius: '10px',
+                        border: 'none',
+                        background: !hasChanges ? '#9ca3af' : saving ? '#6b7280' : 'linear-gradient(135deg, #1a362d 0%, #2d5a4a 100%)',
+                        color: 'white',
+                        fontSize: '15px',
+                        fontWeight: '700',
+                        cursor: saving || !hasChanges ? 'not-allowed' : 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '10px',
+                        transition: 'all 0.3s',
+                        boxShadow: hasChanges && !saving ? '0 4px 14px rgba(26, 54, 45, 0.4)' : 'none'
+                    }}
+                >
+                    {saving ? '⏳ Kaydediliyor...' : saveStatus === 'success' ? '✅ Kaydedildi!' : saveStatus === 'error' ? '❌ Tekrar Dene' : `💾 Kaydet`}
+                </button>
+            </div>
+        </div>
     )
 }
 

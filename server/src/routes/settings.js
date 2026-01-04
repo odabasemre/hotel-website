@@ -1,5 +1,11 @@
 import express from 'express';
 import pool from '../database/db.js';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const router = express.Router();
 
@@ -18,6 +24,134 @@ router.get('/', async (req, res) => {
     }
 });
 
+// Site texts - MUST BE BEFORE /:key wildcard route
+router.get('/texts', async (req, res) => {
+    try {
+        const { lang = 'tr' } = req.query;
+        console.log('Fetching texts for lang:', lang);
+        const result = await pool.query(
+            'SELECT section, content FROM site_texts WHERE lang = $1',
+            [lang]
+        );
+        
+        console.log('Texts query result rows:', result.rows.length);
+        
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'No texts found' });
+        }
+        
+        const texts = {};
+        result.rows.forEach(row => {
+            texts[row.section] = row.content;
+        });
+        
+        console.log('Returning texts:', Object.keys(texts));
+        res.json(texts);
+    } catch (error) {
+        console.error('Error fetching texts:', error);
+        res.status(500).json({ error: 'Failed to fetch texts' });
+    }
+});
+
+router.put('/texts/:section', async (req, res) => {
+    try {
+        const { section } = req.params;
+        const { lang = 'tr', content } = req.body;
+        
+        const result = await pool.query(
+            `INSERT INTO site_texts (section, lang, content) VALUES ($1, $2, $3)
+             ON CONFLICT (section, lang) DO UPDATE SET content = $3, updated_at = CURRENT_TIMESTAMP
+             RETURNING *`,
+            [section, lang, JSON.stringify(content)]
+        );
+        
+        res.json(result.rows[0]);
+    } catch (error) {
+        console.error('Error updating texts:', error);
+        res.status(500).json({ error: 'Failed to update texts' });
+    }
+});
+
+// Translation files update endpoint
+router.put('/translations/:lang', async (req, res) => {
+    try {
+        const { lang } = req.params;
+        const translations = req.body;
+        
+        // Validate language
+        const validLangs = ['tr', 'en', 'ar', 'fr'];
+        if (!validLangs.includes(lang)) {
+            return res.status(400).json({ error: 'Invalid language code' });
+        }
+        
+        // Path to translation file in the Docker volume
+        const translationPath = path.join('/usr/share/nginx/html/locales', lang, 'translation.json');
+        
+        // Also save to database for persistence
+        await pool.query(
+            `INSERT INTO translations (lang, content, updated_at) VALUES ($1, $2, CURRENT_TIMESTAMP)
+             ON CONFLICT (lang) DO UPDATE SET content = $2, updated_at = CURRENT_TIMESTAMP`,
+            [lang, JSON.stringify(translations)]
+        );
+        
+        // Try to update the file (may fail if running in different container)
+        try {
+            fs.writeFileSync(translationPath, JSON.stringify(translations, null, 4), 'utf8');
+        } catch (fileError) {
+            console.log('Could not write to file directly, saved to database:', fileError.message);
+        }
+        
+        res.json({ success: true, message: 'Translations saved' });
+    } catch (error) {
+        console.error('Error saving translations:', error);
+        res.status(500).json({ error: 'Failed to save translations' });
+    }
+});
+
+// Get translations from database
+router.get('/translations/:lang', async (req, res) => {
+    try {
+        const { lang } = req.params;
+        
+        const result = await pool.query(
+            'SELECT content FROM translations WHERE lang = $1',
+            [lang]
+        );
+        
+        if (result.rows.length > 0) {
+            res.json(result.rows[0].content);
+        } else {
+            res.status(404).json({ error: 'Translations not found' });
+        }
+    } catch (error) {
+        console.error('Error fetching translations:', error);
+        res.status(500).json({ error: 'Failed to fetch translations' });
+    }
+});
+
+// Site images - MUST BE BEFORE /:key wildcard route
+router.get('/images/all', async (req, res) => {
+    try {
+        const result = await pool.query(
+            'SELECT section, image_key, image_path FROM site_images ORDER BY section, display_order'
+        );
+        
+        const images = {};
+        result.rows.forEach(row => {
+            if (!images[row.section]) {
+                images[row.section] = {};
+            }
+            images[row.section][row.image_key] = row.image_path;
+        });
+        
+        res.json(images);
+    } catch (error) {
+        console.error('Error fetching images:', error);
+        res.status(500).json({ error: 'Failed to fetch images' });
+    }
+});
+
+// IMPORTANT: Wildcard routes MUST come AFTER specific routes
 // Belirli bir ayarı getir
 router.get('/:key', async (req, res) => {
     try {
@@ -56,7 +190,7 @@ router.put('/:key', async (req, res) => {
 });
 
 // Site images
-router.get('/images/all', async (req, res) => {
+router.put('/images/:section/:imageKey', async (req, res) => {
     try {
         const result = await pool.query(
             'SELECT section, image_key, image_path FROM site_images ORDER BY section, display_order'
@@ -212,46 +346,6 @@ router.put('/pricing/:date', async (req, res) => {
     } catch (error) {
         console.error('Error updating pricing:', error);
         res.status(500).json({ error: 'Failed to update pricing' });
-    }
-});
-
-// Site texts
-router.get('/texts', async (req, res) => {
-    try {
-        const { lang = 'tr' } = req.query;
-        const result = await pool.query(
-            'SELECT section, content FROM site_texts WHERE lang = $1',
-            [lang]
-        );
-        
-        const texts = {};
-        result.rows.forEach(row => {
-            texts[row.section] = row.content;
-        });
-        
-        res.json(texts);
-    } catch (error) {
-        console.error('Error fetching texts:', error);
-        res.status(500).json({ error: 'Failed to fetch texts' });
-    }
-});
-
-router.put('/texts/:section', async (req, res) => {
-    try {
-        const { section } = req.params;
-        const { lang = 'tr', content } = req.body;
-        
-        const result = await pool.query(
-            `INSERT INTO site_texts (section, lang, content) VALUES ($1, $2, $3)
-             ON CONFLICT (section, lang) DO UPDATE SET content = $3, updated_at = CURRENT_TIMESTAMP
-             RETURNING *`,
-            [section, lang, JSON.stringify(content)]
-        );
-        
-        res.json(result.rows[0]);
-    } catch (error) {
-        console.error('Error updating texts:', error);
-        res.status(500).json({ error: 'Failed to update texts' });
     }
 });
 

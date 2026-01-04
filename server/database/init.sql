@@ -94,6 +94,14 @@ CREATE TABLE IF NOT EXISTS promos (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Translations tablosu (for storing translation files)
+CREATE TABLE IF NOT EXISTS translations (
+    id SERIAL PRIMARY KEY,
+    lang VARCHAR(10) UNIQUE NOT NULL,
+    content JSONB NOT NULL,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Admin users tablosu
 CREATE TABLE IF NOT EXISTS admin_users (
     id SERIAL PRIMARY KEY,

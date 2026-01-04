@@ -649,14 +649,16 @@ export const adminSettings = {
         const updated = adminSettings.updatePropertyData(data);
         if (USE_API && updated) {
             try {
-                // Only send complex objects to API, not primitive values
+                // Send all property data fields to API
                 const apiData = {
-                    siteImages: data.siteImages,
-                    photos: data.photos,
-                    amenities: data.amenities
+                    siteImages: data.siteImages || updated.siteImages,
+                    photos: data.photos || updated.photos,
+                    amenities: data.amenities || updated.amenities,
+                    heroImage: data.heroImage || updated.heroImage,
+                    description: data.description || updated.description
                 };
                 for (const [key, value] of Object.entries(apiData)) {
-                    if (value && typeof value === 'object') {
+                    if (value !== undefined && value !== null) {
                         await settingsApi.updatePropertyInfo(key, value);
                     }
                 }
@@ -689,6 +691,8 @@ export const adminSettings = {
             try {
                 const data = await settingsApi.getTexts(lang);
                 if (data && Object.keys(data).length > 0) {
+                    // Store with language-specific key
+                    localStorage.setItem(`${TEXTS_KEY}_${lang}`, JSON.stringify(data));
                     localStorage.setItem(TEXTS_KEY, JSON.stringify(data));
                     return data;
                 }
@@ -696,6 +700,11 @@ export const adminSettings = {
                 console.warn('API error, falling back to localStorage:', e);
             }
         }
+        // Return from language-specific cache or default
+        try {
+            const cached = localStorage.getItem(`${TEXTS_KEY}_${lang}`);
+            if (cached) return JSON.parse(cached);
+        } catch (e) {}
         return adminSettings.getSiteTexts();
     },
 

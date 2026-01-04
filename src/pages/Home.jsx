@@ -1,4 +1,4 @@
-import { Hero, Services, RoomShowcase, Testimonials } from '@components/features/home'
+import { Hero, Services, Testimonials } from '@components/features/home'
 import { useScrollReveal } from '@hooks'
 
 function Home() {
@@ -7,7 +7,6 @@ function Home() {
         <>
             <Hero />
             <div className="reveal"><Services /></div>
-            <div className="reveal"><RoomShowcase /></div>
             <div className="reveal"><Testimonials /></div>
         </>
     )
