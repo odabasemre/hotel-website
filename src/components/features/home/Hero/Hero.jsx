@@ -6,10 +6,13 @@ import { adminSettings } from '@services'
 import './Hero.css'
 
 function Hero() {
-    const { t } = useTranslation()
+    const { t, i18n } = useTranslation()
     const navigate = useNavigate()
     const { isDateBusy } = useCustomAvailability()
     const [propertyData, setPropertyData] = useState(adminSettings.getPropertyData())
+    
+    // Get current language with fallback
+    const currentLanguage = i18n?.language || 'en'
 
     // Calendar states
     const [showCheckInCalendar, setShowCheckInCalendar] = useState(false)
@@ -111,7 +114,7 @@ function Hero() {
     const formatDate = (dateStr) => {
         if (!dateStr) return t('booking.selectDate') || 'Gün / Ay / Yıl'
         const date = new Date(dateStr)
-        return date.toLocaleDateString(i18n.language, { day: '2-digit', month: 'long', year: 'numeric' })
+        return date.toLocaleDateString(currentLanguage, { day: '2-digit', month: 'long', year: 'numeric' })
     }
 
     // Calendar helper functions - language aware
@@ -121,13 +124,13 @@ function Hero() {
         for (let i = 0; i < 7; i++) {
             const date = new Date(baseDate)
             date.setDate(baseDate.getDate() + i)
-            days.push(date.toLocaleDateString(i18n.language, { weekday: 'short' }).slice(0, 2))
+            days.push(date.toLocaleDateString(currentLanguage, { weekday: 'short' }).slice(0, 2))
         }
         return days
     }
 
     const getMonthName = (date) => {
-        return date.toLocaleDateString(i18n.language, { month: 'long', year: 'numeric' })
+        return date.toLocaleDateString(currentLanguage, { month: 'long', year: 'numeric' })
     }
 
     const renderCalendar = (currentMonth, setCurrentMonth, selectedDate, onSelect, minDateStr) => {
@@ -205,7 +208,9 @@ function Hero() {
                             <label>{t('booking.checkIn')}</label>
                             <div 
                                 className="date-selector"
-                                onClick={() => {
+                                onClick={(e) => {
+                                    e.preventDefault()
+                                    e.stopPropagation()
                                     setShowCheckOutCalendar(false)
                                     setShowGuestPanel(false)
                                     setShowCheckInCalendar(prev => !prev)
@@ -236,7 +241,9 @@ function Hero() {
                             <label>{t('booking.checkOut')}</label>
                             <div 
                                 className="date-selector"
-                                onClick={() => {
+                                onClick={(e) => {
+                                    e.preventDefault()
+                                    e.stopPropagation()
                                     setShowCheckInCalendar(false)
                                     setShowGuestPanel(false)
                                     setShowCheckOutCalendar(prev => !prev)
@@ -260,7 +267,7 @@ function Hero() {
                         {/* Kişi Sayısı */}
                         <div className="bar-field guest-field-wrapper" ref={guestPanelRef}>
                             <label>{t('booking.guests')}</label>
-                            <div className="guest-trigger" onClick={() => { setShowCheckInCalendar(false); setShowCheckOutCalendar(false); setShowGuestPanel(prev => !prev) }}>
+                            <div className="guest-trigger" onClick={(e) => { e.preventDefault(); e.stopPropagation(); setShowCheckInCalendar(false); setShowCheckOutCalendar(false); setShowGuestPanel(prev => !prev) }}>
                                 <span className="guest-text">{bookingData.adults + bookingData.children} Kişi ▼</span>
                             </div>
                             {showGuestPanel && (
