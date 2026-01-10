@@ -48,7 +48,6 @@ const TEXT_FIELDS = {
     footer: {
         title: 'Alt Bilgi',
         fields: [
-            { key: 'footer.description', label: 'Açıklama', multiline: true },
             { key: 'footer.copyright', label: 'Telif Hakkı', multiline: false }
         ]
     },

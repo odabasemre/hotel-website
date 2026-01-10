@@ -59,9 +59,6 @@ function Footer() {
                         <div className="footer-logo">
                             <span className="footer-logo-text">Ayder Kuzey Houses</span>
                         </div>
-                        <p className="footer-description">
-                            {t('footer.description')}
-                        </p>
                         <div className="footer-social">
                             <a href="https://www.instagram.com/ayderkuzey/" className="footer-social-link" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
                                 <InstagramIcon />

@@ -58,7 +58,7 @@ const testimonials = {
         },
         {
             id: 13,
-            text: "En iyi deneyimlerimden biriydi. Kulübe nehrin tam karşısında yer alıyor. Konaklamam boyunca misafirperverliği için Emre'ye teşekkür etmek isterim. Not: Konaklama kapasitesi 7 kişiydi.",
+            text: "En iyi deneyimlerimden biriydi. Kulübe nehrin tam karşısında yer alıyor. Konaklamam boyunca misafirperverliği için Emre'ye teşekkür etmek isterim. Not: Konaklama kapasitesi 8 kişiydi.",
             author: "Nasır Moharraq",
             location: "Suudi Arabistan",
             rating: 5
@@ -130,7 +130,7 @@ const testimonials = {
         },
         {
             id: 13,
-            text: "It was one of my best experiences. The cabin is located right across the river. I would like to thank Emre for his hospitality during my stay. Note: The accommodation capacity was 7 people.",
+            text: "It was one of my best experiences. The cabin is located right across the river. I would like to thank Emre for his hospitality during my stay. Note: The accommodation capacity was 8 people.",
             author: "Nasir Moharraq",
             location: "Saudi Arabia",
             rating: 5

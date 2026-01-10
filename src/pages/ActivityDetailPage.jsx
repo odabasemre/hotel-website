@@ -46,19 +46,17 @@ function ActivityDetailPage() {
     const { id } = useParams()
     const { t } = useTranslation()
     const activity = activitiesData.find(a => a.id === id)
-    const [activityImage, setActivityImage] = useState(activity?.image || '')
+    const [activityImage, setActivityImage] = useState('')
 
     useEffect(() => {
         window.scrollTo(0, 0)
-        // Load activity image from admin settings
+        // Load activity image from admin settings only
         if (activity) {
             const propertyData = adminSettings.getPropertyData()
             const adminImage = propertyData?.siteImages?.activities?.[activity.id]
-            if (adminImage) {
-                setActivityImage(adminImage)
-            } else {
-                setActivityImage(activity.image)
-            }
+            
+            // Use admin image if available, otherwise fallback to default
+            setActivityImage(adminImage || activity.image)
         }
     }, [activity])
 
@@ -75,9 +73,24 @@ function ActivityDetailPage() {
 
     return (
         <div className="activity-detail-page">
-            {/* Hero Section with Image */}
-            <div className="activity-detail-hero" style={{ backgroundImage: `url(${activityImage})` }}>
+            {/* Hero Section with Single Image */}
+            <div className="activity-detail-hero">
+                <div 
+                    className="activity-hero-image active"
+                    style={{
+                        backgroundImage: `url(${activityImage})`,
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center'
+                    }}
+                />
+                
                 <div className="activity-detail-overlay"></div>
+
                 <div className="activity-detail-hero-content">
                     <Link to="/activities" className="back-button">
                         <ChevronLeftIcon />

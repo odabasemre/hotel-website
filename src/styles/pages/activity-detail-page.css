@@ -9,11 +9,33 @@
 .activity-detail-hero {
     position: relative;
     height: 500px;
-    background-size: cover;
-    background-position: center;
     display: flex;
     align-items: flex-end;
     overflow: hidden;
+}
+
+.activity-images-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.activity-hero-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform;
+}
+
+.activity-hero-image.active {
+    z-index: 1;
 }
 
 .activity-detail-overlay {
@@ -22,12 +44,116 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(26, 54, 45, 0.85));
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(26, 54, 45, 0.9));
+    z-index: 2;
+}
+
+/* Image Navigation */
+.activity-image-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 3;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.activity-image-nav:hover:not(.disabled) {
+    background: white;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    transform: translateY(-50%) scale(1.1);
+}
+
+.activity-image-nav.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.activity-image-nav svg {
+    width: 24px;
+    height: 24px;
+    color: #1a362d;
+}
+
+.activity-image-prev {
+    left: 20px;
+}
+
+.activity-image-next {
+    right: 20px;
+}
+
+/* Image Counter */
+.activity-image-counter {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(26, 54, 45, 0.9);
+    color: white;
+    padding: 10px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    z-index: 3;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+/* Dots Navigation */
+.activity-image-dots {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+    z-index: 3;
+}
+
+.activity-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    border: none;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    padding: 0;
+}
+
+.activity-dot:hover:not(.disabled) {
+    background: rgba(255, 255, 255, 0.8);
+    transform: scale(1.2);
+}
+
+.activity-dot.active {
+    background: white;
+    width: 24px;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.activity-dot.disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    pointer-events: none;
 }
 
 .activity-detail-hero-content {
     position: relative;
-    z-index: 2;
+    z-index: 3;
     color: white;
     padding: 60px 40px;
     width: 100%;
@@ -42,18 +168,21 @@
     color: white;
     text-decoration: none;
     font-size: 0.95rem;
-    font-weight: 500;
+    font-weight: 600;
     margin-bottom: 30px;
-    padding: 10px 16px;
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(10px);
+    padding: 12px 20px;
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(15px);
     border-radius: 12px;
     transition: all 0.3s ease;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .back-button:hover {
-    background: rgba(255, 255, 255, 0.25);
+    background: rgba(255, 255, 255, 0.35);
     transform: translateX(-4px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
 }
 
 .back-button svg {
@@ -66,6 +195,8 @@
     font-weight: 800;
     margin-bottom: 20px;
     letter-spacing: -1px;
+    text-shadow: 2px 4px 12px rgba(0, 0, 0, 0.8), 0px 0px 20px rgba(0, 0, 0, 0.6);
+    color: #ffffff;
 }
 
 .hero-meta {
@@ -78,20 +209,24 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(15px);
     padding: 12px 20px;
     border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
 }
 
 .hero-meta-item svg {
     width: 20px;
     height: 20px;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4));
 }
 
 .hero-meta-item span {
     font-size: 0.95rem;
-    font-weight: 600;
+    font-weight: 700;
+    color: #ffffff;
 }
 
 /* Layout */
@@ -348,6 +483,7 @@
 
     .activity-detail-hero-content h1 {
         font-size: 2.5rem;
+        text-shadow: 2px 4px 12px rgba(0, 0, 0, 0.8), 0px 0px 20px rgba(0, 0, 0, 0.6);
     }
 
     .detail-section {
@@ -375,6 +511,36 @@
 
     .activity-detail-hero-content h1 {
         font-size: 2rem;
+        text-shadow: 2px 4px 12px rgba(0, 0, 0, 0.8), 0px 0px 20px rgba(0, 0, 0, 0.6);
+    }
+
+    .activity-image-nav {
+        width: 45px;
+        height: 45px;
+    }
+
+    .activity-image-nav svg {
+        width: 20px;
+        height: 20px;
+    }
+
+    .activity-image-prev {
+        left: 15px;
+    }
+
+    .activity-image-next {
+        right: 15px;
+    }
+
+    .activity-image-counter {
+        top: 15px;
+        right: 15px;
+        padding: 8px 14px;
+        font-size: 13px;
+    }
+
+    .activity-image-dots {
+        bottom: 15px;
     }
 
     .hero-meta {

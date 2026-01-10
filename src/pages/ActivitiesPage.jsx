@@ -41,39 +41,8 @@ function ActivitiesPage() {
 
     return (
         <div className="activities-page">
-            {/* Hero Section */}
-            <div className="activities-hero">
-                <div className="activities-hero-overlay"></div>
-                <div className="activities-hero-content">
-                    <h1 style={{
-                        fontFamily: "'Cormorant Garamond', 'Georgia', serif",
-                        fontSize: '2.8rem',
-                        fontWeight: '300',
-                        color: '#e8d5b7',
-                        textShadow: '2px 4px 8px rgba(0,0,0,0.3)',
-                        marginBottom: '20px',
-                        lineHeight: '1.1',
-                        letterSpacing: '0.5px',
-                        textAlign: 'center',
-                        width: '100%',
-                        maxWidth: '100%'
-                    }}>
-                        {t('activities.heroTitle')}
-                    </h1>
-                    <p style={{
-                        fontFamily: "'Montserrat', sans-serif",
-                        fontSize: '2rem',
-                        fontWeight: '600',
-                        color: '#f0c674',
-                        textShadow: '1px 2px 6px rgba(0,0,0,0.4)',
-                        letterSpacing: '2px',
-                        textAlign: 'center',
-                        width: '100%'
-                    }}>
-                        {t('activities.heroSubtitle')}
-                    </p>
-                </div>
-            </div>
+            {/* Page Spacer for header */}
+            <div className="page-spacer"></div>
 
             {/* Activities Grid */}
             <div className="container">

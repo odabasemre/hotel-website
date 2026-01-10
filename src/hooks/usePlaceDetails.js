@@ -7,7 +7,7 @@ const usePlaceDetails = () => {
     const [details, setDetails] = useState({
         address: 'Ayder Yaylası Galer Düzü No:182, Çamlıhemşin, Rize',
         phone: '+90 530 428 93 55',
-        email: 'info@ayderkuzeyhouses.com',
+        email: 'ayderkuzeyhouses@gmail.com',
         website: 'https://ayderkuzeyhouses.com',
         loading: true
     });
@@ -36,7 +36,7 @@ const usePlaceDetails = () => {
                         setDetails({
                             address: place.formatted_address || details.address,
                             phone: place.international_phone_number || details.phone,
-                            email: 'info@ayderkuzeyhouses.com', // Email is not provided by Places API
+                            email: 'ayderkuzeyhouses@gmail.com', // Email is not provided by Places API
                             website: place.website || details.website,
                             loading: false
                         });

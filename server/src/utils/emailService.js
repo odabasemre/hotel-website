@@ -11,6 +11,322 @@ const createTransporter = () => {
     });
 };
 
+// Rezervasyon belgesi HTML şablonu oluştur
+const generateReservationDocument = (bookingData) => {
+    const booking_id = bookingData.booking_id || bookingData.bookingId;
+    const guest_name = bookingData.guest_name || bookingData.guestName;
+    const guest_email = bookingData.guest_email || bookingData.guestEmail;
+    const guest_phone = bookingData.guest_phone || bookingData.guestPhone;
+    const check_in = bookingData.check_in || bookingData.checkIn;
+    const check_out = bookingData.check_out || bookingData.checkOut;
+    const total_price = bookingData.total_price || bookingData.totalPrice;
+    const room_number = bookingData.room_number || bookingData.roomNumber || '1';
+
+    const checkInDate = new Date(check_in).toLocaleDateString('tr-TR', {
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric'
+    });
+    const checkOutDate = new Date(check_out).toLocaleDateString('tr-TR', {
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric'
+    });
+
+    // Calculate nights
+    const checkInObj = new Date(check_in);
+    const checkOutObj = new Date(check_out);
+    const nights = Math.ceil((checkOutObj - checkInObj) / (1000 * 60 * 60 * 24));
+
+    return `
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>Rezervasyon Belgesi - ${guest_name}</title>
+            <style>
+                * {
+                    margin: 0;
+                    padding: 0;
+                    box-sizing: border-box;
+                }
+                body {
+                    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                    padding: 40px;
+                    background: white;
+                    color: #333;
+                }
+                .container {
+                    max-width: 800px;
+                    margin: 0 auto;
+                    border: 2px solid #2d4a3e;
+                    border-radius: 12px;
+                    overflow: hidden;
+                }
+                .header {
+                    background: linear-gradient(135deg, #2d4a3e 0%, #1a2f26 100%);
+                    color: white;
+                    padding: 30px;
+                    text-align: center;
+                }
+                .hotel-name {
+                    font-size: 28px;
+                    font-weight: bold;
+                    margin-bottom: 5px;
+                }
+                .hotel-tagline {
+                    font-size: 14px;
+                    opacity: 0.9;
+                }
+                .document-title {
+                    background: #e8f5e9;
+                    color: #2d4a3e;
+                    padding: 15px;
+                    text-align: center;
+                    font-size: 20px;
+                    font-weight: bold;
+                    border-bottom: 2px solid #2d4a3e;
+                }
+                .content {
+                    padding: 30px;
+                }
+                .section {
+                    margin-bottom: 25px;
+                }
+                .section-title {
+                    font-size: 16px;
+                    font-weight: bold;
+                    color: #2d4a3e;
+                    border-bottom: 2px solid #e0e0e0;
+                    padding-bottom: 8px;
+                    margin-bottom: 15px;
+                }
+                .info-grid {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 15px;
+                }
+                .info-item {
+                    display: flex;
+                    flex-direction: column;
+                }
+                .info-label {
+                    font-size: 12px;
+                    color: #666;
+                    text-transform: uppercase;
+                    letter-spacing: 0.5px;
+                }
+                .info-value {
+                    font-size: 16px;
+                    font-weight: 600;
+                    color: #333;
+                    margin-top: 4px;
+                }
+                .dates-box {
+                    background: #f5f5f5;
+                    border-radius: 8px;
+                    padding: 20px;
+                    display: grid;
+                    grid-template-columns: 1fr auto 1fr;
+                    align-items: center;
+                    gap: 20px;
+                }
+                .date-item {
+                    text-align: center;
+                }
+                .date-label {
+                    font-size: 12px;
+                    color: #666;
+                    text-transform: uppercase;
+                }
+                .date-value {
+                    font-size: 18px;
+                    font-weight: bold;
+                    color: #2d4a3e;
+                    margin-top: 5px;
+                }
+                .date-time {
+                    font-size: 14px;
+                    color: #888;
+                    margin-top: 3px;
+                }
+                .arrow {
+                    font-size: 24px;
+                    color: #2d4a3e;
+                }
+                .price-box {
+                    background: #2d4a3e;
+                    color: white;
+                    padding: 20px;
+                    border-radius: 8px;
+                    text-align: center;
+                }
+                .price-label {
+                    font-size: 14px;
+                    opacity: 0.9;
+                }
+                .price-value {
+                    font-size: 32px;
+                    font-weight: bold;
+                    margin-top: 5px;
+                }
+                .price-nights {
+                    font-size: 12px;
+                    opacity: 0.8;
+                    margin-top: 5px;
+                }
+                .rules-section {
+                    background: #fff8e1;
+                    border: 1px solid #ffcc02;
+                    border-radius: 8px;
+                    padding: 20px;
+                }
+                .rules-title {
+                    font-size: 16px;
+                    font-weight: bold;
+                    color: #f57c00;
+                    margin-bottom: 15px;
+                }
+                .rules-list {
+                    list-style: none;
+                    padding: 0;
+                }
+                .rules-list li {
+                    padding: 8px 0;
+                    border-bottom: 1px dashed #ddd;
+                    font-size: 14px;
+                }
+                .rules-list li:last-child {
+                    border-bottom: none;
+                }
+                .footer {
+                    background: #f5f5f5;
+                    padding: 20px;
+                    text-align: center;
+                    border-top: 1px solid #e0e0e0;
+                }
+                .contact-info {
+                    font-size: 13px;
+                    color: #666;
+                    line-height: 1.8;
+                }
+                .contact-info strong {
+                    color: #2d4a3e;
+                }
+                .confirmation-badge {
+                    display: inline-block;
+                    background: #4caf50;
+                    color: white;
+                    padding: 8px 20px;
+                    border-radius: 20px;
+                    font-weight: bold;
+                    margin-bottom: 15px;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header">
+                    <div class="hotel-name">Ayder Kuzey Houses</div>
+                    <div class="hotel-tagline">Doğanın Kalbinde Huzurlu Bir Kaçış</div>
+                </div>
+                
+                <div class="document-title">
+                    REZERVASYON ONAY BELGESİ
+                </div>
+                
+                <div class="content">
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <span class="confirmation-badge">✓ ONAYLANDI</span>
+                        <div style="margin-top: 10px; color: #666; font-size: 14px;">
+                            Rezervasyon No: <strong>${booking_id}</strong>
+                        </div>
+                    </div>
+                    
+                    <div class="section">
+                        <div class="section-title">👤 Misafir Bilgileri</div>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <span class="info-label">Ad Soyad</span>
+                                <span class="info-value">${guest_name}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Telefon</span>
+                                <span class="info-value">${guest_phone || '-'}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">E-posta</span>
+                                <span class="info-value">${guest_email || '-'}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Oda Numarası</span>
+                                <span class="info-value">Oda ${room_number}</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="section">
+                        <div class="section-title">📅 Konaklama Tarihleri</div>
+                        <div class="dates-box">
+                            <div class="date-item">
+                                <div class="date-label">Giriş Tarihi</div>
+                                <div class="date-value">${checkInDate}</div>
+                                <div class="date-time">14:00'dan itibaren</div>
+                            </div>
+                            <div class="arrow">→</div>
+                            <div class="date-item">
+                                <div class="date-label">Çıkış Tarihi</div>
+                                <div class="date-value">${checkOutDate}</div>
+                                <div class="date-time">11:00'a kadar</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="section">
+                        <div class="section-title">💰 Ödeme Bilgileri</div>
+                        <div class="price-box">
+                            <div class="price-label">Toplam Tutar</div>
+                            <div class="price-value">${total_price?.toLocaleString('tr-TR') || '0'} ₺</div>
+                            <div class="price-nights">${nights} Gece Konaklama</div>
+                        </div>
+                    </div>
+                    
+                    <div class="section">
+                        <div class="rules-section">
+                            <div class="rules-title">
+                                ⚠️ TESİS KURALLARI
+                            </div>
+                            <ul class="rules-list">
+                                <li>• Giriş saati 14:00, çıkış saati 11:00'dır.</li>
+                                <li>• Tesisimizde evcil hayvan kabul edilmemektedir.</li>
+                                <li>• Tüm odalarda sigara içmek yasaktır.</li>
+                                <li>• Gece 22:00'dan sonra sessizlik kuralına uyulmalıdır.</li>
+                                <li>• Oda kapasitesi üzerinde misafir kabul edilmemektedir (Maks. 8 kişi).</li>
+                                <li>• Değerli eşyalarınız için resepsiyondaki kasayı kullanabilirsiniz.</li>
+                                <li>• Tesiste yaşanan hasarlardan misafirler sorumludur.</li>
+                                <li>• İptal işlemleri giriş tarihinden 48 saat önce yapılmalıdır.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="footer">
+                    <div class="contact-info">
+                        <strong>📍 Adres:</strong> Kaplıca Mahallesi, Ayder Yukarı Ambarlık Küme Evler No:282, Çamlıhemşin/Rize<br>
+                        <strong>📞 Telefon:</strong> +90 530 428 93 55<br>
+                        <strong>✉️ E-posta:</strong> ayderkuzeyhouses@gmail.com<br>
+                        <strong>🌐 Web:</strong> www.ayderkuzeyhouses.com
+                    </div>
+                    <p style="margin-top: 15px; font-size: 12px; color: #999;">
+                        Bu belge ${new Date().toLocaleDateString('tr-TR')} tarihinde oluşturulmuştur.
+                    </p>
+                </div>
+            </div>
+        </body>
+        </html>
+    `;
+};
+
 // Rezervasyon bildirimi maili gönder
 export const sendBookingNotification = async (bookingData) => {
     try {
@@ -184,6 +500,9 @@ export const sendCustomerConfirmation = async (bookingData) => {
         const checkOutObj = new Date(check_out);
         const nights = Math.ceil((checkOutObj - checkInObj) / (1000 * 60 * 60 * 24));
 
+        // Rezervasyon belgesi HTML'i oluştur
+        const reservationDocument = generateReservationDocument(bookingData);
+
         const mailOptions = {
             from: {
                 name: 'Ayder Kuzey Evleri',
@@ -191,6 +510,13 @@ export const sendCustomerConfirmation = async (bookingData) => {
             },
             to: guest_email,
             subject: `✅ Rezervasyonunuz Onaylandı - ${booking_id}`,
+            attachments: [
+                {
+                    filename: `Rezervasyon-${booking_id}.html`,
+                    content: reservationDocument,
+                    contentType: 'text/html'
+                }
+            ],
             text: `
 Sayın ${guest_name},
 
@@ -363,4 +689,4 @@ Ayder Kuzey Evleri Ekibi
     }
 };
 
-export default { sendBookingNotification, sendCustomerConfirmation };
+export default { sendBookingNotification, sendCustomerConfirmation, generateReservationDocument };

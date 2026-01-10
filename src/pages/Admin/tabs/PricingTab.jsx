@@ -4,7 +4,19 @@ import { adminSettings } from '../../../services/adminSettings'
 function PricingTab({ pricing, setPricing }) {
     // Bugünün baz fiyatını al
     const todayStr = new Date().toISOString().split('T')[0];
-    const todayBasePrice = adminSettings.getDayData(todayStr).price;
+    const todayData = adminSettings.getDayData(todayStr);
+    const todayBasePrice = todayData && todayData.price ? todayData.price : 1000;
+    
+    // Pricing değerlerinin geçerli olduğundan emin ol
+    const safeAdultIncrement = pricing?.perAdultIncrement || 0;
+    const safeChildIncrement = pricing?.perChildIncrement || 0;
+    
+    // Hesaplama fonksiyonu
+    const calculateTotal = (basePrice, adultCount, childCount) => {
+        const adultExtra = adultCount > 2 ? (adultCount - 2) * safeAdultIncrement : 0;
+        const childExtra = childCount * safeChildIncrement;
+        return basePrice + adultExtra + childExtra;
+    };
 
     return (
         <section className="pricing-section" style={{ background: 'white', padding: '30px', borderRadius: '8px', border: '1px solid #ddd' }}>
@@ -25,8 +37,8 @@ function PricingTab({ pricing, setPricing }) {
                                 type="number"
                                 className="form-control"
                                 style={{ fontSize: '20px', fontWeight: 'bold', padding: '10px' }}
-                                value={pricing.perAdultIncrement}
-                                onChange={(e) => setPricing(adminSettings.updatePricingConfig({ perAdultIncrement: Number(e.target.value) }))}
+                                value={pricing?.perAdultIncrement || 0}
+                                onChange={(e) => setPricing(adminSettings.updatePricingConfig({ perAdultIncrement: Number(e.target.value) || 0 }))}
                             />
                             <span style={{ fontSize: '20px', fontWeight: 'bold', color: '#2d4a3e' }}>₺</span>
                         </div>
@@ -42,8 +54,8 @@ function PricingTab({ pricing, setPricing }) {
                                 type="number"
                                 className="form-control"
                                 style={{ fontSize: '20px', fontWeight: 'bold', padding: '10px' }}
-                                value={pricing.perChildIncrement}
-                                onChange={(e) => setPricing(adminSettings.updatePricingConfig({ perChildIncrement: Number(e.target.value) }))}
+                                value={pricing?.perChildIncrement || 0}
+                                onChange={(e) => setPricing(adminSettings.updatePricingConfig({ perChildIncrement: Number(e.target.value) || 0 }))}
                             />
                             <span style={{ fontSize: '20px', fontWeight: 'bold', color: '#2d4a3e' }}>₺</span>
                         </div>
@@ -71,48 +83,48 @@ function PricingTab({ pricing, setPricing }) {
                         </tr>
                         <tr style={{ borderBottom: '1px solid #f0f0f0' }}>
                             <td style={{ padding: '15px' }}>3 Yetişkin</td>
-                            <td style={{ padding: '15px', color: '#666' }}>{todayBasePrice.toLocaleString()} + {pricing.perAdultIncrement} ₺</td>
-                            <td style={{ padding: '15px', fontWeight: 'bold', color: '#2d4a3e' }}>{(todayBasePrice + pricing.perAdultIncrement).toLocaleString()} ₺</td>
+                            <td style={{ padding: '15px', color: '#666' }}>{todayBasePrice.toLocaleString()} + {safeAdultIncrement} ₺</td>
+                            <td style={{ padding: '15px', fontWeight: 'bold', color: '#2d4a3e' }}>{calculateTotal(todayBasePrice, 3, 0).toLocaleString()} ₺</td>
                         </tr>
                         <tr style={{ borderBottom: '1px solid #f0f0f0' }}>
                             <td style={{ padding: '15px' }}>4 Yetişkin</td>
-                            <td style={{ padding: '15px', color: '#666' }}>{todayBasePrice.toLocaleString()} + {pricing.perAdultIncrement * 2} ₺</td>
-                            <td style={{ padding: '15px', fontWeight: 'bold', color: '#2d4a3e' }}>{(todayBasePrice + pricing.perAdultIncrement * 2).toLocaleString()} ₺</td>
+                            <td style={{ padding: '15px', color: '#666' }}>{todayBasePrice.toLocaleString()} + {safeAdultIncrement * 2} ₺</td>
+                            <td style={{ padding: '15px', fontWeight: 'bold', color: '#2d4a3e' }}>{calculateTotal(todayBasePrice, 4, 0).toLocaleString()} ₺</td>
                         </tr>
                         <tr style={{ borderBottom: '1px solid #f0f0f0' }}>
                             <td style={{ padding: '15px' }}>5 Yetişkin</td>
-                            <td style={{ padding: '15px', color: '#666' }}>{todayBasePrice.toLocaleString()} + {pricing.perAdultIncrement * 3} ₺</td>
-                            <td style={{ padding: '15px', fontWeight: 'bold', color: '#2d4a3e' }}>{(todayBasePrice + pricing.perAdultIncrement * 3).toLocaleString()} ₺</td>
+                            <td style={{ padding: '15px', color: '#666' }}>{todayBasePrice.toLocaleString()} + {safeAdultIncrement * 3} ₺</td>
+                            <td style={{ padding: '15px', fontWeight: 'bold', color: '#2d4a3e' }}>{calculateTotal(todayBasePrice, 5, 0).toLocaleString()} ₺</td>
                         </tr>
                         <tr style={{ borderBottom: '1px solid #f0f0f0' }}>
                             <td style={{ padding: '15px' }}>6 Yetişkin</td>
-                            <td style={{ padding: '15px', color: '#666' }}>{todayBasePrice.toLocaleString()} + {pricing.perAdultIncrement * 4} ₺</td>
-                            <td style={{ padding: '15px', fontWeight: 'bold', color: '#2d4a3e' }}>{(todayBasePrice + pricing.perAdultIncrement * 4).toLocaleString()} ₺</td>
+                            <td style={{ padding: '15px', color: '#666' }}>{todayBasePrice.toLocaleString()} + {safeAdultIncrement * 4} ₺</td>
+                            <td style={{ padding: '15px', fontWeight: 'bold', color: '#2d4a3e' }}>{calculateTotal(todayBasePrice, 6, 0).toLocaleString()} ₺</td>
                         </tr>
                         <tr style={{ borderBottom: '1px solid #f0f0f0', background: '#f0f7ff' }}>
                             <td style={{ padding: '15px' }}>2 Yetişkin + 1 Çocuk</td>
-                            <td style={{ padding: '15px', color: '#666' }}>{todayBasePrice.toLocaleString()} + {pricing.perChildIncrement} ₺</td>
-                            <td style={{ padding: '15px', fontWeight: 'bold', color: '#1565c0' }}>{(todayBasePrice + pricing.perChildIncrement).toLocaleString()} ₺</td>
+                            <td style={{ padding: '15px', color: '#666' }}>{todayBasePrice.toLocaleString()} + {safeChildIncrement} ₺</td>
+                            <td style={{ padding: '15px', fontWeight: 'bold', color: '#1565c0' }}>{calculateTotal(todayBasePrice, 2, 1).toLocaleString()} ₺</td>
                         </tr>
                         <tr style={{ borderBottom: '1px solid #f0f0f0', background: '#f0f7ff' }}>
                             <td style={{ padding: '15px' }}>2 Yetişkin + 2 Çocuk</td>
-                            <td style={{ padding: '15px', color: '#666' }}>{todayBasePrice.toLocaleString()} + {pricing.perChildIncrement * 2} ₺</td>
-                            <td style={{ padding: '15px', fontWeight: 'bold', color: '#1565c0' }}>{(todayBasePrice + pricing.perChildIncrement * 2).toLocaleString()} ₺</td>
+                            <td style={{ padding: '15px', color: '#666' }}>{todayBasePrice.toLocaleString()} + {safeChildIncrement * 2} ₺</td>
+                            <td style={{ padding: '15px', fontWeight: 'bold', color: '#1565c0' }}>{calculateTotal(todayBasePrice, 2, 2).toLocaleString()} ₺</td>
                         </tr>
                         <tr style={{ borderBottom: '1px solid #f0f0f0', background: '#f0f7ff' }}>
                             <td style={{ padding: '15px' }}>2 Yetişkin + 3 Çocuk</td>
-                            <td style={{ padding: '15px', color: '#666' }}>{todayBasePrice.toLocaleString()} + {pricing.perChildIncrement * 3} ₺</td>
-                            <td style={{ padding: '15px', fontWeight: 'bold', color: '#1565c0' }}>{(todayBasePrice + pricing.perChildIncrement * 3).toLocaleString()} ₺</td>
+                            <td style={{ padding: '15px', color: '#666' }}>{todayBasePrice.toLocaleString()} + {safeChildIncrement * 3} ₺</td>
+                            <td style={{ padding: '15px', fontWeight: 'bold', color: '#1565c0' }}>{calculateTotal(todayBasePrice, 2, 3).toLocaleString()} ₺</td>
                         </tr>
                         <tr style={{ borderBottom: '1px solid #f0f0f0', background: '#fff8e1' }}>
                             <td style={{ padding: '15px' }}>3 Yetişkin + 2 Çocuk</td>
-                            <td style={{ padding: '15px', color: '#666' }}>{todayBasePrice.toLocaleString()} + {pricing.perAdultIncrement} + {pricing.perChildIncrement * 2} ₺</td>
-                            <td style={{ padding: '15px', fontWeight: 'bold', color: '#f57c00' }}>{(todayBasePrice + pricing.perAdultIncrement + pricing.perChildIncrement * 2).toLocaleString()} ₺</td>
+                            <td style={{ padding: '15px', color: '#666' }}>{todayBasePrice.toLocaleString()} + {safeAdultIncrement} + {safeChildIncrement * 2} ₺</td>
+                            <td style={{ padding: '15px', fontWeight: 'bold', color: '#f57c00' }}>{calculateTotal(todayBasePrice, 3, 2).toLocaleString()} ₺</td>
                         </tr>
                         <tr style={{ borderBottom: '1px solid #f0f0f0', background: '#fff8e1' }}>
                             <td style={{ padding: '15px' }}>4 Yetişkin + 2 Çocuk</td>
-                            <td style={{ padding: '15px', color: '#666' }}>{todayBasePrice.toLocaleString()} + {pricing.perAdultIncrement * 2} + {pricing.perChildIncrement * 2} ₺</td>
-                            <td style={{ padding: '15px', fontWeight: 'bold', color: '#f57c00' }}>{(todayBasePrice + pricing.perAdultIncrement * 2 + pricing.perChildIncrement * 2).toLocaleString()} ₺</td>
+                            <td style={{ padding: '15px', color: '#666' }}>{todayBasePrice.toLocaleString()} + {safeAdultIncrement * 2} + {safeChildIncrement * 2} ₺</td>
+                            <td style={{ padding: '15px', fontWeight: 'bold', color: '#f57c00' }}>{calculateTotal(todayBasePrice, 4, 2).toLocaleString()} ₺</td>
                         </tr>
                     </tbody>
                 </table>

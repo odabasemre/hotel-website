@@ -51,7 +51,7 @@ const defaultSiteTexts = {
     },
     contact: {
         phone: '+90 555 123 4567',
-        email: 'info@ayderkuzeyhouses.com',
+        email: 'ayderkuzeyhouses@gmail.com',
         address: 'Ayder Yaylası, Çamlıhemşin, Rize'
     }
 };
@@ -470,11 +470,13 @@ export const adminSettings = {
             if (!saved) return defaultPricing;
             const parsed = JSON.parse(saved);
             return {
-                baseGuests: parsed.baseGuests || 2,
-                basePrice: parsed.basePrice || 5000,
-                perPersonIncrement: parsed.perPersonIncrement || 500,
-                maxGuests: parsed.maxGuests || 7,
-                guestPricing: parsed.guestPricing || defaultPricing.guestPricing
+                baseGuests: parsed.baseGuests || defaultPricing.baseGuests,
+                basePrice: parsed.basePrice || defaultPricing.basePrice,
+                perAdultIncrement: parsed.perAdultIncrement || defaultPricing.perAdultIncrement,
+                perChildIncrement: parsed.perChildIncrement || defaultPricing.perChildIncrement,
+                maxAdults: parsed.maxAdults || defaultPricing.maxAdults,
+                maxChildren: parsed.maxChildren || defaultPricing.maxChildren,
+                maxTotalOccupancy: parsed.maxTotalOccupancy || defaultPricing.maxTotalOccupancy
             };
         } catch (e) {
             return defaultPricing;
@@ -488,17 +490,6 @@ export const adminSettings = {
     updatePricingConfig: (config) => {
         const pricing = adminSettings.getPricing();
         const updated = { ...pricing, ...config };
-
-        const newPricing = {
-            1: updated.basePrice,
-            2: updated.basePrice
-        };
-
-        for (let i = 3; i <= updated.maxGuests; i++) {
-            newPricing[i] = updated.basePrice + ((i - 2) * updated.perPersonIncrement);
-        }
-
-        updated.guestPricing = newPricing;
         adminSettings.savePricing(updated);
         return updated;
     },

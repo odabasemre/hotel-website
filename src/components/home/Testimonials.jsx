@@ -31,8 +31,8 @@ function Testimonials() {
         <section className="testimonials-section" id="testimonials">
             <div className="container-fluid">
                 <div className="section-header">
-                    <p className="section-subtitle">{t('testimonials.subtitle')}</p>
-                    <h2 className="section-title">{t('testimonials.title')}</h2>
+                    <h2 className="section-title">{t('testimonials.subtitle')}</h2>
+                    <p className="section-subtitle">{t('testimonials.title')}</p>
                 </div>
 
                 <div className="testimonials-slider">

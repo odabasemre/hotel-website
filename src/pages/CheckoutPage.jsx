@@ -20,6 +20,7 @@ function CheckoutPage() {
     const [distanceSalesRead, setDistanceSalesRead] = useState(false)
     const [showPrivacyModal, setShowPrivacyModal] = useState(false)
     const [showDistanceSalesModal, setShowDistanceSalesModal] = useState(false)
+    const [roomImage, setRoomImage] = useState('https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=400')
 
     // Kişisel bilgiler - bookingData'dan gelen değerleri kullan
     const [guestInfo, setGuestInfo] = useState({
@@ -65,6 +66,21 @@ function CheckoutPage() {
             })
         }
     }, [bookingData])
+
+    // Oda resmini site ayarlarından çek
+    useEffect(() => {
+        const fetchRoomImage = async () => {
+            try {
+                const data = await adminSettings.getSiteImages()
+                if (data?.rooms?.slide1) {
+                    setRoomImage(data.rooms.slide1)
+                }
+            } catch (error) {
+                console.error('Oda resmi yüklenemedi:', error)
+            }
+        }
+        fetchRoomImage()
+    }, [])
 
     useEffect(() => {
         if (!bookingData) navigate('/rooms/bungalov')
@@ -449,13 +465,12 @@ function CheckoutPage() {
                             {/* Oda Bilgileri */}
                             <div className="summary-room">
                                 <img 
-                                    src="/uploads/rooms/room-main.jpg" 
+                                    src={roomImage} 
                                     alt="Oda" 
                                     onError={(e) => e.target.src = 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=400'}
                                 />
                                 <div className="room-info">
                                     <h4>Nehir Manzaralı Bungalov</h4>
-                                    <p>Jakuzi • Şömine • Balkon</p>
                                 </div>
                             </div>
 

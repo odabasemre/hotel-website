@@ -10,6 +10,10 @@ function PromotionsTab({
 }) {
     // Ensure promotions is always an array
     const safePromotions = Array.isArray(promotions) ? promotions : []
+    
+    // Edit mode state
+    const [isEditing, setIsEditing] = React.useState(false)
+    const [editingPromo, setEditingPromo] = React.useState(null)
 
     const handleAddPromo = (e) => {
         e.preventDefault()
@@ -20,30 +24,45 @@ function PromotionsTab({
                 value: Number(newPromo.value),
                 status: newPromo.status
             }
-            adminSettings.addPromotion(promo)
+            
+            if (isEditing && editingPromo) {
+                // Update existing promo
+                adminSettings.updatePromotion(editingPromo.id, promo)
+                setIsEditing(false)
+                setEditingPromo(null)
+            } else {
+                // Add new promo
+                adminSettings.addPromotion(promo)
+            }
+            
             // Refresh from localStorage
             setPromotions(adminSettings.getPromotions())
             setNewPromo({ code: '', type: 'amount', value: '', status: 'active' })
         } catch (error) {
-            console.error('Error adding promo:', error)
-            alert('Promosyon eklenirken bir hata oluştu')
+            console.error('Error adding/updating promo:', error)
+            alert('Promosyon işlenirken bir hata oluştu')
         }
     }
 
     const handleEditPromo = (promo) => {
         try {
+            setIsEditing(true)
+            setEditingPromo(promo)
             setNewPromo({
                 code: promo.code,
                 type: promo.type,
                 value: promo.value,
                 status: promo.status
             })
-            // Delete old one first
-            adminSettings.deletePromotion(promo.id)
-            setPromotions(adminSettings.getPromotions())
         } catch (error) {
             console.error('Error editing promo:', error)
         }
+    }
+    
+    const handleCancelEdit = () => {
+        setIsEditing(false)
+        setEditingPromo(null)
+        setNewPromo({ code: '', type: 'amount', value: '', status: 'active' })
     }
 
     const handleDeletePromo = (id) => {
@@ -64,7 +83,14 @@ function PromotionsTab({
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '30px' }}>
                 {/* Form */}
                 <div style={{ background: '#f9fafb', padding: '20px', borderRadius: '8px', height: 'fit-content' }}>
-                    <h3 style={{ marginTop: 0, fontSize: '16px' }}>Yeni Kod Ekle</h3>
+                    <h3 style={{ marginTop: 0, fontSize: '16px', color: isEditing ? '#e67e22' : '#333' }}>
+                        {isEditing ? 'Promosyonu Düzenle' : 'Yeni Kod Ekle'}
+                    </h3>
+                    {isEditing && (
+                        <div style={{ background: '#fff3cd', padding: '10px', borderRadius: '4px', marginBottom: '15px', fontSize: '14px', color: '#856404' }}>
+                            <strong>{editingPromo?.code}</strong> kodunu düzenliyorsunuz
+                        </div>
+                    )}
                     <form onSubmit={handleAddPromo}>
                         <div className="form-group">
                             <label>Promosyon Kodu</label>
@@ -111,7 +137,19 @@ function PromotionsTab({
                                 <option value="inactive">Pasif</option>
                             </select>
                         </div>
-                        <button type="submit" className="btn-primary" style={{ width: '100%' }}>Oluştur</button>
+                        <button type="submit" className="btn-primary" style={{ width: '100%', marginBottom: isEditing ? '10px' : '0' }}>
+                            {isEditing ? 'Güncelle' : 'Oluştur'}
+                        </button>
+                        {isEditing && (
+                            <button 
+                                type="button" 
+                                onClick={handleCancelEdit}
+                                className="btn-secondary" 
+                                style={{ width: '100%', background: '#6c757d', color: 'white', border: 'none', padding: '10px', borderRadius: '4px' }}
+                            >
+                                İptal
+                            </button>
+                        )}
                     </form>
                 </div>
 

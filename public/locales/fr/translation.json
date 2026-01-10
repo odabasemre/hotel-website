@@ -84,7 +84,7 @@
         "subtitle": "Confort et Sérénité",
         "roomName": "Bungalow au Bord de la Rivière",
         "shortDescription": "Situé au bord de la rivière dans la nature unique d'Ayder, notre bungalow offre aux clients une expérience d'hébergement paisible. Créez des souvenirs inoubliables dans cet endroit spécial où les équipements modernes rencontrent la touche traditionnelle.",
-        "fullDescription": "Notre bungalow, situé juste au bord de la rivière, vous permet de vous réveiller en écoutant les sons de la nature. Idéal pour les familles et les groupes d'amis avec 45 m² d'espace et une capacité d'hébergement jusqu'à 7 personnes. Tous les équipements incluant cuisine moderne, salle de bain privée, chauffage et WiFi haut débit sont disponibles.",
+        "fullDescription": "Notre bungalow, situé juste au bord de la rivière, vous permet de vous réveiller en écoutant les sons de la nature. Idéal pour les familles et les groupes d'amis avec 45 m² d'espace et une capacité d'hébergement jusqu'à 8 personnes. Tous les équipements incluant cuisine moderne, salle de bain privée, chauffage et WiFi haut débit sont disponibles.",
         "guests": "Personnes",
         "area": "Surface",
         "bedrooms": "Chambres",
@@ -174,7 +174,6 @@
         "followUs": "Suivez-nous"
     },
     "footer": {
-        "description": "Découvrez le luxe et le confort dans notre hôtel boutique. Nous offrons un service exceptionnel et des expériences inoubliables.",
         "quickLinks": "Liens Rapides",
         "contactInfo": "Coordonnées",
         "newsletter": "Newsletter",

@@ -8,7 +8,7 @@ const roomData = {
         '/images/rooms/room3.jpg',
         '/images/rooms/room4.jpg',
     ],
-    capacity: 7,
+    capacity: 8,
     size: 45,
     bedrooms: 2,
     bathrooms: 1,

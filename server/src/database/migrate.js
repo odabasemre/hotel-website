@@ -135,7 +135,7 @@ END $$;
 -- Varsayılan ayarları ekle
 INSERT INTO settings (key, value) VALUES 
     ('general', '{"nightlyPrice": 5000, "totalRooms": 2, "currency": "TRY"}'),
-    ('contact', '{"phone": "+90 555 123 4567", "email": "info@ayderkuzeyhouses.com", "address": "Ayder Yaylası, Çamlıhemşin, Rize"}')
+    ('contact', '{"phone": "+90 555 123 4567", "email": "ayderkuzeyhouses@gmail.com", "address": "Ayder Yaylası, Çamlıhemşin, Rize"}')
 ON CONFLICT (key) DO NOTHING;
 
 -- Varsayılan admin kullanıcı (şifre: admin123)

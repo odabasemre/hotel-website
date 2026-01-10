@@ -1,17 +1,22 @@
 import { useTranslation } from 'react-i18next'
 import { adminSettings } from '../../services/adminSettings'
-import { getAllActiveServices, getFeaturedServices, getServicesByCategory, serviceCategories } from '../../data/servicesData'
 
 function Services() {
     const { t } = useTranslation()
     const propertyData = adminSettings.getPropertyData()
 
-    // Aktif servisleri al (disabled olmayan)
-    const amenities = getAllActiveServices()
-
-    // Get images from admin settings or use defaults
-    const servicesImage1 = propertyData.siteImages?.services?.image1 || 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
-    const servicesImage2 = propertyData.siteImages?.services?.image2 || 'https://images.unsplash.com/photo-1590490360182-c33d57733427?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+    // Odalar sayfasındaki ile aynı özellikler listesi (emojili)
+    const featuresList = [
+        { key: 'riverView', icon: '🏞️' },
+        { key: 'privateBalcony', icon: '🌿' },
+        { key: 'kitchen', icon: '🍳' },
+        { key: 'heating', icon: '🔥' },
+        { key: 'wifi', icon: '📶' },
+        { key: 'tv', icon: '📺' },
+        { key: 'hairDryer', icon: '💨' },
+        { key: 'towels', icon: '🛁' },
+        { key: 'parking', icon: '🚗' },
+    ]
 
     return (
         <section className="services section">
@@ -19,57 +24,41 @@ function Services() {
                 {/* Section Header */}
                 <div className="services-header">
                     <h2>
-                        {t('services.title')}
+                        {t('rooms.amenities')}
                     </h2>
-                    <p className="services-subtitle">
-                        {t('services.subtitle')}
-                    </p>
                 </div>
 
-                {/* Modern Amenities Grid */}
-                <div className="amenities-grid">
-                    {amenities.map((amenity) => (
-                        <div className="amenity-card" key={amenity.key}>
-                            <div className="amenity-icon">
-                                {amenity.icon}
-                            </div>
-                            <div className="amenity-content">
-                                <h4>{t(`services.${amenity.key}.title`)}</h4>
-                                <p>{t(`services.${amenity.key}.description`)}</p>
-                            </div>
+                {/* Features Grid - Same as RoomsPage */}
+                <div className="features-grid" style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(3, 1fr)',
+                    gap: '16px',
+                    background: '#faf9f7',
+                    padding: '40px',
+                    borderRadius: '20px'
+                }}>
+                    {featuresList.map((feature) => (
+                        <div className="feature-item" key={feature.key} style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '16px',
+                            padding: '20px 24px',
+                            background: 'white',
+                            borderRadius: '12px',
+                            border: '1px solid #e8e6e3',
+                            transition: 'all 0.3s ease'
+                        }}>
+                            <span className="feature-icon" style={{ fontSize: '28px' }}>{feature.icon}</span>
+                            <span className="feature-text" style={{
+                                fontSize: '14px',
+                                fontWeight: '600',
+                                color: '#1a362d',
+                                textTransform: 'uppercase',
+                                letterSpacing: '0.5px'
+                            }}>{t(`rooms.features.${feature.key}`)}</span>
                         </div>
                     ))}
                 </div>
-
-                {/* Kategorili görünüm için alternatif layout (opsiyonel) */}
-                {/* Eğer kategorili gösterim istersen bunu aktif et, üstteki grid'i kapat */}
-                {/* 
-                <div className="services-categories">
-                    {Object.entries(serviceCategories).map(([categoryKey, category]) => {
-                        const categoryServices = getServicesByCategory(categoryKey)
-                        if (categoryServices.length === 0) return null
-                        
-                        return (
-                            <div key={categoryKey} className="service-category">
-                                <h3 style={{ color: category.color }}>{category.title}</h3>
-                                <div className="category-services">
-                                    {categoryServices.map((service) => (
-                                        <div className="amenity-card small" key={service.key}>
-                                            <div className="amenity-icon">
-                                                {service.icon}
-                                            </div>
-                                            <div className="amenity-content">
-                                                <h4>{t(`services.${service.key}.title`)}</h4>
-                                                <p>{t(`services.${service.key}.description`)}</p>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        )
-                    })}
-                </div>
-                */}
             </div>
         </section>
     )

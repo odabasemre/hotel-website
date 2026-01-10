@@ -188,7 +188,7 @@ function AdminPage() {
                     <h2 style={{ marginBottom: '20px', color: '#2d4a3e' }}>Admin Paneli</h2>
                     <input
                         type="password"
-                        placeholder="Şifre (admin123)"
+                        placeholder="Şifrenizi giriniz"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         style={{ width: '100%', padding: '12px', marginBottom: '20px', border: '1px solid #ddd', borderRadius: '4px' }}

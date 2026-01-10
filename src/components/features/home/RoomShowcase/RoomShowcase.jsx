@@ -47,6 +47,18 @@ const ArrowRightIcon = () => (
     </svg>
 )
 
+const ChevronLeftIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+        <polyline points="15 18 9 12 15 6" />
+    </svg>
+)
+
+const ChevronRightIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+        <polyline points="9 18 15 12 9 6" />
+    </svg>
+)
+
 function RoomShowcase() {
     const { t } = useTranslation()
     const [propertyData, setPropertyData] = useState(adminSettings.getPropertyData())
@@ -64,26 +76,47 @@ function RoomShowcase() {
         loadData()
     }, [])
 
-    // Get room images from admin settings or defaults
-    const rooms = propertyData?.siteImages?.rooms || {}
-    const roomImages = Object.keys(rooms)
-        .filter(key => key.startsWith('slide') && rooms[key])
-        .sort((a, b) => {
-            const numA = parseInt(a.replace('slide', ''))
-            const numB = parseInt(b.replace('slide', ''))
-            return numA - numB
-        })
-        .map(key => rooms[key])
+    // Get room images from rooms section in siteImages (same as RoomsPage)
+    const getRoomSlideImages = () => {
+        const rooms = propertyData?.siteImages?.rooms || {}
+        const images = []
+        for (let i = 1; i <= 8; i++) {
+            const img = rooms[`slide${i}`]
+            if (img) {
+                // Cache busting for uploaded images
+                const imgUrl = img.startsWith('/uploads') ? `${img}?t=${Date.now()}` : img
+                images.push(imgUrl)
+            }
+        }
+        // If no images, use defaults
+        if (images.length === 0) {
+            return [
+                'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
+                'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80',
+                'https://images.unsplash.com/photo-1618773928121-c32242e63f39?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                'https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                'https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                'https://images.unsplash.com/photo-1590490360182-c33d57733427?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+            ]
+        }
+        return images
+    }
+    
+    const roomImages = getRoomSlideImages()
 
-    const handlePrevImage = () => {
-        setCurrentImageIndex((prev) => (prev === 0 ? roomImages.length - 1 : prev - 1))
+    const nextImage = () => {
+        setCurrentImageIndex((prev) => (prev + 1) % roomImages.length)
     }
 
-    const handleNextImage = () => {
-        setCurrentImageIndex((prev) => (prev === roomImages.length - 1 ? 0 : prev + 1))
+    const prevImage = () => {
+        setCurrentImageIndex((prev) => (prev - 1 + roomImages.length) % roomImages.length)
     }
 
-    const currentImage = roomImages[currentImageIndex] || '/images/rooms/room1.jpg'
+    const goToImage = (index) => {
+        setCurrentImageIndex(index)
+    }
 
     return (
         <section className="room-showcase-section">
@@ -96,44 +129,52 @@ function RoomShowcase() {
 
                 {/* Room Card */}
                 <div className="room-showcase-card">
-                    {/* Room Image */}
+                    {/* Room Image - Same as RoomsPage */}
                     <div className="room-showcase-image">
-                        <img src={currentImage} alt={t('rooms.roomName')} />
-                        <div className="room-image-overlay">
-                            <span className="room-badge">PREMIUM</span>
+                        {/* Main Image */}
+                        <img 
+                            src={roomImages[currentImageIndex]} 
+                            alt={`Oda ${currentImageIndex + 1}`}
+                            className="room-gallery-main-image"
+                            onError={(e) => {
+                                e.target.src = "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
+                            }}
+                        />
+                        
+                        {/* Navigation Overlay */}
+                        <div className="room-gallery-nav-overlay">
+                            {/* Previous Button */}
+                            <button
+                                onClick={prevImage}
+                                className="room-gallery-nav-btn"
+                            >
+                                <ChevronLeftIcon />
+                            </button>
+
+                            {/* Next Button */}
+                            <button
+                                onClick={nextImage}
+                                className="room-gallery-nav-btn"
+                            >
+                                <ChevronRightIcon />
+                            </button>
                         </div>
-                        
-                        {/* Navigation Arrows */}
-                        {roomImages.length > 1 && (
-                            <>
-                                <button className="room-image-nav room-image-prev" onClick={handlePrevImage}>
-                                    <ArrowRightIcon />
-                                </button>
-                                <button className="room-image-nav room-image-next" onClick={handleNextImage}>
-                                    <ArrowRightIcon />
-                                </button>
-                            </>
-                        )}
-                        
-                        {/* Image Counter */}
-                        {roomImages.length > 1 && (
-                            <div className="room-image-counter">
-                                {currentImageIndex + 1} / {roomImages.length}
-                            </div>
-                        )}
-                        
+
+                        {/* Image Counter Badge */}
+                        <div className="room-gallery-counter">
+                            {currentImageIndex + 1} / {roomImages.length}
+                        </div>
+
                         {/* Dots Navigation */}
-                        {roomImages.length > 1 && (
-                            <div className="room-image-dots">
-                                {roomImages.map((_, index) => (
-                                    <button
-                                        key={index}
-                                        className={`room-dot ${index === currentImageIndex ? 'active' : ''}`}
-                                        onClick={() => setCurrentImageIndex(index)}
-                                    />
-                                ))}
-                            </div>
-                        )}
+                        <div className="room-gallery-dots">
+                            {roomImages.map((_, index) => (
+                                <button
+                                    key={index}
+                                    onClick={() => goToImage(index)}
+                                    className={`room-gallery-dot ${index === currentImageIndex ? 'active' : ''}`}
+                                />
+                            ))}
+                        </div>
                     </div>
 
                     {/* Room Content */}
