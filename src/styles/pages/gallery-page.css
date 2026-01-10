@@ -42,7 +42,7 @@
     height: 400px;
     overflow: hidden;
     cursor: pointer;
-    border-radius: var(--radius-sm);
+    border-radius: 20px;
 }
 
 /* Make some items span differently for a modern "bento" look */

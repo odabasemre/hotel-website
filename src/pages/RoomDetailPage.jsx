@@ -243,16 +243,25 @@ function RoomDetailPage() {
     // Calendar navigation
     const nextMonth = () => {
         const next = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1)
-        if (next <= new Date(2026, 9, 1)) setCurrentDate(next)
+        setCurrentDate(next)
     }
 
     const prevMonth = () => {
         const prev = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1)
-        if (prev >= new Date()) setCurrentDate(prev)
+        const today = new Date()
+        today.setHours(0, 0, 0, 0)
+        
+        // Sadece geçmiş ayları (bugünden önceki ayları) engelle
+        // Ama bugünün içinde olduğu ayı ve gelecekteki ayları göster
+        const lastDayOfPrevMonth = new Date(prev.getFullYear(), prev.getMonth() + 1, 0)
+        if (lastDayOfPrevMonth >= today) {
+            setCurrentDate(prev)
+        }
     }
 
     const handleDateClick = (day) => {
         const selectedDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day)
+        selectedDate.setHours(0, 0, 0, 0) // Saati sıfırla
         const today = new Date()
         today.setHours(0, 0, 0, 0)
         if (selectedDate < today) return
@@ -285,13 +294,17 @@ function RoomDetailPage() {
 
     const isDateSelected = (day) => {
         const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), day)
+        date.setHours(0, 0, 0, 0) // Saati sıfırla
         if (!checkIn) return false
-        if (checkOut) return date >= checkIn && date <= checkOut
+        if (checkOut) return date >= checkIn && date < checkOut // Çıkış günü dahil değil (o gün çıkıyorsun)
         return date.getTime() === checkIn.getTime()
     }
 
     const days = [...Array(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate()).keys()].map(i => i + 1)
-    const emptyDays = [...Array(new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).getDay()).keys()]
+    // Pazartesi = 0, Pazar = 6 olacak şekilde ayarla (takvim Pazartesi ile başlıyor)
+    const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).getDay()
+    const adjustedFirstDay = firstDayOfMonth === 0 ? 6 : firstDayOfMonth - 1
+    const emptyDays = [...Array(adjustedFirstDay).keys()]
 
     // Form handlers
     const handleNameChange = (e) => {
@@ -347,130 +360,65 @@ function RoomDetailPage() {
 
     return (
         <div className="rdp">
-            {/* Hero Gallery */}
-            <section className="rdp-hero">
-                <div className="rdp-gallery">
-                    {roomImages.length > 0 && (
-                        <>
-                            <div className="rdp-main-image">
-                                <img src={roomImages[currentImageIndex]} alt={t('rooms.roomName')} />
-                                <div className="rdp-image-overlay" />
-                                
-                                <div className="rdp-hero-content">
-                                    <span className="rdp-badge">Premium Konaklama</span>
-                                    <h1 className="rdp-hero-title">{t('rooms.roomName')}</h1>
-                                    <p className="rdp-hero-subtitle">{t('rooms.subtitle')}</p>
-                                </div>
-
-                                {roomImages.length > 1 && (
-                                    <>
-                                        <button className="rdp-nav rdp-nav-prev" onClick={() => setCurrentImageIndex((currentImageIndex - 1 + roomImages.length) % roomImages.length)}>
-                                            <Icons.ChevronLeft />
-                                        </button>
-                                        <button className="rdp-nav rdp-nav-next" onClick={() => setCurrentImageIndex((currentImageIndex + 1) % roomImages.length)}>
-                                            <Icons.ChevronRight />
-                                        </button>
-                                        <div className="rdp-counter">{currentImageIndex + 1} / {roomImages.length}</div>
-                                    </>
-                                )}
-                            </div>
-
-                            {roomImages.length > 1 && (
-                                <div className="rdp-thumbnails">
-                                    {roomImages.map((img, idx) => (
-                                        <button
-                                            key={idx}
-                                            className={`rdp-thumb ${idx === currentImageIndex ? 'active' : ''}`}
-                                            onClick={() => setCurrentImageIndex(idx)}
-                                        >
-                                            <img src={img} alt={`View ${idx + 1}`} />
-                                        </button>
-                                    ))}
-                                </div>
-                            )}
-                        </>
-                    )}
-                </div>
-            </section>
-
-            {/* Quick Stats Bar */}
-            <section className="rdp-stats-bar">
-                <div className="rdp-container">
-                    <div className="rdp-stats">
-                        <div className="rdp-stat">
-                            <Icons.Maximize />
-                            <div>
-                                <span className="rdp-stat-value">{roomData.size} m²</span>
-                                <span className="rdp-stat-label">{t('rooms.area')}</span>
-                            </div>
-                        </div>
-                        <div className="rdp-stat">
-                            <Icons.Bed />
-                            <div>
-                                <span className="rdp-stat-value">{roomData.bedrooms}</span>
-                                <span className="rdp-stat-label">{t('rooms.bedrooms')}</span>
-                            </div>
-                        </div>
-                        <div className="rdp-stat">
-                            <Icons.Bath />
-                            <div>
-                                <span className="rdp-stat-value">{roomData.bathrooms}</span>
-                                <span className="rdp-stat-label">{t('rooms.bathrooms')}</span>
-                            </div>
-                        </div>
-                        <div className="rdp-stat">
-                            <Icons.Users />
-                            <div>
-                                <span className="rdp-stat-value">{roomData.capacity}</span>
-                                <span className="rdp-stat-label">{t('rooms.guests')}</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
             {/* Main Content */}
             <main className="rdp-main">
                 <div className="rdp-container">
-                    <div className="rdp-layout">
-                        {/* Left: Info */}
-                        <div className="rdp-info">
-                            <div className="rdp-section">
-                                <h2 className="rdp-section-title">Hakkında</h2>
-                                <p className="rdp-description">{t('rooms.fullDescription')}</p>
-                            </div>
+                    <div className="rdp-booking-title-header">
+                        <h1>Rezervasyon</h1>
+                        <p>Giriş ve çıkış tarihlerinizi belirleyerek anında müsaitlik kontrolü yapabilir ve rezervasyonunuzu tamamlayabilirsiniz.</p>
+                    </div>
 
-                            <div className="rdp-section">
-                                <h2 className="rdp-section-title">{t('rooms.amenities')}</h2>
-                                <div className="rdp-features">
-                                    {featuresList.map((key) => {
-                                        const IconComponent = featureIconMap[key] || Icons.Check
-                                        return (
-                                            <div className="rdp-feature" key={key}>
-                                                <div className="rdp-feature-icon">
-                                                    <IconComponent />
+                    <div className="rdp-layout-two-column">
+                        {/* Left: Calendar */}
+                        <div className="rdp-calendar-column">
+                            <div className="rdp-calendar-card">
+                                <div className={`rdp-calendar-section ${!isGuestConfirmed ? 'locked' : ''}`}>
+                                    <div className="rdp-calendar-header">
+                                        <button onClick={prevMonth}><Icons.ChevronLeft /></button>
+                                        <span>{currentDate.toLocaleString(i18n.language, { month: 'long', year: 'numeric' })}</span>
+                                        <button onClick={nextMonth}><Icons.ChevronRight /></button>
+                                    </div>
+
+                                    <div className="rdp-calendar">
+                                        {['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz'].map(d => (
+                                            <div key={d} className="rdp-cal-day-name">{d}</div>
+                                        ))}
+                                        {emptyDays.map(i => <div key={`e-${i}`} className="rdp-cal-day empty" />)}
+                                        {days.map(day => {
+                                            const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), day)
+                                            const today = new Date(); today.setHours(0, 0, 0, 0)
+                                            const isPast = date < today
+                                            const isBusy = isDateBusy(date)
+                                            const isAlmostFull = isDateAlmostFull(date)
+                                            const price = getPriceForDate(date, adults, children)
+                                            const canSelectAsCheckout = checkIn && !checkOut && date > checkIn && isBusy
+                                            const isClickable = !isPast && isGuestConfirmed && (!isBusy || canSelectAsCheckout)
+
+                                            return (
+                                                <div
+                                                    key={day}
+                                                    className={`rdp-cal-day ${isDateSelected(day) ? 'selected' : ''} ${isBusy && !canSelectAsCheckout ? 'busy' : ''} ${isPast ? 'past' : ''}`}
+                                                    onClick={() => isClickable && handleDateClick(day)}
+                                                >
+                                                    {isAlmostFull && !isBusy && !isPast && (
+                                                        <span className="rdp-cal-almost">Dolmak Üzere !</span>
+                                                    )}
+                                                    <span className="rdp-cal-num">{day}</span>
+                                                    {!isBusy && !isPast && isGuestConfirmed && (
+                                                        <span className="rdp-cal-price">{price.toLocaleString('tr-TR')} ₺</span>
+                                                    )}
+                                                    {isBusy && !isPast && <span className="rdp-cal-busy">Dolu</span>}
                                                 </div>
-                                                <span>{t(`rooms.features.${key}`)}</span>
-                                            </div>
-                                        )
-                                    })}
+                                            )
+                                        })}
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        {/* Right: Booking */}
-                        <div className="rdp-booking">
+                        {/* Right: Booking Info */}
+                        <div className="rdp-booking-column">
                             <div className="rdp-booking-card">
-                                <div className="rdp-booking-header">
-                                    <div>
-                                        <span className="rdp-price-label">Gecelik fiyatlar</span>
-                                        <div className="rdp-price">
-                                            <span className="rdp-price-amount">{getPriceForDate(new Date(), 2, 0).toLocaleString()}₺</span>
-                                            <span className="rdp-price-suffix">'den başlayan</span>
-                                        </div>
-                                    </div>
-                                </div>
-
                                 {/* Guest Selection */}
                                 <div className={`rdp-guest-section ${isGuestConfirmed ? 'confirmed' : ''}`}>
                                     <div className="rdp-guest-header">
@@ -518,46 +466,6 @@ function RoomDetailPage() {
                                             )}
                                         </div>
                                     )}
-                                </div>
-
-                                {/* Calendar */}
-                                <div className={`rdp-calendar-section ${!isGuestConfirmed ? 'locked' : ''}`}>
-                                    <div className="rdp-calendar-header">
-                                        <button onClick={prevMonth}><Icons.ChevronLeft /></button>
-                                        <span>{currentDate.toLocaleString(i18n.language, { month: 'long', year: 'numeric' })}</span>
-                                        <button onClick={nextMonth}><Icons.ChevronRight /></button>
-                                    </div>
-
-                                    <div className="rdp-calendar">
-                                        {['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz'].map(d => (
-                                            <div key={d} className="rdp-cal-day-name">{d}</div>
-                                        ))}
-                                        {emptyDays.map(i => <div key={`e-${i}`} className="rdp-cal-day empty" />)}
-                                        {days.map(day => {
-                                            const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), day)
-                                            const today = new Date(); today.setHours(0, 0, 0, 0)
-                                            const isPast = date < today
-                                            const isBusy = isDateBusy(date)
-                                            const isAlmostFull = isDateAlmostFull(date)
-                                            const price = getPriceForDate(date, adults, children)
-                                            const canSelectAsCheckout = checkIn && !checkOut && date > checkIn && isBusy
-                                            const isClickable = !isPast && isGuestConfirmed && (!isBusy || canSelectAsCheckout)
-
-                                            return (
-                                                <div
-                                                    key={day}
-                                                    className={`rdp-cal-day ${isDateSelected(day) ? 'selected' : ''} ${isBusy && !canSelectAsCheckout ? 'busy' : ''} ${isAlmostFull ? 'almost' : ''} ${isPast ? 'past' : ''}`}
-                                                    onClick={() => isClickable && handleDateClick(day)}
-                                                >
-                                                    <span className="rdp-cal-num">{day}</span>
-                                                    {!isBusy && !isPast && isGuestConfirmed && (
-                                                        <span className="rdp-cal-price">{Math.round(price / 1000)}k</span>
-                                                    )}
-                                                    {isBusy && !isPast && <span className="rdp-cal-busy">Dolu</span>}
-                                                </div>
-                                            )
-                                        })}
-                                    </div>
                                 </div>
 
                                 {/* Summary */}

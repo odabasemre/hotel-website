@@ -29,7 +29,7 @@
     grid-template-columns: 1.2fr 1fr;
     gap: 40px;
     background: white;
-    border-radius: 16px;
+    border-radius: 24px;
     overflow: hidden;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -90,23 +90,26 @@
 }
 
 .room-name {
-    font-size: 32px;
-    font-weight: 700;
+    font-size: 36px;
+    font-weight: 600;
     color: #1a362d;
     margin-bottom: 16px;
     font-family: 'Cormorant Garamond', serif;
+    line-height: 1.3;
 }
 
 .room-short-desc {
-    font-size: 16px;
-    line-height: 1.7;
-    color: #555;
+    font-size: 15px;
+    line-height: 1.8;
+    color: #666;
     margin-bottom: 30px;
+    font-weight: 400;
 }
 
 .room-quick-features {
-    display: flex;
-    gap: 30px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
     margin-bottom: 30px;
     padding-bottom: 30px;
     border-bottom: 1px solid #e5e7eb;
@@ -115,40 +118,155 @@
 .quick-feature {
     display: flex;
     align-items: center;
-    gap: 12px;
-    color: #1a362d;
-    font-weight: 600;
+    gap: 10px;
+    color: #333;
+    font-weight: 500;
     font-size: 15px;
 }
 
 .quick-feature svg {
-    width: 24px;
-    height: 24px;
-    color: #c9a961;
+    width: 22px;
+    height: 22px;
+    color: #2d5a4a;
+    flex-shrink: 0;
 }
 
 .room-footer {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     margin-top: auto;
 }
 
-.room-price-info {
-    display: flex;
-    flex-direction: column;
+.btn-check-availability {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 32px;
+    background: linear-gradient(135deg, #2d5a4a 0%, #1a362d 100%);
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(45, 90, 74, 0.3);
+    text-decoration: none;
+    width: 100%;
+    justify-content: center;
 }
 
-.price-from {
-    font-size: 13px;
-    color: #999;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 4px;
+.btn-check-availability:hover {
+    background: linear-gradient(135deg, #1a362d 0%, #0f1f1a 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(45, 90, 74, 0.4);
+    color: white;
 }
 
-.btn-view-room:hover svg {
+.btn-check-availability .calendar-icon {
+    width: 20px;
+    height: 20px;
+}
+
+.btn-check-availability svg:last-child {
+    width: 18px;
+    height: 18px;
+    transition: transform 0.3s ease;
+}
+
+.btn-check-availability:hover svg:last-child {
     transform: translateX(5px);
+}
+
+.btn-check-availability:hover svg:last-child {
+    transform: translateX(5px);
+}
+
+/* Image Navigation */
+.room-image-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 10;
+}
+
+.room-image-nav:hover {
+    background: white;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.room-image-nav svg {
+    width: 24px;
+    height: 24px;
+    color: #1a362d;
+}
+
+.room-image-prev {
+    left: 20px;
+}
+
+.room-image-prev svg {
+    transform: rotate(180deg);
+}
+
+.room-image-next {
+    right: 20px;
+}
+
+/* Image Counter */
+.room-image-counter {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(26, 54, 45, 0.85);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    z-index: 10;
+    backdrop-filter: blur(10px);
+}
+
+/* Dots Navigation */
+.room-image-dots {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+    z-index: 10;
+}
+
+.room-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 0;
+}
+
+.room-dot:hover {
+    background: rgba(255, 255, 255, 0.8);
+}
+
+.room-dot.active {
+    background: white;
+    width: 24px;
+    border-radius: 4px;
 }
 
 /* Responsive Design */
@@ -199,7 +317,7 @@
     .room-footer {
         flex-direction: column;
         gap: 20px;
-        align-items: flex-start;
+        align-items: stretch;
     }
 
     .room-showcase-image {
@@ -210,7 +328,7 @@
         padding: 20px;
     }
 
-    .btn-view-room {
+    .btn-check-availability {
         width: 100%;
         justify-content: center;
     }

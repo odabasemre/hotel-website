@@ -49,29 +49,101 @@
         "title": "Luxury & Comfort",
         "subtitle": "Our Services and Wonders",
         "description": "The concept and service of the best luxury hotels in our sophisticated rooms, with the possibility of enjoying a furnished terrace with stunning views.",
+        "riverView": {
+            "title": "River View",
+            "description": "Relax with the peaceful river view"
+        },
+        "balcony": {
+            "title": "Private Balcony",
+            "description": "Enjoy private balcony immersed in nature"
+        },
+        "kitchen": {
+            "title": "Fully Equipped Kitchen",
+            "description": "Everything you need in your kitchen"
+        },
+        "fireplace": {
+            "title": "Fireplace",
+            "description": "Enjoyable evenings in a warm atmosphere"
+        },
+        "wifi": {
+            "title": "High-Speed WiFi",
+            "description": "Uninterrupted internet connection"
+        },
+        "tv": {
+            "title": "Smart TV",
+            "description": "Entertainment options including Netflix and YouTube"
+        },
+        "hairdryer": {
+            "title": "Hair Dryer",
+            "description": "Available in all rooms"
+        },
+        "towels": {
+            "title": "Towels & Linens",
+            "description": "Clean and quality textile products"
+        },
+        "parking": {
+            "title": "Free Parking",
+            "description": "Safe and spacious parking area"
+        },
+        "bar": {
+            "title": "Beverage Bar",
+            "description": "Hot and cold beverage options"
+        },
+        "reception": {
+            "title": "24/7 Reception",
+            "description": "Always at your service"
+        },
+        "insulation": {
+            "title": "Sound & Thermal Insulation",
+            "description": "Quiet and comfortable environment"
+        },
         "spa": {
             "title": "Spa & Wellness",
             "description": "Relax and rejuvenate with our premium spa treatments"
-        },
-        "restaurant": {
-            "title": "Fine Dining",
-            "description": "Experience exquisite culinary delights from world-class chefs"
         },
         "pool": {
             "title": "Swimming Pool",
             "description": "Enjoy our stunning infinity pool with panoramic views"
         },
-        "wifi": {
-            "title": "Free WiFi",
-            "description": "Stay connected with high-speed internet throughout the hotel"
+        "gym": {
+            "title": "Fitness Center",
+            "description": "Modern equipment for your workout needs"
         },
-        "parking": {
-            "title": "Free Parking",
-            "description": "Complimentary secure parking for all our guests"
+        "restaurant": {
+            "title": "Restaurant",
+            "description": "Flavors from world cuisine"
+        },
+        "laundry": {
+            "title": "Laundry",
+            "description": "Dry cleaning and laundry service"
+        },
+        "minibar": {
+            "title": "Minibar",
+            "description": "In-room beverage and snack options"
+        },
+        "security": {
+            "title": "Security",
+            "description": "24/7 security service"
         },
         "concierge": {
-            "title": "24/7 Concierge",
-            "description": "Our dedicated team is always ready to assist you"
+            "title": "Concierge",
+            "description": "Personal assistant service"
+        },
+        "transport": {
+            "title": "Transportation",
+            "description": "Airport transfer service"
+        },
+        "breakfast": {
+            "title": "Breakfast",
+            "description": "Rich breakfast with local products"
+        },
+        "airConditioning": {
+            "title": "Air Conditioning",
+            "description": "Central air conditioning system in all rooms"
+        },
+        "petFriendly": {
+            "title": "Pet Friendly",
+            "description": "Stay with your pets"
         }
     },
     "room": {

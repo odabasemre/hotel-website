@@ -117,6 +117,54 @@
         "insulation": {
             "title": "Ses & Isı Yalıtımı",
             "description": "Sessiz ve konforlu ortam"
+        },
+        "spa": {
+            "title": "Spa & Wellness",
+            "description": "Premium spa hizmetleri ile yenilenin"
+        },
+        "pool": {
+            "title": "Yüzme Havuzu",
+            "description": "Panoramik manzaralı sonsuzluk havuzu"
+        },
+        "gym": {
+            "title": "Fitness Salonu",
+            "description": "Modern ekipmanlarla antrenman imkanı"
+        },
+        "restaurant": {
+            "title": "Restoran",
+            "description": "Dünya mutfağından lezzetler"
+        },
+        "laundry": {
+            "title": "Çamaşırhane",
+            "description": "Kuru temizleme ve çamaşır hizmeti"
+        },
+        "minibar": {
+            "title": "Minibar",
+            "description": "Oda içi içecek ve atıştırmalık seçenekleri"
+        },
+        "security": {
+            "title": "Güvenlik",
+            "description": "7/24 güvenlik hizmeti"
+        },
+        "concierge": {
+            "title": "Concierge",
+            "description": "Özel asistan hizmeti"
+        },
+        "transport": {
+            "title": "Ulaşım",
+            "description": "Havalimanı transfer hizmeti"
+        },
+        "breakfast": {
+            "title": "Kahvaltı",
+            "description": "Yöresel ürünlerle zengin kahvaltı"
+        },
+        "airConditioning": {
+            "title": "Klima",
+            "description": "Tüm odalarda merkezi klima sistemi"
+        },
+        "petFriendly": {
+            "title": "Evcil Hayvan Dostu",
+            "description": "Evcil hayvanlarınızla birlikte konaklayın"
         }
     },
     "room": {

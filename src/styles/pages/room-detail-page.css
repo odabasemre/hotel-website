@@ -25,12 +25,34 @@
     
     min-height: 100vh;
     background: var(--rdp-bg);
+    padding-top: 100px;
 }
 
 .rdp-container {
-    max-width: 1400px;
+    max-width: 1200px;
     margin: 0 auto;
-    padding: 0 24px;
+    padding: 40px 24px;
+}
+
+.rdp-booking-title-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.rdp-booking-title-header h1 {
+    font-size: 42px;
+    font-weight: 700;
+    color: var(--rdp-primary);
+    margin-bottom: 12px;
+    font-family: 'Cormorant Garamond', serif;
+}
+
+.rdp-booking-title-header p {
+    color: var(--rdp-text-muted);
+    font-size: 16px;
+    line-height: 1.6;
+    max-width: 700px;
+    margin: 0 auto;
 }
 
 /* ================================
@@ -258,14 +280,28 @@
    Main Layout
    ================================ */
 .rdp-main {
-    padding: 60px 0 100px;
+    padding: 0;
 }
 
-.rdp-layout {
+.rdp-layout-two-column {
     display: grid;
-    grid-template-columns: 1fr 440px;
-    gap: 60px;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
     align-items: start;
+}
+
+.rdp-calendar-column,
+.rdp-booking-column {
+    width: 100%;
+}
+
+.rdp-calendar-card {
+    background: var(--rdp-white);
+    border-radius: var(--rdp-radius);
+    box-shadow: var(--rdp-shadow-lg);
+    overflow: hidden;
+    position: sticky;
+    top: 120px;
 }
 
 /* ================================
@@ -370,6 +406,28 @@
     border-radius: var(--rdp-radius);
     box-shadow: var(--rdp-shadow-lg);
     overflow: hidden;
+}
+
+.rdp-booking-title {
+    padding: 32px 28px;
+    text-align: center;
+    border-bottom: 1px solid var(--rdp-border);
+}
+
+.rdp-booking-title h1 {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--rdp-primary);
+    margin-bottom: 12px;
+    font-family: 'Cormorant Garamond', serif;
+}
+
+.rdp-booking-title p {
+    color: var(--rdp-text-muted);
+    font-size: 15px;
+    line-height: 1.6;
+    max-width: 500px;
+    margin: 0 auto;
 }
 
 .rdp-booking-header {
@@ -635,9 +693,19 @@
 }
 
 .rdp-cal-price {
-    font-size: 10px;
+    font-size: 9px;
     color: var(--rdp-success);
     font-weight: 600;
+    line-height: 1.2;
+}
+
+.rdp-cal-almost {
+    font-size: 7px;
+    color: #000000;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.2px;
+    line-height: 1;
 }
 
 .rdp-cal-busy {
@@ -917,8 +985,13 @@
 }
 
 @media (max-width: 1024px) {
-    .rdp-layout {
+    .rdp-layout-two-column {
         grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .rdp-calendar-card {
+        position: static;
     }
     
     .rdp-booking {

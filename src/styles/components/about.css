@@ -6,9 +6,32 @@
 
 .about-content {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     gap: var(--spacing-3xl);
     align-items: center;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.about-text-centered {
+    text-align: center;
+    padding: var(--spacing-2xl);
+}
+
+.about-text-centered .section-subtitle {
+    text-align: center;
+}
+
+.about-text-centered .section-title {
+    text-align: center;
+    margin-bottom: var(--spacing-lg);
+    font-size: 2.5rem;
+}
+
+.about-text-centered .about-description {
+    max-width: 800px;
+    margin: 0 auto var(--spacing-xl) auto;
+    font-size: 1.1rem;
 }
 
 .about-images {
@@ -17,7 +40,7 @@
 
 .about-image {
     overflow: hidden;
-    border-radius: var(--radius-lg);
+    border-radius: 24px;
     box-shadow: var(--shadow-lg);
 }
 

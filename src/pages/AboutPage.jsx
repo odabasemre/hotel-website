@@ -72,21 +72,11 @@ function AboutPage() {
 
             <div className="container">
                 {/* Story Section */}
-                <section className="about-page-story">
+                <section className="about-page-story about-page-story-centered">
                     <div className="about-page-story-content">
-                        <h2 className="about-page-section-title">{t('about.storyTitle')}</h2>
+                        <h2 className="about-page-section-title text-center">{t('about.storyTitle')}</h2>
                         <p className="about-page-text">{t('about.description')}</p>
                         <p className="about-page-text">{t('about.mission')}</p>
-                    </div>
-                    <div className="about-page-story-image">
-                        <img
-                            src={aboutImage}
-                            alt="Ayder Kuzey Houses Houses"
-                        />
-                        <div className="about-page-badge">
-                            <span className="badge-number">25+</span>
-                            <span className="badge-text">{t('about.experience')}</span>
-                        </div>
                     </div>
                 </section>
 
@@ -129,14 +119,6 @@ function AboutPage() {
                     </div>
                 </section>
 
-                {/* CTA Section */}
-                <section className="about-page-cta">
-                    <div className="about-page-cta-content">
-                        <h3>{t('about.ctaTitle')}</h3>
-                        <p>{t('about.ctaDescription')}</p>
-                    </div>
-                    <Link to="/contact" className="about-page-cta-button">{t('about.ctaButton')}</Link>
-                </section>
             </div>
         </div>
     )

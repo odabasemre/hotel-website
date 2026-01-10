@@ -421,46 +421,87 @@ function PhotosTab({
                         {(() => {
                             // Get all existing room slides
                             const existingSlides = Object.keys(currentImages?.rooms || {})
-                                .filter(key => key.startsWith('slide'))
+                                .filter(key => key.startsWith('slide') && currentImages?.rooms?.[key])
                                 .sort((a, b) => {
                                     const numA = parseInt(a.replace('slide', ''))
                                     const numB = parseInt(b.replace('slide', ''))
                                     return numA - numB
                                 })
                             
-                            // Always show at least 8 slots
-                            const maxSlide = Math.max(8, existingSlides.length + 1)
                             const slots = []
                             
-                            for (let i = 1; i <= maxSlide; i++) {
-                                const key = `slide${i}`
+                            // Show existing slides
+                            existingSlides.forEach((key, index) => {
                                 slots.push(
                                     <DropZone 
                                         key={key}
                                         section="rooms" 
                                         imageKey={key}
                                         currentImage={currentImages?.rooms?.[key]} 
-                                        label={`Oda ${i}`}
+                                        label={`Oda ${index + 1}`}
                                         size="small" 
                                     />
                                 )
-                            }
+                            })
+                            
+                            // Add one empty slot for adding new photo
+                            const nextSlideNum = existingSlides.length > 0 
+                                ? Math.max(...existingSlides.map(k => parseInt(k.replace('slide', '')))) + 1 
+                                : 1
+                            slots.push(
+                                <DropZone 
+                                    key={`slide${nextSlideNum}`}
+                                    section="rooms" 
+                                    imageKey={`slide${nextSlideNum}`}
+                                    currentImage={null} 
+                                    label={`Oda ${existingSlides.length + 1}`}
+                                    size="small" 
+                                />
+                            )
+                            
                             return slots
                         })()}
                     </div>
                 </div>
 
-                {/* About Section */}
+                {/* Team Section (Ekibimizi Tanıyın) */}
                 <div style={{ padding: '25px', background: '#f8fafc', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
-                    <h3 style={{ fontSize: '18px', marginBottom: '20px', color: '#1a362d' }}>
-                        ℹ️ Hakkımızda Bölümü
+                    <h3 style={{ fontSize: '18px', marginBottom: '8px', color: '#1a362d' }}>
+                        👥 Ekibimizi Tanıyın
                     </h3>
-                    <DropZone
-                        section="about"
-                        imageKey="image1"
-                        currentImage={currentImages?.about?.image1}
-                        description="Hakkımızda bölümünde görünen ana fotoğraf. Önerilen boyut: 800x600px"
-                    />
+                    <p style={{ color: '#666', fontSize: '13px', marginBottom: '20px' }}>
+                        Hakkımızda sayfasında görünecek ekip üyesi fotoğrafları.
+                    </p>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '15px' }}>
+                        <DropZone 
+                            section="team" 
+                            imageKey="member1" 
+                            currentImage={currentImages?.team?.member1} 
+                            label="Ekip Üyesi 1" 
+                            size="small" 
+                        />
+                        <DropZone 
+                            section="team" 
+                            imageKey="member2" 
+                            currentImage={currentImages?.team?.member2} 
+                            label="Ekip Üyesi 2" 
+                            size="small" 
+                        />
+                        <DropZone 
+                            section="team" 
+                            imageKey="member3" 
+                            currentImage={currentImages?.team?.member3} 
+                            label="Ekip Üyesi 3" 
+                            size="small" 
+                        />
+                        <DropZone 
+                            section="team" 
+                            imageKey="member4" 
+                            currentImage={currentImages?.team?.member4} 
+                            label="Ekip Üyesi 4" 
+                            size="small" 
+                        />
+                    </div>
                 </div>
 
                 {/* Gallery Section */}
@@ -469,17 +510,52 @@ function PhotosTab({
                         🖼️ Galeri Sayfası
                     </h3>
                     <p style={{ color: '#666', fontSize: '13px', marginBottom: '20px' }}>
-                        Galeri sayfasında ve oda detaylarında görünecek fotoğraflar.
+                        Galeri sayfasında görünecek fotoğraflar (sınırsız).
                     </p>
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '15px' }}>
-                        <DropZone section="gallery" imageKey="image1" currentImage={currentImages?.gallery?.image1} label="Galeri 1" size="small" />
-                        <DropZone section="gallery" imageKey="image2" currentImage={currentImages?.gallery?.image2} label="Galeri 2" size="small" />
-                        <DropZone section="gallery" imageKey="image3" currentImage={currentImages?.gallery?.image3} label="Galeri 3" size="small" />
-                        <DropZone section="gallery" imageKey="image4" currentImage={currentImages?.gallery?.image4} label="Galeri 4" size="small" />
-                        <DropZone section="gallery" imageKey="image5" currentImage={currentImages?.gallery?.image5} label="Galeri 5" size="small" />
-                        <DropZone section="gallery" imageKey="image6" currentImage={currentImages?.gallery?.image6} label="Galeri 6" size="small" />
-                        <DropZone section="gallery" imageKey="image7" currentImage={currentImages?.gallery?.image7} label="Galeri 7" size="small" />
-                        <DropZone section="gallery" imageKey="image8" currentImage={currentImages?.gallery?.image8} label="Galeri 8" size="small" />
+                        {(() => {
+                            // Get all existing gallery images
+                            const existingImages = Object.keys(currentImages?.gallery || {})
+                                .filter(key => key.startsWith('image') && currentImages?.gallery?.[key])
+                                .sort((a, b) => {
+                                    const numA = parseInt(a.replace('image', ''))
+                                    const numB = parseInt(b.replace('image', ''))
+                                    return numA - numB
+                                })
+                            
+                            const slots = []
+                            
+                            // Show existing images
+                            existingImages.forEach((key, index) => {
+                                slots.push(
+                                    <DropZone 
+                                        key={key}
+                                        section="gallery" 
+                                        imageKey={key}
+                                        currentImage={currentImages?.gallery?.[key]} 
+                                        label={`Galeri ${index + 1}`}
+                                        size="small" 
+                                    />
+                                )
+                            })
+                            
+                            // Add one empty slot for adding new photo
+                            const nextImageNum = existingImages.length > 0 
+                                ? Math.max(...existingImages.map(k => parseInt(k.replace('image', '')))) + 1 
+                                : 1
+                            slots.push(
+                                <DropZone 
+                                    key={`image${nextImageNum}`}
+                                    section="gallery" 
+                                    imageKey={`image${nextImageNum}`}
+                                    currentImage={null} 
+                                    label={`Galeri ${existingImages.length + 1}`}
+                                    size="small" 
+                                />
+                            )
+                            
+                            return slots
+                        })()}
                     </div>
                 </div>
 
@@ -492,14 +568,6 @@ function PhotosTab({
                         Aktiviteler sayfasında görünecek fotoğraflar. Her aktivite için bir fotoğraf yükleyebilirsiniz.
                     </p>
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px' }}>
-                        <DropZone 
-                            section="activities" 
-                            imageKey="ayder-kuzey-houses" 
-                            currentImage={currentImages?.activities?.['ayder-kuzey-houses']} 
-                            label="Ayder Kuzey Houses 😊" 
-                            description="Ana tesisimiz"
-                            size="small" 
-                        />
                         <DropZone 
                             section="activities" 
                             imageKey="yedigoller" 

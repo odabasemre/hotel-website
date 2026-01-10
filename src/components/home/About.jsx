@@ -13,18 +13,8 @@ function About() {
         <section className="about-section" id="about">
             <div className="container">
                 <div className="about-content">
-                    {/* Images */}
-                    <div className="about-images">
-                        <div className="about-image">
-                            <img
-                                src={aboutImage}
-                                alt="Ayder Kuzey Houses Houses"
-                            />
-                        </div>
-                    </div>
-
-                    {/* Text Content */}
-                    <div className="about-text">
+                    {/* Text Content - Centered */}
+                    <div className="about-text about-text-centered">
                         <p className="section-subtitle">
                             {t('about.subtitle')}
                         </p>

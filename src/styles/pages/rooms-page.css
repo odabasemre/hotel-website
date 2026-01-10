@@ -52,7 +52,7 @@
     gap: var(--spacing-lg);
     padding: var(--spacing-xl);
     background: var(--color-white);
-    border-radius: var(--radius-lg);
+    border-radius: 20px;
     box-shadow: var(--shadow-sm);
 }
 
@@ -91,7 +91,7 @@
 .room-features-section {
     padding: var(--spacing-xl);
     background: var(--color-white);
-    border-radius: var(--radius-lg);
+    border-radius: 20px;
     box-shadow: var(--shadow-sm);
 }
 

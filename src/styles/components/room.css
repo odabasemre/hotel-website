@@ -15,6 +15,7 @@
     position: relative;
     overflow: hidden;
     box-shadow: var(--shadow-elegant);
+    border-radius: 24px;
 }
 
 .room-image img {
